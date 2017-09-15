@@ -130,6 +130,10 @@ public class LogInActivity extends AppCompatActivity
                 longitude = gps.getLongitude();
                 Current_Location = gps.getlocation_Address();
                 Log.i("Current_Location",Current_Location);
+                if (Current_Location == null)
+                {
+                    Current_Location = "";
+                }
             }
             else
             {
@@ -218,7 +222,13 @@ public class LogInActivity extends AppCompatActivity
                         txtChange();
                     } 
                     else {
-                        signIn();
+                        if (Current_Location != null)
+                        {
+                            signIn();
+                        }
+                        else {
+                            Toast.makeText(LogInActivity.this, "Failed to get location", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
                 else {
@@ -251,6 +261,10 @@ public class LogInActivity extends AppCompatActivity
                         longitude = gps.getLongitude();
                         Current_Location=gps.getlocation_Address();
                         Log.i("Current_Location",Current_Location);
+                        if (Current_Location == null)
+                        {
+                            Current_Location = "";
+                        }
                     }
                     else
                     {
