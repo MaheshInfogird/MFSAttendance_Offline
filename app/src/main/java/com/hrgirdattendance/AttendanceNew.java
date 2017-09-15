@@ -126,6 +126,7 @@ public class AttendanceNew extends AppCompatActivity implements MFS100Event {
     public static final String MyPREFERENCES_prefix = "MyPrefs_prefix" ;
     SharedPreferences pref_prefix;
 
+    String mahesh;
 
     String myJSON = null;
     String RegisteredBase64, MobileNo;
