@@ -106,7 +106,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     String logo;
     String android_id;
     String PrimaryKey, InOutId, DateTime;
-    String get_prefix,responseCode;
 
     String mahesh;
 
