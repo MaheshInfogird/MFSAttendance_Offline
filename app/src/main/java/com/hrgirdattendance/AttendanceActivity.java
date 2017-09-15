@@ -107,8 +107,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     String android_id;
     String PrimaryKey, InOutId, DateTime;
 
-    String mahesh;
-
     Toolbar toolbar;
     CoordinatorLayout snackbarCoordinatorLayout;
     TextView txt_date, txt_time, txt_time_a, txt_result, txt_att_name, txt_quality_per, txt_quality_success;
