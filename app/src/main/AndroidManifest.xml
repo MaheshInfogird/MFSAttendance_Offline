@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hrgirdattendance">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.USB_PERMISSION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name="com.hrgirdattendance.MainActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity
+            android:name="com.hrgirdattendance.LogInActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <activity
+            android:name="com.hrgirdattendance.UrlActivity"
+            android:windowSoftInputMode="stateHidden" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.hrgirdattendance.AttendanceNew"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
+
+        <activity android:name="com.hrgirdattendance.AttendanceOffline"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
+
+        <activity android:name="com.hrgirdattendance.RegistrationActivity"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
+
+        <activity android:name="com.hrgirdattendance.ResetThumbActivity"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
+
+        <activity android:name="com.hrgirdattendance.AttendanceActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+    </application>
+
+</manifest>
