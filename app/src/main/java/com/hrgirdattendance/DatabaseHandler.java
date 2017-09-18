@@ -180,19 +180,27 @@ public class DatabaseHandler extends SQLiteOpenHelper
     public List<SigninOut_Model> getSigninoutData(int key)
     {
         List<SigninOut_Model> contactList = new ArrayList<SigninOut_Model>();
-        String selectQuery = "SELECT  * FROM " + TABLE_SignINOut;
+        String selectQuery = "SELECT  * FROM " + TABLE_SignINOut+ " WHERE Primary_key > "+key+"";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.i("key_data", ""+key);
 
-        if (cursor.moveToPosition(key))
+        if(cursor.getCount() != 0)
         {
-            do {
+            cursor.moveToFirst();
+            do
+            {
                 SigninOut_Model contact = new SigninOut_Model();
                 contact.setPrimaryKey(cursor.getString(0));
                 contact.setUserId(cursor.getString(1));
                 contact.setDate_Time(cursor.getString(2));
                 contact.setSignInOutId(cursor.getString(3));
+
+                Log.i("MFS data", ""+cursor.getString(0) +"\n"+
+                        cursor.getString(1)+"\n"+
+                        cursor.getString(2)+"\n"+
+                        cursor.getString(3));
 
                 contactList.add(contact);
             } while (cursor.moveToNext());

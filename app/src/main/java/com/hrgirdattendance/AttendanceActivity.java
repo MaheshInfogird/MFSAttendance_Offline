@@ -1062,8 +1062,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
             txt_att_name.setText(empName);
             txt_result.setText("Sign In Successfully");
+            txt_result.setTextColor(getColor(R.color.TextGreenColor));
             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
-            textToSpeech.speak("Sign In Successfully", TextToSpeech.QUEUE_FLUSH, null);
+            textToSpeech.speak("Welcome "+firstName, TextToSpeech.QUEUE_FLUSH, null);
             Log.i("MFS_Log Employee!!", "Sign In Successfully!!");
         }
         else if (inout.equals("2"))
@@ -1082,8 +1083,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
             txt_att_name.setText(empName);
             txt_result.setText("Sign Out Successfully");
+            txt_result.setTextColor(getColor(R.color.TextGreenColor));
             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
-            textToSpeech.speak("Sign Out Successfully", TextToSpeech.QUEUE_FLUSH, null);
+            textToSpeech.speak("Bye Bye "+firstName, TextToSpeech.QUEUE_FLUSH, null);
             Log.i("MFS_Log Employee!!", "Sign Out Successfully!!");
         }
 
@@ -1102,7 +1104,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 txt_quality_success.setVisibility(View.INVISIBLE);
                 img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
             }
-        }, 5000);
+        }, 3000);
     }
 
     public void sendSignInOutData()

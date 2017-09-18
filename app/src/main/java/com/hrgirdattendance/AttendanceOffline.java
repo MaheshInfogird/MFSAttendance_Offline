@@ -1017,13 +1017,13 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
                         uid = cn.getUid();
                         ucid = cn.getCid();
                         att_type = cn.getAttType();
-                        att_shift = cn.getShift();
+                        //att_shift = cn.getShift();
                         Log.i("MFS_Log", log);
                         Log.i("MFS_Log u_mobile_nu", u_mobile_nu);
                         Log.i("MFS_Log uid", uid);
                         Log.i("MFS_Log ucid", ucid);
                         Log.i("MFS_Log ucid", att_type);
-                        Log.i("MFS_Log att_shift", att_shift);
+                        //Log.i("MFS_Log att_shift", att_shift);
                         Log.i("MFS_Log ed_MobNo",ed_MobNo.getText().toString());
 
                         Log.i("condition",((u_mobile_nu.equalsIgnoreCase(ed_MobNo.getText().toString())) || (uid.equalsIgnoreCase(ed_MobNo.getText().toString())))+"");
@@ -1036,8 +1036,8 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
                             {
                                 if (att_type.equals("1"))
                                 {
-                                    if (att_shift.equals("1") || att_shift.equals("3"))
-                                    {
+                                    /*if (att_shift.equals("1") || att_shift.equals("3"))
+                                    {*/
                                         emp_ext = true;
 
                                         Log.i("emp_ext", emp_ext + "");
@@ -1086,7 +1086,6 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
                                                     Log.i("app_mode_att 1 ", UrlActivity.app_mode + "");
                                                     make_offline_attendance(uid, ufname, ulname, u_mobile_nu, Sign_InOut_id);
                                                     break;
-
                                                 }
                                                 else
                                                 {
@@ -1119,7 +1118,7 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
                                                 }
                                             }, 3000);
                                         }
-                                    }
+                                    /*}
                                     else {
                                         emp_ext = true;
                                         txt_matchMsg.setText("Unsuccessful");
@@ -1142,7 +1141,7 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
                                         }, 3000);
 
                                         break;
-                                    }
+                                    }*/
                                 }
                                 else
                                 {
@@ -1192,8 +1191,8 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
                             {
                                 if (att_type.equals("1"))
                                 {
-                                    if (att_shift.equals("1") || att_shift.equals("3")) {
-                                        Log.i("ucid", ucid);
+                                    /*if (att_shift.equals("1") || att_shift.equals("3")) {
+                                        Log.i("ucid", ucid);*/
 
                                         emp_ext = true;
                                         Log.i("emp_ext", emp_ext + "");
@@ -1277,7 +1276,7 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
                                             }, 3000);
                                            // break;
                                         }
-                                    }
+                                    /*}
                                     else {
                                         emp_ext = true;
                                         txt_matchMsg.setText("Unsuccessful");
@@ -1300,7 +1299,7 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
                                         }, 3000);
 
                                         break;
-                                    }
+                                    }*/
 
                                 }
                                 else

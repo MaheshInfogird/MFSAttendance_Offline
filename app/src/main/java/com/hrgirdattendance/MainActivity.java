@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity
     ArrayList<String> key_array = new ArrayList<String>();
     ArrayList<String> id_array = new ArrayList<String>();
     ArrayList<String> empattDid_arr = new ArrayList<String>();
+    ArrayList<String> uid_array = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -136,6 +137,8 @@ public class MainActivity extends AppCompatActivity
         shared_pref = getSharedPreferences(MyPREFERENCES_url, MODE_PRIVATE);
         Url = (shared_pref.getString("url", ""));
         logo = (shared_pref.getString("logo", ""));
+
+        pref_prefix = getSharedPreferences(MyPREFERENCES_prefix, MODE_PRIVATE);
 
         try
         {
@@ -402,9 +405,9 @@ public class MainActivity extends AppCompatActivity
                         public void onClick(DialogInterface dialog, int which) {
                             flag = "1";
                             //getUserData();
-                            getUserDataNew();
-                            //outid = "4";
-                            //popup_window(v);
+                            //getUserDataNew();
+                            outid = "4";
+                            popup_window(v);
                             //android.os.Process.killProcess(android.os.Process.myPid());
                         }
                     });
@@ -882,10 +885,10 @@ public class MainActivity extends AppCompatActivity
                             else if (outid.equals("4"))
                             {
                                 //db.delete_record();
-                                //pk = "0";
+                                pk = "0";
                                 flag = "1";
-                                //getUserData();
-                                getUserDataNew();
+                                getUserData();
+                                //getUserDataNew();
                             }
                             else {
                                 android.os.Process.killProcess(android.os.Process.myPid());
@@ -1043,9 +1046,11 @@ public class MainActivity extends AppCompatActivity
 
                                 flag = "1";
                                 //getUserData();
-                                getUserDataNew();
+                                //getUserDataNew();
 
-                                /*List<UserDetails_Model> contacts = db.getAllContacts();
+                                uid_array.clear();
+
+                                List<UserDetails_Model> contacts = db.getAllContacts();
                                 if (contacts.isEmpty())
                                 {
                                     pk = "0";
@@ -1068,7 +1073,7 @@ public class MainActivity extends AppCompatActivity
                                     flag = "1";
                                     getUserData();
                                     //getUserDataNew();
-                                }*/
+                                }
                             }
                         }
                         catch (JSONException e) {
@@ -1441,7 +1446,7 @@ public class MainActivity extends AppCompatActivity
                                  * */
                                 // Inserting Contacts
                                 Log.i("Insert: ", "Inserting ..");
-                                //db.addContact(new UserDetails_Model(null,get_uId,get_cid,get_attType,get_firstName,get_lastName,get_mobile,get_applyshift, t1,t2,t3,t4));
+                                db.addContact(new UserDetails_Model(null,get_uId,get_cid,get_attType,get_firstName,get_lastName,get_mobile, t1,t2,t3,t4));
 
                                 // Reading all contacts
                                 //  insert_user_details(get_uId,get_firstName,get_lastName,get_mobile,get_cid,t1,t2,t3,t4);
