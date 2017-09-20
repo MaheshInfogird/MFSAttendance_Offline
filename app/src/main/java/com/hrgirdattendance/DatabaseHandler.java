@@ -61,8 +61,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
                 + KEY_CID + " TEXT," + KEY_AttType + " TEXT,"
                 + KEY_Thumb1 + " TEXT," + KEY_Thumb2 + " TEXT,"
                 + KEY_Thumb3 + " TEXT," + KEY_Thumb4 + " TEXT" + ")";
+
         db.execSQL(CREATE_UserDetails_TABLE);
-        Log.i("data","table userdetails created");
+        Log.i("create_table", CREATE_UserDetails_TABLE);
+        Log.i("data","table user details created");
 
         String CREATE_SignInOut_TABLE = "CREATE TABLE " + TABLE_SignINOut + "("
                 + KEY_PrimaryKey + " INTEGER PRIMARY KEY AUTOINCREMENT,"+ KEY_UserId + " TEXT," + KEY_Date_Time + " TEXT," +  KEY_Sign_InOut + " TEXT" +")";
@@ -378,7 +380,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         UserDetails_Model contact = new UserDetails_Model();
 
         if(cursor.getCount() ==0){
-            Log.i("Empty","Table EMpty");
+            Log.i("Empty","Table Empty");
         }
         else {
             cursor.moveToFirst();

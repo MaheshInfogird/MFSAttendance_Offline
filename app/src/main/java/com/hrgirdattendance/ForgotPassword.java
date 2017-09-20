@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import org.apache.http.conn.ConnectTimeoutException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -186,7 +188,44 @@ public class ForgotPassword extends AppCompatActivity
                         response_mail = "";
                     }
                 }
+                catch (SocketTimeoutException e)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.dismiss();
+                            Toast.makeText(ForgotPassword.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    Log.e("SocketTimeoutException", e.toString());
+                }
+                catch (ConnectTimeoutException e)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.dismiss();
+                            Toast.makeText(ForgotPassword.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    Log.e("ConnectTimeoutException", e.toString());
+                }
                 catch (Exception e){
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.dismiss();
+                            Toast.makeText(ForgotPassword.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     Log.e("Exception", e.toString());
                 }
 
@@ -320,7 +359,44 @@ public class ForgotPassword extends AppCompatActivity
                         response_pass = "";
                     }
                 }
+                catch (SocketTimeoutException e)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog2.dismiss();
+                            Toast.makeText(ForgotPassword.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    Log.e("SocketTimeoutException", e.toString());
+                }
+                catch (ConnectTimeoutException e)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog2.dismiss();
+                            Toast.makeText(ForgotPassword.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    Log.e("ConnectTimeoutException", e.toString());
+                }
                 catch (Exception e){
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog2.dismiss();
+                            Toast.makeText(ForgotPassword.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     Log.e("Exception", e.toString());
                 }
 

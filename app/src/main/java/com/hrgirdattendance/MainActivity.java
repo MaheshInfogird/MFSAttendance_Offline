@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity
     String PrimaryKey, InOutId, EmpId, DateTime;
     String empattDid, flag;
     String get_prefix,responseCode;
-    String response, myJson,outid;
+    String response, response_att, myJson,outid;
 
     int Prev_Key, prev_key;
     int version_code;
@@ -554,10 +554,10 @@ public class MainActivity extends AppCompatActivity
                         String date_data = cn.getDate_Time();
                         String in_out_data = cn.getSignInOutId();
                         String id_data = cn.getUserId();
-                        Log.i("MFS_Log primarykey_data", primarykey_data);
-                        Log.i("MFS_Log date_data", date_data);
-                        Log.i("MFS_Log id_data", id_data);
-                        Log.i("MFS_Log in_out_data", in_out_data);
+                        Log.i("MFS_Log primarykey", primarykey_data);
+                        Log.i("MFS_Log id", id_data);
+                        Log.i("MFS_Log date", date_data);
+                        Log.i("MFS_Log in_out", in_out_data);
 
                         Log.i("Prev_Key1", ""+Prev_Key);
                         //if (kkeay > Prev_Key)
@@ -573,7 +573,7 @@ public class MainActivity extends AppCompatActivity
                     {
                         if (outid.equals("1"))
                         {
-                            Toast.makeText(MainActivity.this, "No Records Found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "No Attendance Records Found", Toast.LENGTH_SHORT).show();
                             session.logout_url();
                             key_editor = key_pref.edit();
                             key_editor.clear();
@@ -585,7 +585,7 @@ public class MainActivity extends AppCompatActivity
                         }
                         else if (outid.equals("3"))
                         {
-                            Toast.makeText(MainActivity.this, "No Records Found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "No Attendance Records Found", Toast.LENGTH_SHORT).show();
                         }
                     }
                     else
@@ -618,8 +618,9 @@ public class MainActivity extends AppCompatActivity
                                 map.put("datetime", DateTime);
                                 map.put("signId", InOutId);
 
-                                performPostCall(url, map);
-                                GetJSONData();
+                                postData(url, map);
+                                //performPostCall(url, map);
+                                //GetJSONData();
 
                             }
                         }).start();
@@ -640,7 +641,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     else if (outid.equals("3"))
                     {
-                        Toast.makeText(MainActivity.this, "No Records Found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "No Attendance Records Found", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -1567,10 +1568,10 @@ public class MainActivity extends AppCompatActivity
                         public void run()
                         {
                             progressDialog.dismiss();
-
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+
                     Log.e("SocketTimeoutException", e.toString());
                 }
                 catch (ConnectTimeoutException e)
@@ -1581,10 +1582,10 @@ public class MainActivity extends AppCompatActivity
                         public void run()
                         {
                             progressDialog.dismiss();
-
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+
                     Log.e("ConnectTimeoutException", e.toString());
                 }
                 catch (Exception e)
@@ -1595,10 +1596,10 @@ public class MainActivity extends AppCompatActivity
                         public void run()
                         {
                             progressDialog.dismiss();
-
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+
                     Log.e("Exception", e.toString());
                 }
 
@@ -1623,7 +1624,7 @@ public class MainActivity extends AppCompatActivity
                     {
                         if (myJson2.equals("[]"))
                         {
-                            Toast.makeText(MainActivity.this, "No New Records Found", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "No New EMP Records Found", Toast.LENGTH_LONG).show();
                         }
                         else
                         {
@@ -1963,6 +1964,102 @@ public class MainActivity extends AppCompatActivity
         unregisterReceiver(receiver);
     }
 
+    public void postData(final String requestURL, final HashMap<String, String> postDataParams)
+    {
+        class SendPostRequest extends AsyncTask<String, Void, String> {
+
+            protected void onPreExecute(){}
+
+            protected String doInBackground(String... arg0) {
+
+                try {
+                    URL url = new URL(requestURL);
+
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setReadTimeout(15000);
+                    conn.setConnectTimeout(15000);
+                    conn.setRequestMethod("POST");
+                    conn.setDoInput(true);
+                    conn.setDoOutput(true);
+
+                    OutputStream os = conn.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                    writer.write(getPostDataString(postDataParams));
+
+                    writer.flush();
+                    writer.close();
+                    os.close();
+
+                    int responseCode = conn.getResponseCode();
+
+                    if (responseCode == HttpsURLConnection.HTTP_OK)
+                    {
+                        String line;
+                        BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        while ((line=br.readLine()) != null)
+                        {
+                            response_att += line;
+                        }
+                    }
+                    else
+                    {
+                        response_att = "";
+                    }
+                }
+                catch (SocketTimeoutException e)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.dismiss();
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    Log.e("SocketTimeoutException", e.toString());
+                }
+                catch (ConnectTimeoutException e)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.dismiss();
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    Log.e("ConnectTimeoutException", e.toString());
+                }
+                catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                            Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    e.printStackTrace();
+                }
+
+                return response_att;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                GetJSONData(result);
+            }
+        }
+
+        SendPostRequest request = new SendPostRequest();
+        request.execute();
+    }
+
     public String  performPostCall(String requestURL, HashMap<String, String> postDataParams)
     {
         URL url;
@@ -2035,11 +2132,11 @@ public class MainActivity extends AppCompatActivity
         return result.toString();
     }
 
-    public void GetJSONData()
+    public void GetJSONData(String result)
     {
         try
         {
-            JSONArray json = new JSONArray(response);
+            JSONArray json = new JSONArray(result);
             Log.i("json", "" + json);
 
 //[{"empId":"115","datetime":"2017-07-21 12:21:58","responsecode":1,"signId":"2",
@@ -2057,89 +2154,67 @@ public class MainActivity extends AppCompatActivity
             if (responsecode.equals("1"))
             {
                 delete_prevAttRecord();
-
-                runOnUiThread(new Runnable()
+                progressDialog.dismiss();
+                if (outid.equals("1"))
                 {
-                    @Override
-                    public void run()
-                    {
-                        progressDialog.dismiss();
-                        if (outid.equals("1"))
-                        {
-                            session.logout_url();
-                            key_editor = key_pref.edit();
-                            key_editor.clear();
-                            key_editor.commit();
-                            db.delete_attendance_record();
-                            Intent intent = new Intent(MainActivity.this, UrlActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                        else
-                        {
-                            key_editor = key_pref.edit();
-                            key_editor.clear();
-                            key_editor.putInt("key", prev_key);
-                            key_editor.commit();
+                    session.logout_url();
+                    key_editor = key_pref.edit();
+                    key_editor.clear();
+                    key_editor.commit();
+                    db.delete_attendance_record();
+                    Intent intent = new Intent(MainActivity.this, UrlActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else
+                {
+                    key_editor = key_pref.edit();
+                    key_editor.clear();
+                    key_editor.putInt("key", prev_key);
+                    key_editor.commit();
 
-                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                            alertDialog.setMessage(message);
-                            alertDialog.setCancelable(true);
-                            alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-
-                            alertDialog.show();
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                    alertDialog.setMessage(message);
+                    alertDialog.setCancelable(true);
+                    alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
                         }
-                    }
-                });
+                    });
+
+                    alertDialog.show();
+                }
             }
             else
             {
-                runOnUiThread(new Runnable()
+                progressDialog.dismiss();
+                if (outid.equals("1"))
                 {
-                    @Override
-                    public void run()
-                    {
-                        progressDialog.dismiss();
-                        if (outid.equals("1"))
-                        {
-                            session.logout_url();
-                            key_editor = key_pref.edit();
-                            key_editor.clear();
-                            key_editor.commit();
-                            db.delete_attendance_record();
-                            Intent intent = new Intent(MainActivity.this, UrlActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                        else
-                        {
-                            key_editor = key_pref.edit();
-                            key_editor.clear();
-                            key_editor.putInt("key", prev_key);
-                            key_editor.commit();
-                        }
-                    }
-                });
+                    session.logout_url();
+                    key_editor = key_pref.edit();
+                    key_editor.clear();
+                    key_editor.commit();
+                    db.delete_attendance_record();
+                    Intent intent = new Intent(MainActivity.this, UrlActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else
+                {
+                    key_editor = key_pref.edit();
+                    key_editor.clear();
+                    key_editor.putInt("key", prev_key);
+                    key_editor.commit();
+                }
             }
         }
         catch (JSONException e)
         {
-            runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    if (progressDialog != null && progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
-                    Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
-                }
-            });
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
             Log.e("Fail 1", e.toString());
         }
     }
