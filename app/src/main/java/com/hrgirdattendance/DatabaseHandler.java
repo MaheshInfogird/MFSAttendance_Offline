@@ -360,7 +360,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
                         SQLiteDatabase dbn = this.getWritableDatabase();
                         dbn.execSQL("delete from "+ TABLE_SignINOut +" where "+KEY_Date_Time+" = '"+newDateStringn+"'");
                     }
-
                 }
                 catch (ParseException e) {
                     e.printStackTrace();

@@ -1054,6 +1054,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
             List<SigninOut_Model> contacts = db.getSigninoutData(0);
             Log.i("MFS_Log contacts", "" + contacts);
+
             for (SigninOut_Model cn : contacts)
             {
                 String log = "PrimaryKey: " + cn.getPrimaryKey()+", Id: " + cn.getUserId() + ", DateTime: " + cn.getDate_Time() + ", SignInUot: " + cn.getSignInOutId();

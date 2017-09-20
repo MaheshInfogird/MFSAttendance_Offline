@@ -53,8 +53,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -65,7 +70,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -502,9 +510,8 @@ public class MainActivity extends AppCompatActivity
             {
                 for (SigninOut_Model cn : contacts)
                 {
-                    String date_data = cn.getDate_Time();
-                    Log.i("MFS_Log date_data", date_data);
-
+                    String date_data = "primary_key "+cn.getPrimaryKey()+", User_Id"+cn.getUserId()+", Date"+cn.getDate_Time();
+                    Log.i("date_data_before", date_data);
                     //db.delete_prev_att_record(date_data, date);
                 }
 
@@ -513,8 +520,8 @@ public class MainActivity extends AppCompatActivity
 
                 for (SigninOut_Model cn : contacts)
                 {
-                    String date_data = cn.getDate_Time();
-                    Log.i("MFS_Log date_data_rem", date_data);
+                    String date_data = "primary_key "+cn.getPrimaryKey()+", User_Id"+cn.getUserId()+", Date"+cn.getDate_Time();
+                    Log.i("date_data_after", date_data);
                 }
             }
         }
@@ -602,7 +609,18 @@ public class MainActivity extends AppCompatActivity
 
                         new Thread(new Runnable() {
                             public void run() {
-                                sendSignInOutData();
+                                //sendSignInOutData();
+                                String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitm?";
+                                Log.i("url", url);
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put("primarykey", PrimaryKey);
+                                map.put("empId", EmpId);
+                                map.put("datetime", DateTime);
+                                map.put("signId", InOutId);
+
+                                performPostCall(url, map);
+                                GetJSONData();
+
                             }
                         }).start();
                     }
@@ -1943,5 +1961,186 @@ public class MainActivity extends AppCompatActivity
     {
         super.onPause();
         unregisterReceiver(receiver);
+    }
+
+    public String  performPostCall(String requestURL, HashMap<String, String> postDataParams)
+    {
+        URL url;
+        try {
+            url = new URL(requestURL);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+            writer.write(getPostDataString(postDataParams));
+
+            writer.flush();
+            writer.close();
+            os.close();
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode == HttpsURLConnection.HTTP_OK)
+            {
+                String line;
+                BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line=br.readLine()) != null)
+                {
+                    response+=line;
+                }
+            }
+            else
+            {
+                response="";
+            }
+        }
+        catch (Exception e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                    Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                }
+            });
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException
+    {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for(Map.Entry<String, String> entry : params.entrySet())
+        {
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        return result.toString();
+    }
+
+    public void GetJSONData()
+    {
+        try
+        {
+            JSONArray json = new JSONArray(response);
+            Log.i("json", "" + json);
+
+//[{"empId":"115","datetime":"2017-07-21 12:21:58","responsecode":1,"signId":"2",
+// "primarykey":"5","msg":"Offline Attendance Successfully Done "}]
+            JSONObject jsonObject = json.getJSONObject(0);
+            Log.i("jsonObject", "" + jsonObject);
+
+            String responsecode = jsonObject.getString("responsecode");
+            final String message = jsonObject.getString("msg");
+            Log.i("message", "" + message);
+
+            prev_key = jsonObject.getInt("primarykey");
+            Log.i("prev_key", "" + prev_key);
+
+            if (responsecode.equals("1"))
+            {
+                delete_prevAttRecord();
+
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        progressDialog.dismiss();
+                        if (outid.equals("1"))
+                        {
+                            session.logout_url();
+                            key_editor = key_pref.edit();
+                            key_editor.clear();
+                            key_editor.commit();
+                            db.delete_attendance_record();
+                            Intent intent = new Intent(MainActivity.this, UrlActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                        else
+                        {
+                            key_editor = key_pref.edit();
+                            key_editor.clear();
+                            key_editor.putInt("key", prev_key);
+                            key_editor.commit();
+
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                            alertDialog.setMessage(message);
+                            alertDialog.setCancelable(true);
+                            alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            alertDialog.show();
+                        }
+                    }
+                });
+            }
+            else
+            {
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        progressDialog.dismiss();
+                        if (outid.equals("1"))
+                        {
+                            session.logout_url();
+                            key_editor = key_pref.edit();
+                            key_editor.clear();
+                            key_editor.commit();
+                            db.delete_attendance_record();
+                            Intent intent = new Intent(MainActivity.this, UrlActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                        else
+                        {
+                            key_editor = key_pref.edit();
+                            key_editor.clear();
+                            key_editor.putInt("key", prev_key);
+                            key_editor.commit();
+                        }
+                    }
+                });
+            }
+        }
+        catch (JSONException e)
+        {
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                    Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                }
+            });
+            Log.e("Fail 1", e.toString());
+        }
     }
 }

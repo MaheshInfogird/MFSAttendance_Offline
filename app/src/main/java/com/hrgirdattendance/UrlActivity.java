@@ -531,7 +531,8 @@ public class UrlActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         }
-                        catch (JSONException e) {
+                        catch (JSONException e)
+                        {
                             progressDialog.dismiss();
                             Log.e("JsonException", e.toString());
                         }

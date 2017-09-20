@@ -556,9 +556,6 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
                     Log.i("MFS_Log id_data", id_data);
                     Log.i("MFS_Log in_out_data", in_out_data);
 
-                    kkeay = Integer.parseInt(primarykey_data);
-
-                    Log.i("PrevKey", ""+Prev_Key);
                     //if (kkeay > Prev_Key)
                     //{
                     date_array.add(date_data);
