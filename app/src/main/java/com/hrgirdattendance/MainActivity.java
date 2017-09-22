@@ -2251,7 +2251,7 @@ public class MainActivity extends AppCompatActivity
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
-            Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "JSON Exception", Toast.LENGTH_SHORT).show();
             Log.e("Fail 1", e.toString());
         }
     }

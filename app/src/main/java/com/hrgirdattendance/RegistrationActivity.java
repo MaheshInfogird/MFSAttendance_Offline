@@ -70,8 +70,8 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
 
     public static String _testKey = "t7L8wTG/iv02t+pgYrMQ7tt8qvU1z42nXpJDfAfsW592N4sKUHLd8A0MEV0GRxH+f4RgefEaMZALj7mgm/Thc0jNhR2CW9BZCTgeDPjC6q0W";
 
-    public static final String MyPREFERENCES_url = "MyPrefs_url" ;
-    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String MyPREFERENCES_url = "MyPrefs_url";
+    public static final String MyPREFERENCES = "MyPrefs";
     SharedPreferences pref;
     SharedPreferences shared_pref;
     SharedPreferences.Editor editor;
@@ -606,9 +606,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                     else
                     {
                         //bitmap = null;
-                        bitmap = BitmapFactory.decodeByteArray(
-                                fingerData.FingerImage(), 0,
-                                fingerData.FingerImage().length);
+                        bitmap = BitmapFactory.decodeByteArray(fingerData.FingerImage(), 0, fingerData.FingerImage().length);
                         Log.i("bitmap", ""+bitmap);
 
                         if (RegisteredBase64_1 == null)
@@ -669,11 +667,10 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                         byte[] tempData = new byte[(mfs100.GetDeviceInfo().Width() * mfs100.GetDeviceInfo().Height())+1078];
                         byte[] isoImage = null;
                         int dataLen = mfs100.ExtractISOImage(fingerData.RawData(),tempData);
-                        Log.i("dataLen", "dataLen");
                         Log.i("dataLen", ""+dataLen);
-                        if(dataLen<=0)
+                        if(dataLen <= 0)
                         {
-                            if(dataLen==0)
+                            if(dataLen == 0)
                             {
                                 SetTextonuiThread("Failed to extract ISO Image");
                                 Log.i("ailed to extract", "Failed to extract");
@@ -688,10 +685,8 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                         else
                         {
                             isoImage = new byte[dataLen];
-                            System.arraycopy(tempData, 0, isoImage, 0,
-                                    dataLen);
+                            System.arraycopy(tempData, 0, isoImage, 0, dataLen);
 
-                            Log.i("isoImage", "isoImage");
                             Log.i("isoImage", ""+isoImage);
                         }
 
@@ -739,8 +734,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
     @Override
     public void OnPreview(FingerData fingerData)
     {
-        final Bitmap bitmap = BitmapFactory.decodeByteArray(
-                fingerData.FingerImage(), 0, fingerData.FingerImage().length);
+        final Bitmap bitmap = BitmapFactory.decodeByteArray(fingerData.FingerImage(), 0, fingerData.FingerImage().length);
 
         if (RegisteredBase64_1 == null)
         {
@@ -788,9 +782,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
         Log.i("capture_cmplt", "capture_cmplt");
         if (status)
         {
-            bitmap1 = BitmapFactory.decodeByteArray(
-                    fingerData.FingerImage(), 0,
-                    fingerData.FingerImage().length);
+            bitmap1 = BitmapFactory.decodeByteArray(fingerData.FingerImage(), 0, fingerData.FingerImage().length);
 
             if (RegisteredBase64_1 == null)
             {

@@ -10,6 +10,9 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,6 +23,7 @@ import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -567,9 +571,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     txt_result.setText("");
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
                     txt_quality_success.setVisibility(View.VISIBLE);
-                    txt_quality_success.setText("Error :- Please press thumb properly");
-                    txt_quality_per.setText("0%");
-                    progress_quality.setProgress(0);
+                    txt_quality_success.setText("Please press thumb properly");
                     img_in_mark.setVisibility(View.GONE);
                     img_out_mark.setVisibility(View.GONE);
 
@@ -580,11 +582,13 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         public void run()
                         {
                             mfs100.StopCapture();
-                            Log.i("start", "start");
+                            txt_quality_per.setText("0%");
+                            progress_quality.setProgress(0);
                             txt_quality_success.setVisibility(View.INVISIBLE);
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
+                            progress_quality.getProgressDrawable().setColorFilter(Color.DKGRAY, PorterDuff.Mode.DST);
                         }
-                    }, 3000);
+                    }, 2000);
                 }
                 else if (str.equalsIgnoreCase("No Device Connected"))
                 {
@@ -684,6 +688,15 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 {
                     int progress = Integer.parseInt(str);
                     progress_quality.setProgress(progress);
+
+                    if (progress < 40)
+                    {
+                        progress_quality.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.ADD);
+                    }
+                    else
+                    {
+                        progress_quality.getProgressDrawable().setColorFilter(Color.DKGRAY, PorterDuff.Mode.DST);
+                    }
                 }
                 catch (NumberFormatException e) {
                     Log.i(""," is not a number");
@@ -1741,7 +1754,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             }
 
             @Override
-            protected void onPostExecute(String result) {
+            protected void onPostExecute(String result)
+            {
                 Log.i("result", result);
                 GetJSONData(result);
             }
@@ -1817,7 +1831,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
-            Toast.makeText(AttendanceActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AttendanceActivity.this, "JSON Exception", Toast.LENGTH_SHORT).show();
             Log.e("Fail 1", e.toString());
         }
     }
