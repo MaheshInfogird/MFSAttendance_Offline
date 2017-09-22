@@ -65,7 +65,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
     CommonMethod.ScannerAction scannerAction = CommonMethod.ScannerAction.Capture;
 
     int minQuality = 50;
-    int timeout = 10000;
+    int timeout = 5000;
     MFS100 mfs100 = null;
 
     public static String _testKey = "t7L8wTG/iv02t+pgYrMQ7tt8qvU1z42nXpJDfAfsW592N4sKUHLd8A0MEV0GRxH+f4RgefEaMZALj7mgm/Thc0jNhR2CW9BZCTgeDPjC6q0W";
@@ -505,7 +505,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
     private void StartAsyncCapture()
     {
         SetTextonuiThread("");
-//		SetLogOnUIThread("\nStartTime: " + getCurrentTime());
 
         try
         {
@@ -555,9 +554,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                                 @Override
                                 public void run() {
                                     img_register1.setImageBitmap(bitmap);
-                                    //img_register1.refreshDrawableState();
-                                    //img_check1.setVisibility(View.VISIBLE);
-
                                 }
                             });
                         }
@@ -567,9 +563,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                                 @Override
                                 public void run() {
                                     img_register2.setImageBitmap(bitmap);
-                                    //img_register2.refreshDrawableState();
-                                    //img_check2.setVisibility(View.VISIBLE);
-
                                 }
                             });
                         }
@@ -579,9 +572,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                                 @Override
                                 public void run() {
                                     img_register3.setImageBitmap(bitmap);
-                                    //img_register2.refreshDrawableState();
-                                    //img_check3.setVisibility(View.VISIBLE);
-
                                 }
                             });
                         }
@@ -591,9 +581,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                                 @Override
                                 public void run() {
                                     img_register4.setImageBitmap(bitmap);
-                                    //img_register2.refreshDrawableState();
-                                    //img_check4.setVisibility(View.VISIBLE);
-
                                 }
                             });
                         }
@@ -638,8 +625,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                         else
                         {
                             isoImage = new byte[dataLen];
-                            System.arraycopy(tempData, 0, isoImage, 0,
-                                    dataLen);
+                            System.arraycopy(tempData, 0, isoImage, 0, dataLen);
 
                             Log.i("isoImage", "isoImage");
                             Log.i("isoImage", ""+isoImage);
@@ -745,8 +731,8 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
     }
 
     @Override
-    public void OnCaptureCompleted(boolean status, int errorCode, String errorMsg, FingerData fingerData) {
-//		SetLogOnUIThread("EndTime: " + getCurrentTime());
+    public void OnCaptureCompleted(boolean status, int errorCode, String errorMsg, FingerData fingerData)
+    {
         Log.i("capture_cmplt", "capture_cmplt");
         if (status)
         {
@@ -759,10 +745,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 img_check1.post(new Runnable() {
                     @Override
                     public void run() {
-                        //img_register1.setImageBitmap(bitmap);
-                        //img_register1.refreshDrawableState();
                         img_check1.setVisibility(View.VISIBLE);
-
                     }
                 });
             }
@@ -771,10 +754,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 img_check2.post(new Runnable() {
                     @Override
                     public void run() {
-                       // img_register2.setImageBitmap(bitmap);
-                        //img_register2.refreshDrawableState();
                         img_check2.setVisibility(View.VISIBLE);
-
                     }
                 });
             }
@@ -783,10 +763,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 img_check3.post(new Runnable() {
                     @Override
                     public void run() {
-                        //img_register3.setImageBitmap(bitmap);
-                        //img_register2.refreshDrawableState();
                         img_check3.setVisibility(View.VISIBLE);
-
                     }
                 });
             }
@@ -795,8 +772,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 img_check4.post(new Runnable() {
                     @Override
                     public void run() {
-                        //img_register4.setImageBitmap(bitmap);
-                        //img_register2.refreshDrawableState();
                         img_check4.setVisibility(View.VISIBLE);
                         btn_nextThumb.setBackgroundDrawable(getResources().getDrawable(R.drawable.login_button_disabled));
                         btn_nextThumb.setEnabled(false);

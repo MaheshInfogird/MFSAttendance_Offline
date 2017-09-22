@@ -54,9 +54,9 @@ public class LogInActivity extends AppCompatActivity
 {
     public static final String MyPREFERENCES_url = "MyPrefs_url" ;
     public static final String MyPREFERENCES = "MyPrefs" ;
+    SharedPreferences shared_pref;
     int PRIVATE_MODE = 0;
     SharedPreferences pref;
-    SharedPreferences shared_pref;
     SharedPreferences.Editor editor;
 
     ConnectionDetector cd;
@@ -64,6 +64,7 @@ public class LogInActivity extends AppCompatActivity
     CheckInternetConnection internetConnection;
     Toolbar toolbar;
     GPSTracker gps;
+    ProgressDialog progressDialog;
 
     String Url, logo;
     String url_http;
@@ -72,8 +73,7 @@ public class LogInActivity extends AppCompatActivity
     String Current_Location;
     String android_id;
     String Login_id;
-    
-    ProgressDialog progressDialog;
+
     EditText ed_userName, ed_password;
     TextView txt_forgotPass;
     Button btn_signIn;
@@ -116,7 +116,6 @@ public class LogInActivity extends AppCompatActivity
         internetConnection = new CheckInternetConnection(getApplicationContext());
 
         Login_id = getIntent().getStringExtra("login_id");
-        //Log.i("Login_id", Login_id);
 
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
@@ -131,28 +130,38 @@ public class LogInActivity extends AppCompatActivity
                 latitude = gps.getLatitude();
                 longitude = gps.getLongitude();
                 Current_Location = gps.getlocation_Address();
-                Log.i("Current_Location",Current_Location);
-                if (Current_Location == null)
-                {
-                    Current_Location = "";
-                }
+                //Log.i("Current_Location",Current_Location);
             }
             else
             {
-                AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
-                builder.setMessage("Enable GPS");
+                Log.i("Current_Location","Current_Location");
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(LogInActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                alertDialog.setMessage("Please Enable GPS");
+                alertDialog.setCancelable(true);
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alertDialog.show();
+
+                /*AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
+                builder.setMessage("Please Enable GPS");
                 builder.setCancelable(false);
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface d, int arg1)
                     {
                         d.dismiss();
-                        /*Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(intent);*/
+                        *//*Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);*//*
                     }
-                });
+                });*/
 
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+               /* builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface d, int arg1)
                     {
@@ -160,7 +169,7 @@ public class LogInActivity extends AppCompatActivity
                         startActivity(intent);
                         finish();
                     }
-                }).show();
+                }).show();*/
             }
         }
 
@@ -175,7 +184,7 @@ public class LogInActivity extends AppCompatActivity
         session = new UserSessionManager(getApplicationContext());
         cd = new ConnectionDetector(getApplicationContext());
         url_http = cd.geturl();
-        
+
         shared_pref = getSharedPreferences(MyPREFERENCES_url, MODE_PRIVATE);
         Url = (shared_pref.getString("url", ""));
         logo = (shared_pref.getString("logo", ""));
@@ -245,7 +254,7 @@ public class LogInActivity extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.i("requestCode",""+requestCode );
+        Log.i("requestCode",""+requestCode );//1
 
         switch (requestCode)
         {
@@ -255,23 +264,19 @@ public class LogInActivity extends AppCompatActivity
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)
                 {
                     Log.i("grantResults_in",""+grantResults.length );
-
                     gps = new GPSTracker(getApplicationContext(), LogInActivity.this);
+
                     if (gps.canGetLocation())
                     {
                         latitude = gps.getLatitude();
                         longitude = gps.getLongitude();
                         Current_Location=gps.getlocation_Address();
                         Log.i("Current_Location",Current_Location);
-                        if (Current_Location == null)
-                        {
-                            Current_Location = "";
-                        }
                     }
                     else
                     {
                         AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
-                        builder.setMessage("Enable GPS");
+                        builder.setMessage("Please Enable GPS");
                         builder.setCancelable(false);
                         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
@@ -283,15 +288,16 @@ public class LogInActivity extends AppCompatActivity
                             }
                         });
 
-                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        /*builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface d, int arg1)
                             {
                                 Intent intent = new Intent(LogInActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
+
                             }
-                        }).show();
+                        }).show();*/
                     }
                 }
                 else
@@ -372,12 +378,14 @@ public class LogInActivity extends AppCompatActivity
                 {
                     String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signIn/?";
                     
-                    String query = String.format("email=%s&password=%s&android_devide_id=%s&signinby=%s", 
+                    String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),
                             URLEncoder.encode(Password, "UTF-8"),
                             URLEncoder.encode(android_id, "UTF-8"),
+                            URLEncoder.encode(Current_Location, "UTF-8"),
+                            URLEncoder.encode("1", "UTF-8"),
                             URLEncoder.encode("1", "UTF-8"));
-                    
+
                     url = new URL(Transurl + query);
                     Log.i("url", "" + url);
 
@@ -405,38 +413,31 @@ public class LogInActivity extends AppCompatActivity
                 }
                 catch (SocketTimeoutException e)
                 {
-                    runOnUiThread(new Runnable()
-                    {
+                    runOnUiThread(new Runnable() {
                         @Override
-                        public void run()
-                        {
+                        public void run() {
                             progressDialog.dismiss();
                             Toast.makeText(LogInActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
-
                     Log.e("SocketTimeoutException", e.toString());
                 }
                 catch (ConnectTimeoutException e)
                 {
-                    runOnUiThread(new Runnable()
-                    {
+                    runOnUiThread(new Runnable() {
                         @Override
-                        public void run()
-                        {
+                        public void run() {
                             progressDialog.dismiss();
                             Toast.makeText(LogInActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
-
                     Log.e("ConnectTimeoutException", e.toString());
                 }
-                catch (Exception e){
-                    runOnUiThread(new Runnable()
-                    {
+                catch (Exception e)
+                {
+                    runOnUiThread(new Runnable() {
                         @Override
-                        public void run()
-                        {
+                        public void run() {
                             progressDialog.dismiss();
                             Toast.makeText(LogInActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
@@ -543,7 +544,7 @@ public class LogInActivity extends AppCompatActivity
     {
         super.onPause();
     }
-    
+
     @Override
     public void onBackPressed()
     {

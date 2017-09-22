@@ -43,7 +43,6 @@ public class GPSTracker extends Service
 
     // The minimum time between updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
-
     protected LocationManager locationManager;
     Activity activity;
 
@@ -67,8 +66,9 @@ public class GPSTracker extends Service
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-            if (!isGPSEnabled && !isNetworkEnabled)
+            if (!isGPSEnabled || !isNetworkEnabled)
             {
+                this.canGetLocation = false;
                 // No network provider is enabled
             }
             else
@@ -78,7 +78,6 @@ public class GPSTracker extends Service
                 if (isNetworkEnabled)
                 {
                     Log.d("Network_Net", "Network_Net");
-                    int requestPermissionsCode = 50;
                     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, mLocationListener);
                     Log.d("Network_ntwrk", "Network_ntwrk");
                     if (locationManager != null)
@@ -138,16 +137,22 @@ public class GPSTracker extends Service
     public String location_addtess()
     {
         Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
-
+        String result = null;
         try
         {
-            List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
-            String address = addressList.get(0).getAddressLine(0);
-            String area = addressList.get(0).getAddressLine(1);
-            String city = addressList.get(0).getAddressLine(2);
-            Log.i("city", city);
-            CompleteAddress = address + ", " + area;
-            Log.i("CompleteAddress",""+CompleteAddress);
+            if (latitude > 0.0 && longitude > 0.0)
+            {
+                List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
+                String address = addressList.get(0).getAddressLine(0);
+                Log.i("address", address);
+                String area = addressList.get(0).getAddressLine(1);
+                //Log.i("area", area);
+                String city = addressList.get(0).getAddressLine(2);
+                //Log.i("city", city);
+                CompleteAddress = address + ", " + area;
+                //Log.i("CompleteAddress1",""+address+area);
+                 Log.i("CompleteAddress",""+CompleteAddress);
+            }
         }
         catch (Exception e)
         {
@@ -182,19 +187,15 @@ public class GPSTracker extends Service
         }
     };
 
-    public double getLatitude()
-    {
-        if(location != null)
-        {
+    public double getLatitude(){
+        if(location != null){
             latitude = location.getLatitude();
         }
         return latitude;
     }
 
-    public double getLongitude()
-    {
-        if(location != null)
-        {
+    public double getLongitude(){
+        if(location != null){
             longitude = location.getLongitude();
         }
         return longitude;

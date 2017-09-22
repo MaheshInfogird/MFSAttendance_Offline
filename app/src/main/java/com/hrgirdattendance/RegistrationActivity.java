@@ -65,7 +65,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
     CommonMethod.ScannerAction scannerAction = CommonMethod.ScannerAction.Capture;
 
     int minQuality = 50;
-    int timeout = 10000;
+    int timeout = 5000;
     MFS100 mfs100 = null;
 
     public static String _testKey = "t7L8wTG/iv02t+pgYrMQ7tt8qvU1z42nXpJDfAfsW592N4sKUHLd8A0MEV0GRxH+f4RgefEaMZALj7mgm/Thc0jNhR2CW9BZCTgeDPjC6q0W";
@@ -617,7 +617,6 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                                 @Override
                                 public void run() {
                                     img_register1.setImageBitmap(bitmap);
-                                    //img_register1.refreshDrawableState();
                                 }
                             });
                         }
@@ -627,7 +626,6 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                                 @Override
                                 public void run() {
                                     img_register2.setImageBitmap(bitmap);
-                                    //img_register2.refreshDrawableState();
                                 }
                             });
                         }
@@ -637,7 +635,6 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                                 @Override
                                 public void run() {
                                     img_register3.setImageBitmap(bitmap);
-                                    //img_register2.refreshDrawableState();
                                 }
                             });
                         }
@@ -647,7 +644,6 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                                 @Override
                                 public void run() {
                                     img_register4.setImageBitmap(bitmap);
-                                    //img_register2.refreshDrawableState();
                                 }
                             });
                         }
@@ -752,7 +748,6 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 @Override
                 public void run() {
                     img_register1.setImageBitmap(bitmap);
-                    //img_register1.refreshDrawableState();
                 }
             });
         }
@@ -762,7 +757,6 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 @Override
                 public void run() {
                     img_register2.setImageBitmap(bitmap);
-                    //img_register2.refreshDrawableState();
                 }
             });
         }
@@ -772,7 +766,6 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 @Override
                 public void run() {
                     img_register3.setImageBitmap(bitmap);
-                    //img_register2.refreshDrawableState();
                 }
             });
         }
@@ -782,17 +775,16 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 @Override
                 public void run() {
                     img_register4.setImageBitmap(bitmap);
-                    //img_register2.refreshDrawableState();
                 }
             });
         }
-        // Log.e("OnPreview.Quality", String.valueOf(fingerData.Quality()));
+
         SetTextonuiThread("Quality: " + fingerData.Quality());
     }
 
     @Override
-    public void OnCaptureCompleted(boolean status, int errorCode, String errorMsg, FingerData fingerData) {
-//		SetLogOnUIThread("EndTime: " + getCurrentTime());
+    public void OnCaptureCompleted(boolean status, int errorCode, String errorMsg, FingerData fingerData)
+    {
         Log.i("capture_cmplt", "capture_cmplt");
         if (status)
         {
@@ -1389,6 +1381,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                     String query = String.format("empId=%s&thumexp=%s",
                             URLEncoder.encode(emp_id, "UTF-8"),
                             URLEncoder.encode(str_RegisteredThumbs, "UTF-8"));
+
                     url = new URL(Transurl + query);
                     Log.i("url", "" + url);
 

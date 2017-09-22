@@ -159,6 +159,8 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
+        android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
         receiver = new NetworkChange()
         {
             @Override
@@ -166,7 +168,10 @@ public class MainActivity extends AppCompatActivity
             {
                 if (receiver.isConnected)
                 {
-                    if (send_data) {
+                    Log.i("send_data","send_data");
+                    if (send_data)
+                    {
+                        Log.i("flag_send_data","flag_send_data");
                         outid = "3";
                         upload_Data();
                     }
@@ -178,16 +183,25 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
+        Initialization();
+
         if (internetConnection.hasConnection(MainActivity.this))
         {
-            getCheckVersion();
+            Log.i("flag","flag");
+            flag = "1";
+            empattDid = "";
+            getUserDataNew();
+
+            //getCheckVersion();
             /*List<UserDetails_Model> contacts = db.getAllContacts();
             //Log.i("MFS_Log contacts", "" + contacts);
             if (contacts.isEmpty())
             {
                 //Log.i("inside if", "inside if");
-                pk = "0";
-                getUserData();
+                //pk = "0";
+                //getUserData();
+                flag = "1";
+                getUserDataNew();
             }
             else
             {
@@ -197,27 +211,25 @@ public class MainActivity extends AppCompatActivity
                 for (UserDetails_Model cn : contacts)
                 {
                     String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no();
-                    Log.i("Name: ", log);
+                    //Log.i("Name: ", log);
                     String uid = cn.getUid();
                     uid_array.add(uid);
+                    //Log.i("uid_array: ", uid_array.toString());
                 }
 
                 pk = uid_array.toString();
+                Log.i("pk: ", pk);
                 pk = pk.substring(1, pk.length() - 1);
 
-               *//* UserDetails_Model user_uid = db.check_userData();
+                UserDetails_Model user_uid = db.check_userData();
                 Log.i("user_uid_main", ""+user_uid.getUid());
-                pk = user_uid.getUid();
-                Log.i("pk ==  ", pk);*//*
+                //pk = user_uid.getUid();
+                Log.i("pk ==  ", pk);
                 getUserData();
             }*/
 
             //getCheckVersion();
         }
-
-        android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        Initialization();
         //delete_prevAttRecord();
     }
 
@@ -301,7 +313,7 @@ public class MainActivity extends AppCompatActivity
                 btn_getData.setTextColor(getResources().getColor(R.color.WhiteTextColor));
                 btn_syncData.setTextColor(getResources().getColor(R.color.WhiteTextColor));
 
-                Intent intent = new Intent(MainActivity.this, AttendanceOffline.class);
+                Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -605,7 +617,18 @@ public class MainActivity extends AppCompatActivity
                         DateTime = DateTime.replace(", ", ",");
                         InOutId = InOutId.replace(", ", ",");
 
-                        progressDialog = ProgressDialog.show(MainActivity.this, "Please Wait", "Uploading Data... ", true);
+                        //String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitm?";
+                        String url = "" + url_http + "" + Url + "/owner/hrmapi/newofflinemakeattendancehitm?";
+                        Log.i("url", url);
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put("primarykey", PrimaryKey);
+                        map.put("empId", EmpId);
+                        map.put("datetime", DateTime);
+                        map.put("signId", InOutId);
+
+                        postData(url, map);
+
+                        /*progressDialog = ProgressDialog.show(MainActivity.this, "Please Wait", "Uploading Data... ", true);
 
                         new Thread(new Runnable() {
                             public void run() {
@@ -623,7 +646,7 @@ public class MainActivity extends AppCompatActivity
                                 //GetJSONData();
 
                             }
-                        }).start();
+                        }).start();*/
                     }
                 }
                 else
@@ -906,8 +929,8 @@ public class MainActivity extends AppCompatActivity
                                 //db.delete_record();
                                 pk = "0";
                                 flag = "1";
-                                getUserData();
-                                //getUserDataNew();
+                                //getUserData();
+                                getUserDataNew();
                             }
                             else {
                                 android.os.Process.killProcess(android.os.Process.myPid());
@@ -1069,13 +1092,17 @@ public class MainActivity extends AppCompatActivity
 
                                 uid_array.clear();
 
-                                List<UserDetails_Model> contacts = db.getAllContacts();
+                                flag = "1";
+                                //getUserData();
+                                getUserDataNew();
+
+                                /*List<UserDetails_Model> contacts = db.getAllContacts();
                                 if (contacts.isEmpty())
                                 {
                                     pk = "0";
                                     flag = "1";
-                                    getUserData();
-                                    //getUserDataNew();
+                                    //getUserData();
+                                    getUserDataNew();
                                 }
                                 else
                                 {
@@ -1090,9 +1117,9 @@ public class MainActivity extends AppCompatActivity
                                     pk = uid_array.toString();
                                     pk = pk.substring(1, pk.length() - 1);
                                     flag = "1";
-                                    getUserData();
-                                    //getUserDataNew();
-                                }
+                                    //getUserData();
+                                    getUserDataNew();
+                                }*/
                             }
                         }
                         catch (JSONException e) {
@@ -1159,7 +1186,8 @@ public class MainActivity extends AppCompatActivity
 
             if (responsecode.equals("1"))
             {
-                delete_prevAttRecord();
+                db.delete_3daysE_record();
+                //delete_prevAttRecord();
 
                 runOnUiThread(new Runnable()
                 {
@@ -1475,7 +1503,7 @@ public class MainActivity extends AppCompatActivity
                             List<UserDetails_Model> contacts = db.getAllContacts();
 
                             for (UserDetails_Model cn : contacts) {
-                                String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no()+ " ,Shift: " + cn.getShift();
+                                String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no();
                                 // Writing Contacts to log
                                 Log.i("Name: ", log);
                             }
@@ -1528,7 +1556,6 @@ public class MainActivity extends AppCompatActivity
                             URLEncoder.encode(android_id, "UTF-8"),
                             URLEncoder.encode(flag, "UTF-8"),
                             URLEncoder.encode(empattDid, "UTF-8"));
-                    //query3 = query3.replace("%2C+", ",");%2C+29
 
                     query3 = query3.replace("%2C+",",");
                     URL url = new URL(leave_url+query3);
@@ -1540,9 +1567,7 @@ public class MainActivity extends AppCompatActivity
                     connection.setRequestMethod("GET");
                     connection.setUseCaches(false);
                     connection.setAllowUserInteraction(false);
-                    connection.setDoInput(true);
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setDoOutput(true);
                     int responseCode = connection.getResponseCode();
 
                     if (responseCode == HttpURLConnection.HTTP_OK)
@@ -1624,7 +1649,7 @@ public class MainActivity extends AppCompatActivity
                     {
                         if (myJson2.equals("[]"))
                         {
-                            Toast.makeText(MainActivity.this, "No New EMP Records Found", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "No New Records Found", Toast.LENGTH_LONG).show();
                         }
                         else
                         {
@@ -1770,7 +1795,7 @@ public class MainActivity extends AppCompatActivity
                                         String get_mobile = object.getString("mobile");
                                         //Log.i("get_mobile",get_mobile);
 
-                                        db.deleteContact(get_mobile);
+                                        db.deleteContact(get_uId);
                                     }
                                 }
 
@@ -1781,7 +1806,7 @@ public class MainActivity extends AppCompatActivity
 
                                 for (UserDetails_Model cn : contacts)
                                 {
-                                    String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no()+ " ,Shift: " + cn.getShift();
+                                    String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no();
                                     Log.i("Name: ", log);
                                 }
 
@@ -1790,7 +1815,6 @@ public class MainActivity extends AppCompatActivity
                                 empattDid = empattDid.substring(1, (empattDid.length() -1));
                                 Log.i("empattDid", empattDid);
 
-                                //getUserData();
                                 getUserDataNew();
                             }
                             catch (JSONException e)
@@ -1968,18 +1992,28 @@ public class MainActivity extends AppCompatActivity
     {
         class SendPostRequest extends AsyncTask<String, Void, String> {
 
-            protected void onPreExecute(){}
+            protected void onPreExecute(){
+                progressDialog = ProgressDialog.show(MainActivity.this, "Please wait", "Posting Data...", true);
+                progressDialog.show();
+            }
 
             protected String doInBackground(String... arg0) {
 
                 try {
+                    Log.i("requestURL", ""+requestURL);
+                    Log.i("postDataParams", ""+postDataParams);
+
                     URL url = new URL(requestURL);
+                    Log.i("url_post", ""+url);
 
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setReadTimeout(15000);
                     conn.setConnectTimeout(15000);
                     conn.setRequestMethod("POST");
+                    conn.setUseCaches(false);
+                    conn.setAllowUserInteraction(false);
                     conn.setDoInput(true);
+                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     conn.setDoOutput(true);
 
                     OutputStream os = conn.getOutputStream();
@@ -1992,12 +2026,13 @@ public class MainActivity extends AppCompatActivity
 
                     int responseCode = conn.getResponseCode();
 
-                    if (responseCode == HttpsURLConnection.HTTP_OK)
+                    if (responseCode == HttpURLConnection.HTTP_OK)
                     {
                         String line;
-                        BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        while ((line=br.readLine()) != null)
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        while ((line = br.readLine()) != null)
                         {
+                            response_att = "";
                             response_att += line;
                         }
                     }
@@ -2052,6 +2087,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             protected void onPostExecute(String result) {
+                Log.i("result", result);
                 GetJSONData(result);
             }
         }
@@ -2138,9 +2174,9 @@ public class MainActivity extends AppCompatActivity
         {
             JSONArray json = new JSONArray(result);
             Log.i("json", "" + json);
-
 //[{"empId":"115","datetime":"2017-07-21 12:21:58","responsecode":1,"signId":"2",
 // "primarykey":"5","msg":"Offline Attendance Successfully Done "}]
+            //[{"responsecode":0,"msg":"You are already signin","primarykey":"27"}]
             JSONObject jsonObject = json.getJSONObject(0);
             Log.i("jsonObject", "" + jsonObject);
 
@@ -2153,7 +2189,8 @@ public class MainActivity extends AppCompatActivity
 
             if (responsecode.equals("1"))
             {
-                delete_prevAttRecord();
+                db.delete_3daysE_record();
+                //delete_prevAttRecord();
                 progressDialog.dismiss();
                 if (outid.equals("1"))
                 {

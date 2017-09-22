@@ -24,15 +24,15 @@ public class ConnectionDetector
 
     public String geturl()
     {
-        String url = "https://";//live
-//        String url = "http://";
+        //String url = "https://";//live
+        String url = "http://";
         return url;
     }
 
     public String get_infogird_url()
     {
-        String url = "infogird.hrgird.com";//live
-//        String url = "hrsaas.safegird.com";
+        //String url = "infogird.hrgird.com";//live
+        String url = "hrsaas.safegird.com";
         return url;
     }
     

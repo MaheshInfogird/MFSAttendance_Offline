@@ -183,10 +183,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
     {
         List<SigninOut_Model> contactList = new ArrayList<SigninOut_Model>();
         String selectQuery = "SELECT  * FROM " + TABLE_SignINOut+ " WHERE Primary_key > "+key+"";
+        Log.i("selectQuery", ""+selectQuery);
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-        Log.i("key_data", ""+key);
 
         if(cursor.getCount() != 0)
         {
@@ -198,11 +198,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
                 contact.setUserId(cursor.getString(1));
                 contact.setDate_Time(cursor.getString(2));
                 contact.setSignInOutId(cursor.getString(3));
-
-                Log.i("MFS data", ""+cursor.getString(0) +"\n"+
-                        cursor.getString(1)+"\n"+
-                        cursor.getString(2)+"\n"+
-                        cursor.getString(3));
 
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -278,11 +273,11 @@ public class DatabaseHandler extends SQLiteOpenHelper
         db.close();
     }
 
-    public void deleteContact(String mob)
+    public void deleteContact(String uId)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         //db.execSQL("delete from "+ TABLE_User_Details +"where" + KEY_PH_NO +"="+mob);
-        db.execSQL("DELETE FROM " + TABLE_User_Details + " WHERE " + KEY_PH_NO + "= '" + mob + "'");
+        db.execSQL("DELETE FROM " + TABLE_User_Details + " WHERE " + KEY_ID + "= '" + uId + "'");
         //db.delete(TABLE_User_Details, KEY_PH_NO + "=" + mob, null);
         db.close();
     }
@@ -361,6 +356,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
                     {
                         SQLiteDatabase dbn = this.getWritableDatabase();
                         dbn.execSQL("delete from "+ TABLE_SignINOut +" where "+KEY_Date_Time+" = '"+newDateStringn+"'");
+                        Log.i("delete_query", "delete from "+ TABLE_SignINOut +" where "+KEY_Date_Time+" = '"+newDateStringn+"'");
                     }
                 }
                 catch (ParseException e) {
