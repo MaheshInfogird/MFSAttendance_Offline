@@ -40,6 +40,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
     private static final String KEY_Thumb2 = "Thumb2";
     private static final String KEY_Thumb3 = "Thumb3";
     private static final String KEY_Thumb4 = "Thumb4";
+    private static final String KEY_shift = "shift";
 
     private static final String KEY_PrimaryKey1 = "Primary_key1";
     private static final String KEY_PrimaryKey = "Primary_key";
@@ -60,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
                 + KEY_LastNAME + " TEXT,"+ KEY_PH_NO + " TEXT,"
                 + KEY_CID + " TEXT," + KEY_AttType + " TEXT,"
                 + KEY_Thumb1 + " TEXT," + KEY_Thumb2 + " TEXT,"
-                + KEY_Thumb3 + " TEXT," + KEY_Thumb4 + " TEXT" + ")";
+                + KEY_Thumb3 + " TEXT," + KEY_Thumb4 + " TEXT," + KEY_shift + " TEXT" + ")";
 
         db.execSQL(CREATE_UserDetails_TABLE);
         Log.i("create_table", CREATE_UserDetails_TABLE);
@@ -95,6 +96,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         values.put(KEY_Thumb2, contact.getThumb2());
         values.put(KEY_Thumb3, contact.getThumb3());
         values.put(KEY_Thumb4, contact.getThumb4());// Contact Phone Number
+        values.put(KEY_shift, contact.getShift());
 
         db.insert(TABLE_User_Details, null, values);
         db.close();
@@ -230,12 +232,32 @@ public class DatabaseHandler extends SQLiteOpenHelper
                     contact.setThumb2(cursor.getString(8));
                     contact.setThumb3(cursor.getString(9));
                     contact.setThumb4(cursor.getString(10));
+                    contact.setShift(cursor.getString(11));
 
                     contactList.add(contact);
                 } while (cursor.moveToNext());
             }
         }
         return contactList;
+    }
+
+
+    public boolean checkEmpId(String uId)
+    {
+        String sql = "SELECT "+ KEY_ID+" FROM "+TABLE_User_Details+" WHERE "+ KEY_ID+"="+uId;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(sql,null);
+
+        if(cursor.getCount() > 0)
+        {
+            cursor.close();
+            return true;
+        }
+        else
+        {
+            cursor.close();
+            return false;
+        }
     }
 
     public int updateContact(UserDetails_Model contact)
@@ -253,6 +275,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         values.put(KEY_Thumb2, contact.getThumb2());
         values.put(KEY_Thumb3, contact.getThumb3());
         values.put(KEY_Thumb4, contact.getThumb4());
+        values.put(KEY_shift, contact.getShift());
 
         return db.update(TABLE_User_Details, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(contact.getUid()) });
@@ -268,6 +291,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         values.put(KEY_Thumb3, contact.getThumb3());
         values.put(KEY_Thumb4, contact.getThumb4());
         values.put(KEY_AttType, contact.getAttType());
+        values.put(KEY_shift, contact.getShift());
 
         db.update(TABLE_User_Details, values, KEY_ID+"="+uid, null);
         db.close();
@@ -293,7 +317,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
                 + KEY_LastNAME + " TEXT,"+ KEY_PH_NO + " TEXT,"
                 + KEY_CID + " TEXT," + KEY_AttType + " TEXT,"
                 + KEY_Thumb1 + " TEXT," + KEY_Thumb2 + " TEXT,"
-                + KEY_Thumb3 + " TEXT," + KEY_Thumb4 + " TEXT" + ")";
+                + KEY_Thumb3 + " TEXT," + KEY_Thumb4 + " TEXT," + KEY_shift + " TEXT" + ")";
         db.execSQL(CREATE_UserDetails_TABLE);
         Log.i("data","table userdetails created");
     }

@@ -617,8 +617,8 @@ public class MainActivity extends AppCompatActivity
                         DateTime = DateTime.replace(", ", ",");
                         InOutId = InOutId.replace(", ", ",");
 
-                        //String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitm?";
-                        String url = "" + url_http + "" + Url + "/owner/hrmapi/newofflinemakeattendancehitm?";
+                        String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitm?";
+                        //String url = "" + url_http + "" + Url + "/owner/hrmapi/newofflinemakeattendancehitm?";
                         Log.i("url", url);
                         HashMap<String, String> map = new HashMap<String, String>();
                         map.put("primarykey", PrimaryKey);
@@ -1063,7 +1063,7 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                                        intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.hrgirdattendance&hl=en"));
+                                        intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.hrgirdattendance"));
                                         startActivity(intent);
                                         finish();
                                     }
@@ -1493,7 +1493,7 @@ public class MainActivity extends AppCompatActivity
                                  * */
                                 // Inserting Contacts
                                 Log.i("Insert: ", "Inserting ..");
-                                db.addContact(new UserDetails_Model(null,get_uId,get_cid,get_attType,get_firstName,get_lastName,get_mobile, t1,t2,t3,t4));
+                                db.addContact(new UserDetails_Model(null,get_uId,get_cid,get_attType,get_firstName,get_lastName,get_mobile, t1,t2,t3,t4,""));
 
                                 // Reading all contacts
                                 //  insert_user_details(get_uId,get_firstName,get_lastName,get_mobile,get_cid,t1,t2,t3,t4);
@@ -1650,6 +1650,15 @@ public class MainActivity extends AppCompatActivity
                         if (myJson2.equals("[]"))
                         {
                             Toast.makeText(MainActivity.this, "No New Records Found", Toast.LENGTH_LONG).show();
+                            List<UserDetails_Model> contacts = db.getAllContacts();
+                            for (UserDetails_Model cn : contacts)
+                            {
+                                String log = "PrimaryKey: "+cn.getPrimaryKey()+ ",uId: "+cn.getUid() +
+                                        ", cId: "+cn.getCid()+ ", Type: "+cn.getAttType()+
+                                        ", Name: " + cn.getFirstname() + " "+ cn.getLastname()+
+                                        ", Phone: " + cn.getMobile_no()+ ", Shift: "+cn.getShift();
+                                Log.i("Name: ", log);
+                            }
                         }
                         else
                         {
@@ -1689,6 +1698,8 @@ public class MainActivity extends AppCompatActivity
 
                                         String get_attType = object.getString("attendancetype");
                                         //Log.i("get_attType",get_attType);
+                                        String get_applyshift = object.getString("applyshift");
+                                        Log.i("get_applyshift", get_applyshift);
 
                                         JSONArray thumbexpr = object.getJSONArray("Thumexp");
                                         //Log.i("thumbexpr1143",thumbexpr+"");
@@ -1731,7 +1742,7 @@ public class MainActivity extends AppCompatActivity
                                         }
 
                                         //Log.i("Insert: ", "Inserting ..");
-                                        db.addContact(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4));
+                                        db.addContact(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4,get_applyshift));
                                     }
                                     else if (get_status.equals("2"))
                                     {
@@ -1744,6 +1755,9 @@ public class MainActivity extends AppCompatActivity
                                         String get_attType = object.getString("attendancetype");
                                         //Log.i("get_attType",get_attType);
 
+                                        String get_applyshift = object.getString("applyshift");
+                                        Log.i("get_applyshift", get_applyshift);
+
                                         JSONArray thumbexpr = object.getJSONArray("Thumexp");
                                         //Log.i("thumbexpr1143",thumbexpr+"");
 
@@ -1785,7 +1799,7 @@ public class MainActivity extends AppCompatActivity
                                         }
 
                                         //Log.i("Insert: ", "Inserting ..");
-                                        db.UpdateContactAttType(new UserDetails_Model(t1,t2,t3,t4,get_attType), get_uId);
+                                        db.UpdateContactAttType(new UserDetails_Model(t1,t2,t3,t4,get_attType,get_applyshift), get_uId);
                                     }
                                     else if (get_status.equals("3"))
                                     {
@@ -1806,7 +1820,7 @@ public class MainActivity extends AppCompatActivity
 
                                 for (UserDetails_Model cn : contacts)
                                 {
-                                    String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no();
+                                    String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() +" "+ cn.getLastname()+ " ,Phone: " + cn.getMobile_no()+" ,Shift: "+cn.getShift();
                                     Log.i("Name: ", log);
                                 }
 

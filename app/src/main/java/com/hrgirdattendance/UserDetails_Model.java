@@ -4,29 +4,36 @@ package com.hrgirdattendance;
  * Created by infogird47 on 07/07/2017.
  */
 
-public class UserDetails_Model {
-    String Uid,Cid,Firstname,Lastname,mobile_no,thumb1,thumb2,thumb3,thumb4,Type, Key, Shift;
+public class UserDetails_Model
+{
+    String Uid,Cid,Firstname,Lastname,mobile_no,thumb1,thumb2,thumb3,thumb4,Type, Key, Shift, Shift_time;
 
-
-    public UserDetails_Model() {
+    public UserDetails_Model()
+    {
     }
 
-    public UserDetails_Model(String thumb1, String thumb2, String thumb3, String thumb4, String attType) {
+    public UserDetails_Model(String thumb1, String thumb2, String thumb3, String thumb4, String attType, String shift)
+    {
         this.thumb1 = thumb1;
         this.thumb2 = thumb2;
         this.thumb3 = thumb3;
         this.thumb4 = thumb4;
         this.Type   = attType;
+        this.Shift  = shift;
     }
 
-    public UserDetails_Model(String thumb1, String thumb2, String thumb3, String thumb4) {
+    public UserDetails_Model(String thumb1, String thumb2, String thumb3, String thumb4)
+    {
         this.thumb1 = thumb1;
         this.thumb2 = thumb2;
         this.thumb3 = thumb3;
         this.thumb4 = thumb4;
     }
 
-    public UserDetails_Model(String key, String uid, String cid, String type, String firstname, String lastname, String mobile_no, String thumb1, String thumb2, String thumb3, String thumb4) {
+    public UserDetails_Model(String key, String uid, String cid, String type, String firstname,
+                             String lastname, String mobile_no, String thumb1, String thumb2,
+                             String thumb3, String thumb4, String shift)
+    {
         Key = key;
         Uid = uid;
         Cid = cid;
@@ -38,6 +45,8 @@ public class UserDetails_Model {
         this.thumb2 = thumb2;
         this.thumb3 = thumb3;
         this.thumb4 = thumb4;
+        this.Shift = shift;
+        //this.Shift_time = shift_time;
     }
 
     public String getPrimaryKey() {
@@ -102,6 +111,14 @@ public class UserDetails_Model {
 
     public void setShift(String shift) {
         this.Shift = shift;
+    }
+
+    public String getShiftTime() {
+        return Shift;
+    }
+
+    public void setShiftTIme(String shift_time) {
+        this.Shift_time = shift_time;
     }
 
     public String getThumb1() {

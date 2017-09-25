@@ -69,7 +69,6 @@ public class GPSTracker extends Service
             if (!isGPSEnabled || !isNetworkEnabled)
             {
                 this.canGetLocation = false;
-                // No network provider is enabled
             }
             else
             {
@@ -77,9 +76,7 @@ public class GPSTracker extends Service
 
                 if (isNetworkEnabled)
                 {
-                    Log.d("Network_Net", "Network_Net");
                     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, mLocationListener);
-                    Log.d("Network_ntwrk", "Network_ntwrk");
                     if (locationManager != null)
                     {
                         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -106,8 +103,7 @@ public class GPSTracker extends Service
                     }
                     else
                     {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, mLocationListener);
                         Log.d("GPS Enabled", "GPS Enabled");
 
@@ -146,12 +142,9 @@ public class GPSTracker extends Service
                 String address = addressList.get(0).getAddressLine(0);
                 Log.i("address", address);
                 String area = addressList.get(0).getAddressLine(1);
-                //Log.i("area", area);
                 String city = addressList.get(0).getAddressLine(2);
-                //Log.i("city", city);
-                CompleteAddress = address + ", " + area;
-                //Log.i("CompleteAddress1",""+address+area);
-                 Log.i("CompleteAddress",""+CompleteAddress);
+                CompleteAddress = address + ", " + area + ", "+ city;
+                Log.i("CompleteAddress",""+CompleteAddress);
             }
         }
         catch (Exception e)

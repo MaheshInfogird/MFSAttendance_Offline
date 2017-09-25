@@ -1316,7 +1316,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
             @Override
             protected void onPostExecute(String result)
             {
-                if (progressDialog!=null && progressDialog.isShowing())
+                if (progressDialog != null && progressDialog.isShowing())
                 {
                     progressDialog.dismiss();
                 }
@@ -1348,23 +1348,28 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                             emp_id = object.getString("uId");
                             String cid = object.getString("cid");
 
-                            txt_empName.setText(emp_name);
-                            txt_empId.setText(cid);
-
-                            scannerAction = CommonMethod.ScannerAction.Capture;
-                            StartSyncCapture();
-
-                            /*final Handler handler = new Handler();
-                            handler.postDelayed(new Runnable()
+                            if (db.checkEmpId(emp_id))
                             {
-                                @Override
-                                public void run()
-                                {
-                                    Log.i("start", "start");
-                                    scannerAction = CommonMethod.ScannerAction.Capture;
-                                    StartSyncCapture();
-                                }
-                            }, 6000);*/
+                                Log.i("true", ""+db.checkEmpId(emp_id));
+                                txt_empName.setText(emp_name);
+                                txt_empId.setText(cid);
+                                scannerAction = CommonMethod.ScannerAction.Capture;
+                                StartSyncCapture();
+                            }
+                            else
+                            {
+                                Log.i("false", ""+db.checkEmpId(emp_id));
+                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                                alertDialog.setTitle("Thumbs not registered with this device");
+                                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        ed_MobNo.setText("");
+                                    }
+                                });
+                                alertDialog.show();
+                            }
                         }
                         else if (responsecode.equals("2"))
                         {
@@ -1531,7 +1536,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 {
                     db.UpdateContact(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
                     //Toast.makeText(ResetThumbActivity.this, "Thumbs Registered Successfully", Toast.LENGTH_LONG).show();
-                    textToSpeech.speak("Thumbs Registered Successfully!", TextToSpeech.QUEUE_FLUSH, null);
+                    textToSpeech.speak("Thumbs Updated Successfully!", TextToSpeech.QUEUE_FLUSH, null);
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                     alertDialog.setTitle("Thumbs Updated Successfully");
