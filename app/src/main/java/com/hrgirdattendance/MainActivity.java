@@ -1,5 +1,6 @@
 package com.hrgirdattendance;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,6 +18,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity
     ProgressDialog progressDialog;
     DatabaseHandler db;
     public static NetworkChange receiver;
+    GPSTracker gps;
     
     String response_version, myJson1, Url;
     String Packagename;
@@ -104,6 +108,7 @@ public class MainActivity extends AppCompatActivity
     String empattDid, flag;
     String get_prefix,responseCode;
     String response, response_att, myJson,outid;
+    String Current_Location;
 
     int Prev_Key, prev_key;
     int version_code;
@@ -125,6 +130,8 @@ public class MainActivity extends AppCompatActivity
     ArrayList<String> id_array = new ArrayList<String>();
     ArrayList<String> empattDid_arr = new ArrayList<String>();
     ArrayList<String> uid_array = new ArrayList<String>();
+
+    Double latitude = 0.0, longitude = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -185,52 +192,43 @@ public class MainActivity extends AppCompatActivity
 
         Initialization();
 
-        if (internetConnection.hasConnection(MainActivity.this))
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
         {
-            Log.i("flag","flag");
-            flag = "1";
-            empattDid = "";
-            getUserDataNew();
-
-            //getCheckVersion();
-            /*List<UserDetails_Model> contacts = db.getAllContacts();
-            //Log.i("MFS_Log contacts", "" + contacts);
-            if (contacts.isEmpty())
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }
+        else
+        {
+            gps = new GPSTracker(getApplicationContext(), MainActivity.this);
+            if (gps.canGetLocation())
             {
-                //Log.i("inside if", "inside if");
-                //pk = "0";
-                //getUserData();
-                flag = "1";
-                getUserDataNew();
+                latitude = gps.getLatitude();
+                longitude = gps.getLongitude();
+                Current_Location = gps.getlocation_Address();
+                if (internetConnection.hasConnection(MainActivity.this))
+                {
+                    flag = "1";
+                    empattDid = "";
+                    getUserDataNew();
+                }
             }
             else
             {
-                //Log.i("inside else", "inside else");
-                //List<UserDetails_Model> cont = db.getAllContacts();
+                Log.i("Current_Location","Current_Location");
 
-                for (UserDetails_Model cn : contacts)
-                {
-                    String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no();
-                    //Log.i("Name: ", log);
-                    String uid = cn.getUid();
-                    uid_array.add(uid);
-                    //Log.i("uid_array: ", uid_array.toString());
-                }
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                alertDialog.setMessage("Please Enable GPS");
+                alertDialog.setCancelable(true);
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
-                pk = uid_array.toString();
-                Log.i("pk: ", pk);
-                pk = pk.substring(1, pk.length() - 1);
-
-                UserDetails_Model user_uid = db.check_userData();
-                Log.i("user_uid_main", ""+user_uid.getUid());
-                //pk = user_uid.getUid();
-                Log.i("pk ==  ", pk);
-                getUserData();
-            }*/
-
-            //getCheckVersion();
+                alertDialog.show();
+            }
         }
-        //delete_prevAttRecord();
     }
 
     public void Initialization()
@@ -539,6 +537,57 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i("requestCode",""+requestCode );//1
+
+        switch (requestCode)
+        {
+            case 1:
+            {
+                Log.i("grantResults",""+grantResults.length );
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                {
+                    Log.i("grantResults_in",""+grantResults.length );
+                    gps = new GPSTracker(getApplicationContext(), MainActivity.this);
+
+                    if (gps.canGetLocation())
+                    {
+                        latitude = gps.getLatitude();
+                        longitude = gps.getLongitude();
+                        Current_Location = gps.getlocation_Address();
+                        if (internetConnection.hasConnection(MainActivity.this))
+                        {
+                            flag = "1";
+                            empattDid = "";
+                            getUserDataNew();
+                        }
+                    }
+                    else
+                    {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                        alertDialog.setMessage("Please Enable GPS");
+                        alertDialog.setCancelable(true);
+                        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        alertDialog.show();
+                    }
+                }
+                else
+                {
+                    Log.i("grantResults_else",""+grantResults.length );
+                }
+                return;
+            }
+        }
+    }
+
     public void upload_Data()
     {
         if (internetConnection.hasConnection(getApplicationContext()))
@@ -832,11 +881,13 @@ public class MainActivity extends AppCompatActivity
                 {
                     String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signIn/?";
 
-                    String query = String.format("email=%s&password=%s&android_devide_id=%s&signinby=%s",
+                    String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),
                             URLEncoder.encode(Password, "UTF-8"),
                             URLEncoder.encode(android_id, "UTF-8"),
-                            URLEncoder.encode("1", "UTF-8"));
+                            URLEncoder.encode("", "UTF-8"),
+                            URLEncoder.encode("1", "UTF-8"),
+                            URLEncoder.encode("2", "UTF-8"));
 
                     url = new URL(Transurl + query);
                     Log.i("url", "" + url);
@@ -1847,6 +1898,7 @@ public class MainActivity extends AppCompatActivity
                     if (progressDialog != null && progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
+                    Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -2004,14 +2056,17 @@ public class MainActivity extends AppCompatActivity
 
     public void postData(final String requestURL, final HashMap<String, String> postDataParams)
     {
-        class SendPostRequest extends AsyncTask<String, Void, String> {
+        class SendPostRequest extends AsyncTask<String, Void, String>
+        {
 
-            protected void onPreExecute(){
+            protected void onPreExecute()
+            {
                 progressDialog = ProgressDialog.show(MainActivity.this, "Please wait", "Posting Data...", true);
                 progressDialog.show();
             }
 
-            protected String doInBackground(String... arg0) {
+            protected String doInBackground(String... arg0)
+            {
 
                 try {
                     Log.i("requestURL", ""+requestURL);
@@ -2100,9 +2155,18 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            protected void onPostExecute(String result) {
+            protected void onPostExecute(String result)
+            {
                 Log.i("result", result);
-                GetJSONData(result);
+                if (result != null)
+                {
+                    GetJSONData(result);
+                }
+                else
+                {
+                    progressDialog.dismiss();
+                    Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_LONG).show();
+                }
             }
         }
 
@@ -2213,6 +2277,7 @@ public class MainActivity extends AppCompatActivity
                     key_editor.clear();
                     key_editor.commit();
                     db.delete_attendance_record();
+                    db.delete_record();
                     Intent intent = new Intent(MainActivity.this, UrlActivity.class);
                     startActivity(intent);
                     finish();
@@ -2247,6 +2312,7 @@ public class MainActivity extends AppCompatActivity
                     key_editor.clear();
                     key_editor.commit();
                     db.delete_attendance_record();
+                    db.delete_record();
                     Intent intent = new Intent(MainActivity.this, UrlActivity.class);
                     startActivity(intent);
                     finish();

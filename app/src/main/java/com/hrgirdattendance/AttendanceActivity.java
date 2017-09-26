@@ -315,6 +315,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 img_in_mark.setVisibility(View.VISIBLE);
                 img_out_mark.setVisibility(View.GONE);
 
+                btn_signOut.setEnabled(false);
                 mfs100.StopCapture();
                 scannerAction = CommonMethod.ScannerAction.Capture;
                 StartSyncCapture();
@@ -330,6 +331,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 img_in_mark.setVisibility(View.GONE);
                 img_out_mark.setVisibility(View.VISIBLE);
 
+                btn_signIn.setEnabled(false);
                 mfs100.StopCapture();
                 scannerAction = CommonMethod.ScannerAction.Capture;
                 StartSyncCapture();
@@ -574,6 +576,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     txt_quality_success.setText("Please press thumb properly");
                     img_in_mark.setVisibility(View.GONE);
                     img_out_mark.setVisibility(View.GONE);
+                    mfs100.StopCapture();
+                    txt_quality_per.setText("0%");
+                    progress_quality.setProgress(0);
 
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable()
@@ -581,9 +586,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         @Override
                         public void run()
                         {
-                            mfs100.StopCapture();
-                            txt_quality_per.setText("0%");
-                            progress_quality.setProgress(0);
                             txt_quality_success.setVisibility(View.INVISIBLE);
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
                             progress_quality.getProgressDrawable().setColorFilter(Color.DKGRAY, PorterDuff.Mode.DST);
@@ -682,6 +684,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
 
                 Log.i("str",str);
+
+                btn_signIn.setEnabled(true);
+                btn_signOut.setEnabled(true);
 
                 String regexStr = "^[0-9]*$";
                 try
@@ -971,7 +976,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             att_type = cn.getAttType();
                             shift_type = cn.getShift();
                             //shift_time = cn.getShiftTime();
-                            Log.i("MFS_Log shift_type", shift_type);
+                            //Log.i("MFS_Log shift_type", shift_type);
                             //Log.i("MFS_Log shift_time", shift_time);
 
                             EmpId = cn.getUid();
@@ -1969,6 +1974,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     if (progressDialog != null && progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
+                    Toast.makeText(AttendanceActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -1994,7 +2000,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             {
                 try
                 {
-                    Log.i("requestURL", ""+requestURL);
+                    //Log.i("requestURL", ""+requestURL);
                     Log.i("postDataParams", ""+postDataParams);
 
                     URL url = new URL(requestURL);
@@ -2087,7 +2093,15 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             protected void onPostExecute(String result)
             {
                 Log.i("result", result);
-                GetJSONData(result);
+                if (result != null)
+                {
+                    GetJSONData(result);
+                }
+                else 
+                {
+                    progressDialog.dismiss();
+                    Toast.makeText(AttendanceActivity.this, "Slow internet connection", Toast.LENGTH_LONG).show();
+                }
             }
         }
 
