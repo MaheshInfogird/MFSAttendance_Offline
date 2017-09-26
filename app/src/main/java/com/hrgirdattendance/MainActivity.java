@@ -879,7 +879,7 @@ public class MainActivity extends AppCompatActivity
             {
                 try
                 {
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signIn/?";
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signInwithdeviceid/?";
 
                     String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),
@@ -1592,7 +1592,8 @@ public class MainActivity extends AppCompatActivity
             String response1;
 
             @Override
-            protected void onPreExecute() {
+            protected void onPreExecute()
+            {
                 progressDialog = ProgressDialog.show(MainActivity.this, "Please wait", "Getting Thumb data...", true);
                 progressDialog.show();
             }

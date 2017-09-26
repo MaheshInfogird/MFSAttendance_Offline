@@ -359,8 +359,8 @@ public class LogInActivity extends AppCompatActivity
             {
                 try
                 {
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signIn/?";
-                    
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signInwithdeviceid/?";
+
                     String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),
                             URLEncoder.encode(Password, "UTF-8"),

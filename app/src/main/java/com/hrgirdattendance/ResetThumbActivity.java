@@ -1360,7 +1360,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                             {
                                 Log.i("false", ""+db.checkEmpId(emp_id));
                                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                                alertDialog.setTitle("Thumbs not registered with this device");
+                                alertDialog.setTitle("EMP Thumbs not registered with this device");
                                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -1534,33 +1534,61 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 }
                 else
                 {
-                    db.UpdateContact(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
-                    //Toast.makeText(ResetThumbActivity.this, "Thumbs Registered Successfully", Toast.LENGTH_LONG).show();
-                    textToSpeech.speak("Thumbs Updated Successfully!", TextToSpeech.QUEUE_FLUSH, null);
+                    if (db.checkEmpId(emp_id))
+                    {
+                        db.UpdateContact(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
+                        textToSpeech.speak("Thumbs Updated Successfully!", TextToSpeech.QUEUE_FLUSH, null);
 
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                    alertDialog.setTitle("Thumbs Updated Successfully");
-                    alertDialog.setCancelable(false);
-                    alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            img_register1.setImageResource(R.drawable.imagefinger);
-                            img_register2.setImageResource(R.drawable.imagefinger);
-                            img_register3.setImageResource(R.drawable.imagefinger);
-                            img_register4.setImageResource(R.drawable.imagefinger);
-                            txt_empName.setText("");
-                            txt_empId.setText("");
-                            ed_MobNo.setText("");
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                        alertDialog.setTitle("Thumbs Updated Successfully");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                img_register1.setImageResource(R.drawable.imagefinger);
+                                img_register2.setImageResource(R.drawable.imagefinger);
+                                img_register3.setImageResource(R.drawable.imagefinger);
+                                img_register4.setImageResource(R.drawable.imagefinger);
+                                txt_empName.setText("");
+                                txt_empId.setText("");
+                                ed_MobNo.setText("");
 
-                            RegisteredBase64_1 = null;
-                            RegisteredBase64_2 = null;
-                            RegisteredBase64_3 = null;
-                            RegisteredBase64_4 = null;
-                            str_RegisteredThumbs = "";
-                        }
-                    });
-                    alertDialog.show();
+                                RegisteredBase64_1 = null;
+                                RegisteredBase64_2 = null;
+                                RegisteredBase64_3 = null;
+                                RegisteredBase64_4 = null;
+                                str_RegisteredThumbs = "";
+                            }
+                        });
+                        alertDialog.show();
+                    }
+                    else
+                    {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                        alertDialog.setTitle("EMP Thumbs not register with this device");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                img_register1.setImageResource(R.drawable.imagefinger);
+                                img_register2.setImageResource(R.drawable.imagefinger);
+                                img_register3.setImageResource(R.drawable.imagefinger);
+                                img_register4.setImageResource(R.drawable.imagefinger);
+                                txt_empName.setText("");
+                                txt_empId.setText("");
+                                ed_MobNo.setText("");
+
+                                RegisteredBase64_1 = null;
+                                RegisteredBase64_2 = null;
+                                RegisteredBase64_3 = null;
+                                RegisteredBase64_4 = null;
+                                str_RegisteredThumbs = "";
+                            }
+                        });
+                        alertDialog.show();
+                    }
                 }
             }
         }
