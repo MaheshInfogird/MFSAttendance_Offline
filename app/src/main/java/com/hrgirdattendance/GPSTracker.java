@@ -35,8 +35,10 @@ public class GPSTracker extends Service
     boolean canGetLocation = false;
 
     Location location;
-    double latitude;
-    double longitude;
+ /*   double latitude;
+    double longitude;*/
+    double latitude = 0.0;
+    double longitude = 0.0;  // changed by priya
 
     // The minimum distance to change Updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1000; // 10 meters

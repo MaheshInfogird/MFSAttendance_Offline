@@ -238,6 +238,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
                 } while (cursor.moveToNext());
             }
         }
+       /* for(int i = 0;i<contactList.size();i++){
+            Log.i("ALL_USER_DATA \n SHIFT ",contactList.get(i).getShift()+"\n AttType"+contactList.get(i).getAttType()+"\n UID "+contactList.get(i).getUid());
+        }*/
         return contactList;
     }
 

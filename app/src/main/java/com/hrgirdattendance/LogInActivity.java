@@ -70,7 +70,7 @@ public class LogInActivity extends AppCompatActivity
     String url_http;
     String myJSON = null;
     String UserName, Password;
-    String Current_Location;
+    String Current_Location = "";
     String android_id;
     String Login_id;
 
@@ -118,10 +118,16 @@ public class LogInActivity extends AppCompatActivity
         Login_id = getIntent().getStringExtra("login_id");
 
         gps = new GPSTracker(getApplicationContext(), LogInActivity.this);
+        if (gps.canGetLocation())
+        {
+            latitude = gps.getLatitude();
+            longitude = gps.getLongitude();
+            Current_Location = gps.getlocation_Address();
 
-        latitude = gps.getLatitude();
-        longitude = gps.getLongitude();
-        Current_Location = gps.getlocation_Address();
+            if (Current_Location == null) {
+                Current_Location = "";
+            }
+        }
 
         /*if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
@@ -216,13 +222,13 @@ public class LogInActivity extends AppCompatActivity
                         txtChange();
                     } 
                     else {
-                        if (Current_Location != null)
-                        {
+                       // if (Current_Location != null)
+                       // {
                             signIn();
-                        }
-                        else {
-                            Toast.makeText(LogInActivity.this, "Failed to get location", Toast.LENGTH_LONG).show();
-                        }
+                       // }
+                      //  else {
+                      //      Toast.makeText(LogInActivity.this, "Failed to get location", Toast.LENGTH_LONG).show();
+                      //  }
                     }
                 }
                 else {
@@ -253,12 +259,15 @@ public class LogInActivity extends AppCompatActivity
                     {
                         latitude = gps.getLatitude();
                         longitude = gps.getLongitude();
-                        Current_Location=gps.getlocation_Address();
-                        Log.i("Current_Location",Current_Location);
+                        Current_Location = gps.getlocation_Address();
+                        if (Current_Location == null)
+                        {
+                            Current_Location = "";
+                        }
                     }
                     else
                     {
-                        AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
+                       /* AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
                         builder.setMessage("Please Enable GPS");
                         builder.setCancelable(false);
                         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -266,10 +275,10 @@ public class LogInActivity extends AppCompatActivity
                             public void onClick(DialogInterface d, int arg1)
                             {
                                 d.dismiss();
-                                /*Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(intent);*/
+                                *//*Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(intent);*//*
                             }
-                        });
+                        });*/
 
                         /*builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
@@ -359,7 +368,7 @@ public class LogInActivity extends AppCompatActivity
             {
                 try
                 {
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signInwithdeviceid/?";
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signInwithdeviceidoffline/?";
 
                     String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),

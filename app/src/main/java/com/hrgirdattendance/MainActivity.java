@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
     String UserName, Password;
     String android_id;
     String PrimaryKey, InOutId, EmpId, DateTime;
-    String empattDid, flag;
+    String empattDid, flag, offline_flag = "";
     String get_prefix,responseCode;
     String response, response_att, myJson,outid;
     String Current_Location;
@@ -209,14 +209,15 @@ public class MainActivity extends AppCompatActivity
                 {
                     flag = "1";
                     empattDid = "";
+                    //offline_flag = "";
                     getUserDataNew();
                 }
             }
-            else
-            {
-                Log.i("Current_Location","Current_Location");
+          //  else
+          //  {
+             //   Log.i("Current_Location","Current_Location");
 
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+              /*  AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                 alertDialog.setMessage("Please Enable GPS");
                 alertDialog.setCancelable(true);
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -226,8 +227,8 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
-                alertDialog.show();
-            }
+                alertDialog.show();*/
+           // }
         }
     }
 
@@ -561,11 +562,13 @@ public class MainActivity extends AppCompatActivity
                         {
                             flag = "1";
                             empattDid = "";
+                            //offline_flag = "";
                             getUserDataNew();
                         }
                     }
-                    else
-                    {
+                 //   else
+                 //   {
+                        /*
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                         alertDialog.setMessage("Please Enable GPS");
                         alertDialog.setCancelable(true);
@@ -576,8 +579,9 @@ public class MainActivity extends AppCompatActivity
                             }
                         });
 
-                        alertDialog.show();
-                    }
+                        alertDialog.show();*/
+                //    }
+                  //  }
                 }
                 else
                 {
@@ -707,6 +711,7 @@ public class MainActivity extends AppCompatActivity
                         key_editor.clear();
                         key_editor.commit();
                         db.delete_attendance_record();
+                        db.delete_record();
                         Intent intent = new Intent(MainActivity.this, UrlActivity.class);
                         startActivity(intent);
                         finish();
@@ -726,6 +731,7 @@ public class MainActivity extends AppCompatActivity
                     key_editor.clear();
                     key_editor.commit();
                     db.delete_attendance_record();
+                    db.delete_record();
                     Intent intent = new Intent(MainActivity.this, UrlActivity.class);
                     startActivity(intent);
                     finish();
@@ -879,7 +885,7 @@ public class MainActivity extends AppCompatActivity
             {
                 try
                 {
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signInwithdeviceid/?";
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signInwithdeviceidoffline/?";
 
                     String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),
@@ -980,6 +986,7 @@ public class MainActivity extends AppCompatActivity
                                 //db.delete_record();
                                 pk = "0";
                                 flag = "1";
+                                //offline_flag = "";
                                 //getUserData();
                                 getUserDataNew();
                             }
@@ -1144,6 +1151,7 @@ public class MainActivity extends AppCompatActivity
                                 uid_array.clear();
 
                                 flag = "1";
+                                //offline_flag = "";
                                 //getUserData();
                                 getUserDataNew();
 
@@ -1603,7 +1611,7 @@ public class MainActivity extends AppCompatActivity
             {
                 try
                 {
-                    String leave_url = ""+url_http+""+Url+"/owner/hrmapi/getallempdatadevicewise/?";
+                    String leave_url = ""+url_http+""+Url+"/owner/hrmapi/getallempdatadevicewiseoffline/?";
                     String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s",
                             URLEncoder.encode(android_id, "UTF-8"),
                             URLEncoder.encode(flag, "UTF-8"),
@@ -1851,7 +1859,10 @@ public class MainActivity extends AppCompatActivity
                                         }
 
                                         //Log.i("Insert: ", "Inserting ..");
-                                        db.UpdateContactAttType(new UserDetails_Model(t1,t2,t3,t4,get_attType,get_applyshift), get_uId);
+                                        if (db.checkEmpId(get_uId))
+                                        {
+                                            db.UpdateContactAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType, get_applyshift), get_uId);
+                                        }
                                     }
                                     else if (get_status.equals("3"))
                                     {
@@ -1861,7 +1872,10 @@ public class MainActivity extends AppCompatActivity
                                         String get_mobile = object.getString("mobile");
                                         //Log.i("get_mobile",get_mobile);
 
-                                        db.deleteContact(get_uId);
+                                        if (db.checkEmpId(get_uId))
+                                        {
+                                            db.deleteContact(get_uId);
+                                        }
                                     }
                                 }
 
@@ -1877,6 +1891,7 @@ public class MainActivity extends AppCompatActivity
                                 }
 
                                 flag = "2";
+                                //offline_flag = "5";
                                 empattDid = empattDid_arr.toString();
                                 empattDid = empattDid.substring(1, (empattDid.length() -1));
                                 Log.i("empattDid", empattDid);

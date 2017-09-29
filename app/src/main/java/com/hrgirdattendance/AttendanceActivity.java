@@ -121,7 +121,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     String android_id;
     String PrimaryKey, InOutId, DateTime;
     String response_att, myJson2;
-    String empattDid, flag;
+    String empattDid, flag, offline_flag = "";;
 
     String aa;
 
@@ -135,7 +135,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     Snackbar snackbar;
 
     TextToSpeech textToSpeech;
-    ProgressDialog progressDialog;
+    ProgressDialog progressDialog,progressDialog1;
     Handler someHandler;
     ConnectionDetector cd;
     UserSessionManager session;
@@ -154,6 +154,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     ArrayList<String> key_array = new ArrayList<String>();
     ArrayList<String> id_array = new ArrayList<String>();
     ArrayList<String> empattDid_arr = new ArrayList<String>();
+
+    String myJSON;
+    String TabID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -210,8 +213,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
         if (internetConnection.hasConnection(AttendanceActivity.this))
         {
+            //deviceData();
             flag = "1";
             empattDid = "";
+            //offline_flag = "";
             getUserData();
         }
 
@@ -390,7 +395,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     public void deviceData()
     {
         android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        txt_att_deviceid.setText(android_id);
+        //GetDeviceName(android_id);
+
+        // txt_att_deviceid.setText(android_id);
+        // priya changes
 
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
@@ -966,8 +974,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     {
                         if (result_match < 1400)
                         {
-                            String log = "Id: " + cn.getUid() + " ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no();
-
+                            String log = "Id: " + cn.getUid() + ", Name: " + cn.getFirstname() +
+                                    ", Phone: " + cn.getMobile_no()+ ", Shift: " + cn.getShift();
+                            Log.i("MFS_Log log", log);
                             uid = cn.getUid();
                             ucid = cn.getCid();
                             ufname = cn.getFirstname();
@@ -975,17 +984,14 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             u_mobile_nu = cn.getMobile_no();
                             att_type = cn.getAttType();
                             shift_type = cn.getShift();
-                            //shift_time = cn.getShiftTime();
-                            //Log.i("MFS_Log shift_type", shift_type);
-                            //Log.i("MFS_Log shift_time", shift_time);
 
                             EmpId = cn.getUid();
                             Log.i("MFS_Log EmpId", EmpId);
 
-                            t1 = cn.getThumb1();
-                            t2 = cn.getThumb2();
-                            t3 = cn.getThumb3();
-                            t4 = cn.getThumb4();
+                            t1 = cn.getThumb1()+"";
+                            t2 = cn.getThumb2()+"";
+                            t3 = cn.getThumb3()+"";
+                            t4 = cn.getThumb4()+"";
                             Log.i("Att thumbs: ", t1+"\n"+t2+"\n"+t3+"\n"+t4);
 
                             String thumbs[] = {t1, t2, t3, t4};
@@ -1214,10 +1220,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     public void make_offline_attendance_new(String uid, String fname, String lname,
                                 String mobileno,String inout, String shift_type)
     {
-        String firstName = fname;
-        String lastName = lname;
-        String empName = firstName + lastName;
-        //String date_time = txt_Time.getText().toString();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sdf.setLenient(false);
         Date today = new Date();
@@ -1298,7 +1300,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             progress_quality.setProgress(0);
                             img_in_mark.setVisibility(View.GONE);
                             img_out_mark.setVisibility(View.GONE);
-                            txt_att_name.setText(empName);
+                            txt_att_name.setText(fname);
                             txt_result.setText("You are already Sign In");
                             txt_result.setTextColor(getColor(R.color.RedTextColor));
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
@@ -1324,7 +1326,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             progress_quality.setProgress(0);
                             img_in_mark.setVisibility(View.GONE);
                             img_out_mark.setVisibility(View.GONE);
-                            txt_att_name.setText(empName);
+                            txt_att_name.setText(fname);
                             txt_result.setText("Sign In Successfully");
                             txt_result.setTextColor(getColor(R.color.TextGreenColor));
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
@@ -1351,7 +1353,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         progress_quality.setProgress(0);
                         img_in_mark.setVisibility(View.GONE);
                         img_out_mark.setVisibility(View.GONE);
-                        txt_att_name.setText(empName);
+                        txt_att_name.setText(fname);
                         txt_result.setText("Sign In Successfully");
                         txt_result.setTextColor(getColor(R.color.TextGreenColor));
                         img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
@@ -1378,7 +1380,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     progress_quality.setProgress(0);
                     img_in_mark.setVisibility(View.GONE);
                     img_out_mark.setVisibility(View.GONE);
-                    txt_att_name.setText(empName);
+                    txt_att_name.setText(fname);
                     txt_result.setText("Sign In Successfully");
                     txt_result.setTextColor(getColor(R.color.TextGreenColor));
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
@@ -1401,7 +1403,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         progress_quality.setProgress(0);
                         img_in_mark.setVisibility(View.GONE);
                         img_out_mark.setVisibility(View.GONE);
-                        txt_att_name.setText(empName);
+                        txt_att_name.setText(fname);
                         txt_result.setText("You are not Sign In");
                         txt_result.setTextColor(getColor(R.color.RedTextColor));
                         img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
@@ -1423,7 +1425,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             progress_quality.setProgress(0);
                             img_in_mark.setVisibility(View.GONE);
                             img_out_mark.setVisibility(View.GONE);
-                            txt_att_name.setText(empName);
+                            txt_att_name.setText(fname);
                             txt_result.setText("You are already Sign Out");
                             txt_result.setTextColor(getColor(R.color.RedTextColor));
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
@@ -1448,7 +1450,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             progress_quality.setProgress(0);
                             img_in_mark.setVisibility(View.GONE);
                             img_out_mark.setVisibility(View.GONE);
-                            txt_att_name.setText(empName);
+                            txt_att_name.setText(fname);
                             txt_result.setText("Sign Out Successfully");
                             txt_result.setTextColor(getColor(R.color.TextGreenColor));
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
@@ -1465,7 +1467,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         progress_quality.setProgress(0);
                         img_in_mark.setVisibility(View.GONE);
                         img_out_mark.setVisibility(View.GONE);
-                        txt_att_name.setText(empName);
+                        txt_att_name.setText(fname);
                         txt_result.setText("You are not Sign In");
                         txt_result.setTextColor(getColor(R.color.RedTextColor));
                         img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
@@ -1481,7 +1483,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     progress_quality.setProgress(0);
                     img_in_mark.setVisibility(View.GONE);
                     img_out_mark.setVisibility(View.GONE);
-                    txt_att_name.setText(empName);
+                    txt_att_name.setText(fname);
                     txt_result.setText("You are not Sign In");
                     txt_result.setTextColor(getColor(R.color.RedTextColor));
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
@@ -1697,11 +1699,17 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             {
                 try
                 {
-                    String leave_url = ""+url_http+""+Url+"/owner/hrmapi/getallempdatadevicewise/?";
+                    String leave_url = ""+url_http+""+Url+"/owner/hrmapi/getallempdatadevicewiseoffline/?";
+                   /* String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s",
+                            URLEncoder.encode(android_id, "UTF-8"),
+                            URLEncoder.encode(flag, "UTF-8"),
+                            URLEncoder.encode(empattDid, "UTF-8"));
+*/
                     String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s",
                             URLEncoder.encode(android_id, "UTF-8"),
                             URLEncoder.encode(flag, "UTF-8"),
                             URLEncoder.encode(empattDid, "UTF-8"));
+                            //URLEncoder.encode(offline_flag, "UTF-8"));
 
                     query3 = query3.replace("%2C+",",");
                     URL url = new URL(leave_url+query3);
@@ -1784,6 +1792,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 {
                     myJson2 = result;
                     Log.i("myJson", myJson2);
+
+                    GetDeviceName(android_id);
 
                     progressDialog.dismiss();
 
@@ -1930,7 +1940,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                             }
                                         }
 
-                                        db.UpdateContactAttType(new UserDetails_Model(t1,t2,t3,t4,get_attType,get_applyshift), get_uId);
+                                        if (db.checkEmpId(get_uId))
+                                        {
+                                            db.UpdateContactAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType, get_applyshift), get_uId);
+                                        }
                                     }
                                     else if (get_status.equals("3"))
                                     {
@@ -1938,7 +1951,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                         Log.i("get_uId",get_uId);
                                         String get_mobile = object.getString("mobile");
 
-                                        db.deleteContact(get_uId);
+                                        if (db.checkEmpId(get_uId))
+                                        {
+                                            db.deleteContact(get_uId);
+                                        }
                                     }
                                 }
 
@@ -1952,6 +1968,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                 }
 
                                 flag = "2";
+                                //offline_flag = "5";
                                 empattDid = empattDid_arr.toString();
                                 empattDid = empattDid.substring(1, (empattDid.length() -1));
                                 Log.i("empattDid", empattDid);
@@ -2179,4 +2196,157 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             Log.e("Fail 1", e.toString());
         }
     }
+
+    public void GetDeviceName(final String device_id)
+    {
+        class SendDeviceID extends AsyncTask<String, Void, String>
+        {
+            private URL url;
+            private String response = "";
+
+            @Override
+            protected void onPreExecute()
+            {
+                /*progressDialog1 = new ProgressDialog(AttendanceActivity.this, ProgressDialog.THEME_HOLO_LIGHT);
+                progressDialog1.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog1.setTitle("Please wait");
+                progressDialog1.setMessage("Receiving Device ID...");
+                progressDialog1.show();*/
+            }
+
+            @Override
+            protected String doInBackground(String... params)
+            {
+                try
+                {
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/getnameofdeviceid/?";
+
+                    String query = String.format("android_devide_id=%s",
+                            URLEncoder.encode(device_id, "UTF-8"));
+
+                    url = new URL(Transurl + query);
+                    Log.i("url", "" + url);
+
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setReadTimeout(10000);
+                    conn.setConnectTimeout(10000);
+                    conn.setRequestMethod("GET");
+                    conn.setDoInput(true);
+                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    conn.setDoOutput(true);
+                    int responseCode = conn.getResponseCode();
+
+                    if (responseCode == HttpsURLConnection.HTTP_OK)
+                    {
+                        String line;
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        while ((line = br.readLine()) != null)
+                        {
+                            response += line;
+                        }
+                    }
+                    else {
+                        response = "";
+                    }
+                }
+                catch (SocketTimeoutException e)
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //progressDialog1.dismiss();
+                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Log.e("SocketTimeoutException", e.toString());
+                }
+                catch (ConnectTimeoutException e)
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //progressDialog1.dismiss();
+                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Log.e("ConnectTimeoutException", e.toString());
+                }
+                catch (Exception e)
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //progressDialog1.dismiss();
+                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Log.e("Exception", e.toString());
+                }
+
+                return response;
+            }
+
+            @Override
+            protected void onPostExecute(String result)
+            {
+                myJSON = result;
+                Log.i("response", result);
+                if (response.equals("[]"))
+                {
+                    //progressDialog1.dismiss();
+                    Toast.makeText(AttendanceActivity.this, "Sorry... Slow internet connection", Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    try
+                    {
+                        JSONArray json = new JSONArray(result);
+                        //Log.i("json", "" + json);
+
+                        JSONObject object = json.getJSONObject(0);
+
+                        String responsecode = object.getString("responseCode");
+
+                        if (responsecode.equals("1"))
+                        {
+                           // progressDialog1.dismiss();
+
+                            TabID = object.getString("responseMessage");
+                            Log.i("TabID",TabID);
+                            txt_att_deviceid.setText("Tab"+TabID);
+                            Log.i("Device Name",txt_att_deviceid.getText().toString());
+                        }
+                        else
+                        {
+                            //progressDialog1.dismiss();
+
+                            String msg = object.getString("responseMessage");
+                            String message = msg.substring(2, msg.length()-2);
+
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(AttendanceActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                            alertDialog.setTitle(message);
+                            alertDialog.setCancelable(true);
+                            alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            alertDialog.show();
+                        }
+                    }
+                    catch (JSONException e){
+                        //progressDialog1.dismiss();
+                        Log.i("Exception", e.toString());
+                    }
+                }
+            }
+        }
+        SendDeviceID sendid = new SendDeviceID();
+        sendid.execute();
+    }
+
 }

@@ -128,13 +128,14 @@ public class UrlActivity extends AppCompatActivity {
             else
             {
                 gps = new GPSTracker(getApplicationContext(), UrlActivity.this);
+
                 if (gps.canGetLocation())
                 {
                     latitude = gps.getLatitude();
                     longitude = gps.getLongitude();
                     Current_Location = gps.getlocation_Address();
                 }
-                else
+                /*else
                 {
                     Log.i("Current_Location","Current_Location");
 
@@ -149,7 +150,7 @@ public class UrlActivity extends AppCompatActivity {
                     });
 
                     alertDialog.show();
-                }
+                }*/
             }
         }
 
@@ -221,7 +222,7 @@ public class UrlActivity extends AppCompatActivity {
                         longitude = gps.getLongitude();
                         Current_Location=gps.getlocation_Address();
                     }
-                    else
+                    /*else
                     {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(UrlActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                         alertDialog.setMessage("Please Enable GPS");
@@ -234,7 +235,7 @@ public class UrlActivity extends AppCompatActivity {
                         });
 
                         alertDialog.show();
-                    }
+                    }*/
                 }
                 else
                 {
