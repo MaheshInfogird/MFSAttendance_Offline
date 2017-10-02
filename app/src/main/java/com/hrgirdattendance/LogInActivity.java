@@ -265,9 +265,9 @@ public class LogInActivity extends AppCompatActivity
                             Current_Location = "";
                         }
                     }
-                    else
+                    /*else
                     {
-                       /* AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
+                        AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
                         builder.setMessage("Please Enable GPS");
                         builder.setCancelable(false);
                         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -275,22 +275,9 @@ public class LogInActivity extends AppCompatActivity
                             public void onClick(DialogInterface d, int arg1)
                             {
                                 d.dismiss();
-                                *//*Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(intent);*//*
                             }
-                        });*/
-
-                        /*builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface d, int arg1)
-                            {
-                                Intent intent = new Intent(LogInActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-
-                            }
-                        }).show();*/
-                    }
+                        });
+                    }*/
                 }
                 else
                 {

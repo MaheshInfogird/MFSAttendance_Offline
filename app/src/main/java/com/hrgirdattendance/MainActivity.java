@@ -192,6 +192,7 @@ public class MainActivity extends AppCompatActivity
 
         Initialization();
 
+
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
         {
@@ -205,13 +206,14 @@ public class MainActivity extends AppCompatActivity
                 latitude = gps.getLatitude();
                 longitude = gps.getLongitude();
                 Current_Location = gps.getlocation_Address();
-                if (internetConnection.hasConnection(MainActivity.this))
-                {
-                    flag = "1";
-                    empattDid = "";
-                    //offline_flag = "";
-                    getUserDataNew();
-                }
+            }
+
+            if (internetConnection.hasConnection(MainActivity.this))
+            {
+                flag = "1";
+                empattDid = "";
+                //offline_flag = "";
+                getUserDataNew();
             }
           //  else
           //  {
@@ -558,13 +560,15 @@ public class MainActivity extends AppCompatActivity
                         latitude = gps.getLatitude();
                         longitude = gps.getLongitude();
                         Current_Location = gps.getlocation_Address();
-                        if (internetConnection.hasConnection(MainActivity.this))
-                        {
-                            flag = "1";
-                            empattDid = "";
-                            //offline_flag = "";
-                            getUserDataNew();
-                        }
+                    }
+
+                    if (internetConnection.hasConnection(MainActivity.this))
+                    {
+                        flag = "1";
+                        empattDid = "";
+                        //offline_flag = "";
+
+                        getUserDataNew();
                     }
                  //   else
                  //   {
@@ -1802,7 +1806,10 @@ public class MainActivity extends AppCompatActivity
                                         }
 
                                         //Log.i("Insert: ", "Inserting ..");
-                                        db.addContact(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4,get_applyshift));
+                                        if (!db.checkEmpId(get_uId))
+                                        {
+                                            db.addContact(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4,get_applyshift));
+                                        }
                                     }
                                     else if (get_status.equals("2"))
                                     {

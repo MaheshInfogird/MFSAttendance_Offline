@@ -1566,7 +1566,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                     else
                     {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                        alertDialog.setTitle("EMP Thumbs not register with this device");
+                        alertDialog.setTitle("Employee not authorized for this device");
                         alertDialog.setCancelable(false);
                         alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override

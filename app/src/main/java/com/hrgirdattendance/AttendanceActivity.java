@@ -320,7 +320,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 img_in_mark.setVisibility(View.VISIBLE);
                 img_out_mark.setVisibility(View.GONE);
 
+                btn_signIn.setEnabled(false);
                 btn_signOut.setEnabled(false);
+
                 mfs100.StopCapture();
                 scannerAction = CommonMethod.ScannerAction.Capture;
                 StartSyncCapture();
@@ -337,6 +339,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 img_out_mark.setVisibility(View.VISIBLE);
 
                 btn_signIn.setEnabled(false);
+                btn_signOut.setEnabled(false);
+
                 mfs100.StopCapture();
                 scannerAction = CommonMethod.ScannerAction.Capture;
                 StartSyncCapture();
@@ -572,12 +576,16 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             {
                 if (str.equalsIgnoreCase("Capture Success"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     txt_quality_success.setVisibility(View.INVISIBLE);
                     txt_quality_success.setText(str);
                 }
                 else if (str.equalsIgnoreCase("Error: -1140(Timeout)"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
                     txt_quality_success.setVisibility(View.VISIBLE);
@@ -602,6 +610,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
                 else if (str.equalsIgnoreCase("No Device Connected"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
                     txt_quality_success.setVisibility(View.VISIBLE);
@@ -626,6 +636,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
                 else if (str.equalsIgnoreCase("Permission denied"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
                     txt_quality_success.setVisibility(View.VISIBLE);
@@ -650,6 +662,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
                 else if (str.equalsIgnoreCase("Device removed"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
                     txt_quality_success.setVisibility(View.VISIBLE);
@@ -674,6 +688,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
                 else if (str.contains("Error: -1319(Capturing stopped)"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     txt_quality_per.setText("0%");
                     progress_quality.setProgress(0);
@@ -686,22 +702,19 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     txt_quality_success.setVisibility(View.INVISIBLE);
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
                 }
-                else {
+                else
+                {
                     txt_quality_success.setVisibility(View.INVISIBLE);
                     txt_quality_per.setText(str+"%");
                 }
 
                 Log.i("str",str);
 
-                btn_signIn.setEnabled(true);
-                btn_signOut.setEnabled(true);
-
                 String regexStr = "^[0-9]*$";
                 try
                 {
                     int progress = Integer.parseInt(str);
                     progress_quality.setProgress(progress);
-
                     if (progress < 40)
                     {
                         progress_quality.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.ADD);
@@ -1024,6 +1037,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                             }
                                             else
                                             {
+                                                btn_signIn.setEnabled(true);
+                                                btn_signOut.setEnabled(true);
+
                                                 txt_quality_per.setText("0%");
                                                 progress_quality.setProgress(0);
                                                 img_in_mark.setVisibility(View.GONE);
@@ -1051,6 +1067,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                         }
                                         else
                                         {
+                                            btn_signIn.setEnabled(true);
+                                            btn_signOut.setEnabled(true);
+
                                             //progressDialog.dismiss();
                                             txt_quality_per.setText("0%");
                                             progress_quality.setProgress(0);
@@ -1089,6 +1108,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     if (result_match < 1400)
                     {
                         //progressDialog.dismiss();
+
+                        btn_signIn.setEnabled(true);
+                        btn_signOut.setEnabled(true);
+
                         txt_quality_per.setText("0%");
                         progress_quality.setProgress(0);
                         img_in_mark.setVisibility(View.GONE);
@@ -1278,6 +1301,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             e.printStackTrace();
             Log.i("Exception Parse",e+"");
         }
+
+        btn_signIn.setEnabled(true);
+        btn_signOut.setEnabled(true);
 
         /*if (shift_type.equals("1") || shift_type.equals("3"))
         {*/
@@ -1886,7 +1912,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                             }
                                         }
 
-                                        db.addContact(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4,get_applyshift));
+                                        if (!db.checkEmpId(get_uId))
+                                        {
+                                            db.addContact(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4,get_applyshift));
+                                        }
                                     }
                                     else if (get_status.equals("2"))
                                     {
