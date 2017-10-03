@@ -11,8 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -23,7 +21,6 @@ import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -31,12 +28,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +53,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -76,14 +68,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Timer;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -106,9 +96,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String MyPREFERENCES_prefix = "MyPrefs_prefix" ;
     public static final String MyPREFERENCES_InOutKey = "MyPrefs_Key" ;
+    public static final String MyPREFERENCES_devName = "MyPrefs_devName" ;
     SharedPreferences pref_prefix;
     SharedPreferences  shared_pref, pref;
-    SharedPreferences  key_pref;
+    SharedPreferences  key_pref, pref_dev;
     SharedPreferences.Editor key_editor;
 
     String RegisteredBase64;
@@ -182,15 +173,20 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
         db = new DatabaseHandler(this);
         cd = new ConnectionDetector(getApplicationContext());
-        url_http = cd.geturl();
+        url_http = cd.changeProtocol();
 
         shared_pref = getSharedPreferences(MyPREFERENCES_url, MODE_PRIVATE);
+        key_pref = getApplicationContext().getSharedPreferences(MyPREFERENCES_InOutKey, MODE_PRIVATE);
+        pref_dev = getSharedPreferences(MyPREFERENCES_devName, MODE_PRIVATE);
+
         Url = (shared_pref.getString("url", ""));
         logo = (shared_pref.getString("logo", ""));
 
-        key_pref = getApplicationContext().getSharedPreferences(MyPREFERENCES_InOutKey, MODE_PRIVATE);
         Prev_Key = key_pref.getInt("key",0);
         Log.i("PrevKey_pref", ""+Prev_Key);
+
+        TabID = pref_dev.getString("TabID","");
+        Log.i("TabId", ""+TabID);
 
         if (getSupportActionBar() != null)
         {
@@ -274,6 +270,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
         progress_quality = (ProgressBar)findViewById(R.id.progressBar_quality);
         progress_quality.setMax(100);
+
+        txt_att_deviceid.setText("Tab "+TabID);
 
         textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener()
         {
@@ -1258,7 +1256,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         Log.i("getSignInOutId ",sm.getSignInOutId());
 
         SigninOut_Model temp_sm_signinout =  db.checkdata_signinout(uid);
-        String in_out_date="", in_out_id="";
+        String in_out_date = "", in_out_id = "";
 
         if(temp_sm_signinout != null)
         {
@@ -1276,8 +1274,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         DateFormat dfn = new SimpleDateFormat("yyyy-MM-dd");
         Date inDate = new Date(),outdate = new Date(),attdate = new Date();
-        String InDateTime,OutDateTime,attDateTime;
-        String InDateTimen="",OutDateTimen="",attDateTimen="";
+        String InDateTime, OutDateTime, attDateTime;
+        String InDateTimen = "",OutDateTimen = "",attDateTimen = "";
         try
         {
             if(in_out_date != null)
@@ -1333,7 +1331,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             textToSpeech.speak("You are already SignIn", TextToSpeech.QUEUE_FLUSH, null);
                             Log.i("MFS_Log Employee!!", "Sign In Successfully!!");
                             //sync_data_check_internet();
-
                         }
                         else
                         {
@@ -1726,16 +1723,16 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 try
                 {
                     String leave_url = ""+url_http+""+Url+"/owner/hrmapi/getallempdatadevicewiseoffline/?";
-                   /* String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s",
-                            URLEncoder.encode(android_id, "UTF-8"),
-                            URLEncoder.encode(flag, "UTF-8"),
-                            URLEncoder.encode(empattDid, "UTF-8"));
-*/
                     String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s",
                             URLEncoder.encode(android_id, "UTF-8"),
                             URLEncoder.encode(flag, "UTF-8"),
                             URLEncoder.encode(empattDid, "UTF-8"));
-                            //URLEncoder.encode(offline_flag, "UTF-8"));
+
+                    /*String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s",
+                            URLEncoder.encode(android_id, "UTF-8"),
+                            URLEncoder.encode(flag, "UTF-8"),
+                            URLEncoder.encode(empattDid, "UTF-8"));
+                            //URLEncoder.encode(offline_flag, "UTF-8"));*/
 
                     query3 = query3.replace("%2C+",",");
                     URL url = new URL(leave_url+query3);
@@ -1819,7 +1816,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     myJson2 = result;
                     Log.i("myJson", myJson2);
 
-                    GetDeviceName(android_id);
+                    //GetDeviceName(android_id);
 
                     progressDialog.dismiss();
 
@@ -1870,7 +1867,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                         //Log.i("get_attType",get_attType);
 
                                         String get_applyshift = object.getString("applyshift");
-                                        Log.i("get_applyshift", get_applyshift);
+                                        //Log.i("get_applyshift", get_applyshift);
 
                                         JSONArray thumbexpr = object.getJSONArray("Thumexp");
                                         //Log.i("thumbexpr1143",thumbexpr+"");

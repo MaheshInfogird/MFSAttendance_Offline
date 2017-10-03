@@ -17,7 +17,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -35,7 +34,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -56,27 +54,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -86,8 +77,9 @@ public class MainActivity extends AppCompatActivity
     public static final String MyPREFERENCES_url = "MyPrefs_url" ;
     public static final String MyPREFERENCES_InOutKey = "MyPrefs_Key" ;
     public static final String MyPREFERENCES_prefix = "MyPrefs_prefix" ;
-    SharedPreferences pref, shared_pref, key_pref, pref_prefix;
-    SharedPreferences.Editor key_editor, editor_prefix;
+    public static final String MyPREFERENCES_devName = "MyPrefs_devName" ;
+    SharedPreferences pref, shared_pref, key_pref, pref_prefix, pref_dev;
+    SharedPreferences.Editor key_editor, editor_prefix, editor_dev;
     
     Button btn_attendance, btn_registration, btn_resetThumb, btn_syncData, btn_getData;
     CheckInternetConnection internetConnection;
@@ -109,6 +101,7 @@ public class MainActivity extends AppCompatActivity
     String get_prefix,responseCode;
     String response, response_att, myJson,outid;
     String Current_Location;
+    String TabID;
 
     int Prev_Key, prev_key;
     int version_code;
@@ -142,18 +135,19 @@ public class MainActivity extends AppCompatActivity
         session = new UserSessionManager(getApplicationContext());
         internetConnection = new CheckInternetConnection(getApplicationContext());
         cd = new ConnectionDetector(getApplicationContext());
-        url_http = cd.geturl();
+        url_http = cd.changeProtocol();
         db = new DatabaseHandler(this);
 
         key_pref = getApplicationContext().getSharedPreferences(MyPREFERENCES_InOutKey, MODE_PRIVATE);
+        shared_pref = getSharedPreferences(MyPREFERENCES_url, MODE_PRIVATE);
+        pref_prefix = getSharedPreferences(MyPREFERENCES_prefix, MODE_PRIVATE);
+        pref_dev = getSharedPreferences(MyPREFERENCES_devName, MODE_PRIVATE);
+
         Prev_Key = key_pref.getInt("key",0);
         Log.i("Prev_Key", ""+Prev_Key);
 
-        shared_pref = getSharedPreferences(MyPREFERENCES_url, MODE_PRIVATE);
         Url = (shared_pref.getString("url", ""));
         logo = (shared_pref.getString("logo", ""));
-
-        pref_prefix = getSharedPreferences(MyPREFERENCES_prefix, MODE_PRIVATE);
 
         try
         {
@@ -191,7 +185,6 @@ public class MainActivity extends AppCompatActivity
         };
 
         Initialization();
-
 
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
@@ -714,6 +707,11 @@ public class MainActivity extends AppCompatActivity
                         key_editor = key_pref.edit();
                         key_editor.clear();
                         key_editor.commit();
+
+                        editor_dev = pref_dev.edit();
+                        editor_dev.clear();
+                        editor_dev.commit();
+
                         db.delete_attendance_record();
                         db.delete_record();
                         Intent intent = new Intent(MainActivity.this, UrlActivity.class);
@@ -734,6 +732,11 @@ public class MainActivity extends AppCompatActivity
                     key_editor = key_pref.edit();
                     key_editor.clear();
                     key_editor.commit();
+
+                    editor_dev = pref_dev.edit();
+                    editor_dev.clear();
+                    editor_dev.commit();
+
                     db.delete_attendance_record();
                     db.delete_record();
                     Intent intent = new Intent(MainActivity.this, UrlActivity.class);
@@ -982,6 +985,7 @@ public class MainActivity extends AppCompatActivity
                                 editor_prefix = pref_prefix.edit();
                                 editor_prefix.clear();
                                 editor_prefix.commit();
+
                                 //db.delete_record();
                                 upload_Data();
                             }
@@ -1510,9 +1514,7 @@ public class MainActivity extends AppCompatActivity
 
                                 JSONArray thumbexpr = object.getJSONArray("Thumexp");
                                 Log.i("thumbexpr1143",thumbexpr+"");
-                                // int temp_count =1;
 
-                                //  ArrayList<String> thumbs = new ArrayList<String>();
                                 String t1="",t2="",t3="",t4="";
 
                                 for(int j = 0; j < thumbexpr.length(); j++)
@@ -1551,15 +1553,8 @@ public class MainActivity extends AppCompatActivity
                                     //  thumbs.add(get_thumb);
                                 }
 
-                                /**
-                                 * CRUD Operations
-                                 * */
-                                // Inserting Contacts
-                                Log.i("Insert: ", "Inserting ..");
-                                db.addContact(new UserDetails_Model(null,get_uId,get_cid,get_attType,get_firstName,get_lastName,get_mobile, t1,t2,t3,t4,""));
 
-                                // Reading all contacts
-                                //  insert_user_details(get_uId,get_firstName,get_lastName,get_mobile,get_cid,t1,t2,t3,t4);
+                                db.addContact(new UserDetails_Model(null,get_uId,get_cid,get_attType,get_firstName,get_lastName,get_mobile, t1,t2,t3,t4,""));
                             }
 
                             Log.i("Reading: ", "Reading all contacts..");
@@ -1702,6 +1697,8 @@ public class MainActivity extends AppCompatActivity
                 {
                     myJson2 = result;
                     Log.i("myJson", myJson2);
+
+                    GetDeviceName(android_id);
 
                     progressDialog.dismiss();
 
@@ -2299,6 +2296,11 @@ public class MainActivity extends AppCompatActivity
                     key_editor = key_pref.edit();
                     key_editor.clear();
                     key_editor.commit();
+
+                    editor_dev = pref_dev.edit();
+                    editor_dev.clear();
+                    editor_dev.commit();
+
                     db.delete_attendance_record();
                     db.delete_record();
                     Intent intent = new Intent(MainActivity.this, UrlActivity.class);
@@ -2334,6 +2336,11 @@ public class MainActivity extends AppCompatActivity
                     key_editor = key_pref.edit();
                     key_editor.clear();
                     key_editor.commit();
+
+                    editor_dev = pref_dev.edit();
+                    editor_dev.clear();
+                    editor_dev.commit();
+
                     db.delete_attendance_record();
                     db.delete_record();
                     Intent intent = new Intent(MainActivity.this, UrlActivity.class);
@@ -2357,5 +2364,158 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(MainActivity.this, "JSON Exception", Toast.LENGTH_SHORT).show();
             Log.e("Fail 1", e.toString());
         }
+    }
+
+    public void GetDeviceName(final String device_id)
+    {
+        class SendDeviceID extends AsyncTask<String, Void, String>
+        {
+            private URL url;
+            private String response = "";
+
+            @Override
+            protected void onPreExecute()
+            {
+                /*progressDialog1 = new ProgressDialog(AttendanceActivity.this, ProgressDialog.THEME_HOLO_LIGHT);
+                progressDialog1.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog1.setTitle("Please wait");
+                progressDialog1.setMessage("Receiving Device ID...");
+                progressDialog1.show();*/
+            }
+
+            @Override
+            protected String doInBackground(String... params)
+            {
+                try
+                {
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/getnameofdeviceid/?";
+
+                    String query = String.format("android_devide_id=%s",
+                            URLEncoder.encode(device_id, "UTF-8"));
+
+                    url = new URL(Transurl + query);
+                    Log.i("url", "" + url);
+
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setReadTimeout(10000);
+                    conn.setConnectTimeout(10000);
+                    conn.setRequestMethod("GET");
+                    conn.setDoInput(true);
+                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    conn.setDoOutput(true);
+                    int responseCode = conn.getResponseCode();
+
+                    if (responseCode == HttpsURLConnection.HTTP_OK)
+                    {
+                        String line;
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        while ((line = br.readLine()) != null)
+                        {
+                            response += line;
+                        }
+                    }
+                    else {
+                        response = "";
+                    }
+                }
+                catch (SocketTimeoutException e)
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //progressDialog1.dismiss();
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Log.e("SocketTimeoutException", e.toString());
+                }
+                catch (ConnectTimeoutException e)
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //progressDialog1.dismiss();
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Log.e("ConnectTimeoutException", e.toString());
+                }
+                catch (Exception e)
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //progressDialog1.dismiss();
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Log.e("Exception", e.toString());
+                }
+
+                return response;
+            }
+
+            @Override
+            protected void onPostExecute(String result)
+            {
+                Log.i("response", result);
+                if (result.equals("[]"))
+                {
+                    //progressDialog1.dismiss();
+                    Toast.makeText(MainActivity.this, "Sorry... Slow internet connection", Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    try
+                    {
+                        JSONArray json = new JSONArray(result);
+                        //Log.i("json", "" + json);
+
+                        JSONObject object = json.getJSONObject(0);
+
+                        String responsecode = object.getString("responseCode");
+
+                        if (responsecode.equals("1"))
+                        {
+                            // progressDialog1.dismiss();
+
+                            TabID = object.getString("responseMessage");
+                            Log.i("TabID",TabID);
+
+                            editor_dev = pref_dev.edit();
+                            editor_dev.putString("TabID", TabID);
+                            editor_dev.commit();
+                        }
+                        else
+                        {
+                            //progressDialog1.dismiss();
+
+                            String msg = object.getString("responseMessage");
+                            String message = msg.substring(2, msg.length()-2);
+
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                            alertDialog.setTitle(message);
+                            alertDialog.setCancelable(true);
+                            alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            alertDialog.show();
+                        }
+                    }
+                    catch (JSONException e){
+                        //progressDialog1.dismiss();
+                        Log.i("Exception", e.toString());
+                    }
+                }
+            }
+        }
+        SendDeviceID sendid = new SendDeviceID();
+        sendid.execute();
     }
 }

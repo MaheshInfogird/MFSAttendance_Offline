@@ -52,7 +52,7 @@ public class ForgotPassword extends AppCompatActivity
         setContentView(R.layout.activity_forgot_password);
 
         cd = new ConnectionDetector(getApplicationContext());
-        url_http = cd.geturl();
+        url_http = cd.changeProtocol();
        
         session = new UserSessionManager(getApplicationContext());
         internetConnection = new CheckInternetConnection(getApplicationContext());

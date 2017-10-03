@@ -15,7 +15,6 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -65,8 +64,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -203,7 +200,7 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
         internetConnection = new CheckInternetConnection(getApplicationContext());
         db = new DatabaseHandler(this);
         cd = new ConnectionDetector(getApplicationContext());
-        url_http = cd.geturl();
+        url_http = cd.changeProtocol();
 
         //--------------------------//
         key_pref = getApplicationContext().getSharedPreferences(MyPREFERENCES_InOutKey, MODE_PRIVATE);

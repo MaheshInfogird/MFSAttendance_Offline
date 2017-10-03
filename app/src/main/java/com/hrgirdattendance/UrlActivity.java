@@ -7,8 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -80,8 +78,8 @@ public class UrlActivity extends AppCompatActivity {
         session = new UserSessionManager(getApplicationContext());
         internetConnection = new CheckInternetConnection(getApplicationContext());
         cd = new ConnectionDetector(getApplicationContext());
-        url_http = cd.geturl();
-        url_main = cd.get_infogird_url();
+        url_http = cd.changeProtocol();
+        url_main = cd.changeUrl();
         db = new DatabaseHandler(this);
 
         btn_offline = (Button)findViewById(R.id.btn_offline);
@@ -91,10 +89,7 @@ public class UrlActivity extends AppCompatActivity {
         ed_url = (EditText)findViewById(R.id.company_url);
         poweredby_layout = (LinearLayout)findViewById(R.id.layout_poweredby_url);
 
-        if (internetConnection.hasConnection(getApplicationContext())){
-        }
-        else
-        {
+        if (!internetConnection.hasConnection(getApplicationContext())){
             internetConnection.showNetDisabledAlertToUser(UrlActivity.this);
         }
 

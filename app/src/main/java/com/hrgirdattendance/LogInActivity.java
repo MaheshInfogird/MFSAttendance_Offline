@@ -1,6 +1,5 @@
 package com.hrgirdattendance;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -12,8 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -172,7 +169,7 @@ public class LogInActivity extends AppCompatActivity
 
         session = new UserSessionManager(getApplicationContext());
         cd = new ConnectionDetector(getApplicationContext());
-        url_http = cd.geturl();
+        url_http = cd.changeProtocol();
 
         shared_pref = getSharedPreferences(MyPREFERENCES_url, MODE_PRIVATE);
         Url = (shared_pref.getString("url", ""));

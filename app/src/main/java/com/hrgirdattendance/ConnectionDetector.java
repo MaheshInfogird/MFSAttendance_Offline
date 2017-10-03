@@ -22,34 +22,30 @@ public class ConnectionDetector
         this._context = context;
     }
 
-    public String geturl()
+    public String changeProtocol()
     {
-        //String url = "https://";//live
-        String url = "http://";
-        return url;
+        return "https://";//live
+        //return "http://";
     }
 
-    public String get_infogird_url()
+    public String changeUrl()
     {
-        //String url = "infogird.hrgird.com";//live
-        String url = "hrsaas.safegird.com";
-        return url;
+        return "infogird.hrgird.com";//live
+        //return = "hrsaas.safegird.com";
     }
     
-    public String getAPIKEY()
+    public String getAPIKey()
     {
-        String key="PVU1ZE-ZE4TPC-5IXWAJ-P2E6ZE-QONPEC-4IUGWD";
-        return key;
+        return "PVU1ZE-ZE4TPC-5IXWAJ-P2E6ZE-QONPEC-4IUGWD";
     }
 
-    public String GetIpaddress()
+    public String GetIPAddress()
     {
         WifiManager wm = (WifiManager)_context. getSystemService(Context.WIFI_SERVICE);
-        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-        return ip;
+        return Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
     }
 
-    public String getLocalIpAddress()
+    public String getLocalIPAddress()
     {
         try
         {

@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -42,8 +41,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -129,7 +126,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
         setSupportActionBar(toolbar);
 
         cd = new ConnectionDetector(getApplicationContext());
-        url_http = cd.geturl();
+        url_http = cd.changeProtocol();
 
         db = new DatabaseHandler(this);
 
@@ -144,11 +141,8 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
         Initialisation();
         deviceData();
 
-        if (internetConnection.hasConnection(RegistrationActivity.this))
+        if (!internetConnection.hasConnection(RegistrationActivity.this))
         {
-
-        }
-        else {
             internetConnection.showNetDisabledAlertToUser(RegistrationActivity.this);
         }
 
@@ -182,7 +176,6 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 }
             }
         };
-
 
         img_logout.setOnClickListener(new View.OnClickListener()
         {
@@ -219,7 +212,6 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 alertDialog.show();
             }
         });
-
     }
 
     public void Initialisation()
