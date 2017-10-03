@@ -63,13 +63,11 @@ public class LogInActivity extends AppCompatActivity
     GPSTracker gps;
     ProgressDialog progressDialog;
 
-    String Url, logo;
-    String url_http;
+    String Url, logo, url_http;
     String myJSON = null;
     String UserName, Password;
     String Current_Location = "";
-    String android_id;
-    String Login_id;
+    String android_id, Login_id;
 
     EditText ed_userName, ed_password;
     TextView txt_forgotPass;
@@ -125,39 +123,6 @@ public class LogInActivity extends AppCompatActivity
                 Current_Location = "";
             }
         }
-
-        /*if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
-        {
-            ActivityCompat.requestPermissions(LogInActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        }
-        else
-        {
-            gps = new GPSTracker(getApplicationContext(), LogInActivity.this);
-            if (gps.canGetLocation())
-            {
-                latitude = gps.getLatitude();
-                longitude = gps.getLongitude();
-                Current_Location = gps.getlocation_Address();
-                //Log.i("Current_Location",Current_Location);
-            }
-            else
-            {
-                Log.i("Current_Location","Current_Location");
-
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(LogInActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                alertDialog.setMessage("Please Enable GPS");
-                alertDialog.setCancelable(true);
-                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-                alertDialog.show();
-            }
-        }*/
 
         ed_userName = (EditText)findViewById(R.id.ed_userName);
         ed_password = (EditText)findViewById(R.id.ed_password);
@@ -219,13 +184,7 @@ public class LogInActivity extends AppCompatActivity
                         txtChange();
                     } 
                     else {
-                       // if (Current_Location != null)
-                       // {
-                            signIn();
-                       // }
-                      //  else {
-                      //      Toast.makeText(LogInActivity.this, "Failed to get location", Toast.LENGTH_LONG).show();
-                      //  }
+                        signIn();
                     }
                 }
                 else {
@@ -262,19 +221,6 @@ public class LogInActivity extends AppCompatActivity
                             Current_Location = "";
                         }
                     }
-                    /*else
-                    {
-                        AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
-                        builder.setMessage("Please Enable GPS");
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface d, int arg1)
-                            {
-                                d.dismiss();
-                            }
-                        });
-                    }*/
                 }
                 else
                 {

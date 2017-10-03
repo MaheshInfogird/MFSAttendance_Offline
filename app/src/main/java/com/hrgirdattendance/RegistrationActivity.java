@@ -90,9 +90,8 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
     String RegisteredBase64_1 = null, RegisteredBase64_2 = null, RegisteredBase64_3, RegisteredBase64_4;
     String emp_id, cid, MobileNo, password;
     String str_RegisteredThumbs;
-    String logout_id = "0";
     String Url, url_http;
-    String android_id;
+    String android_id, logout_id = "0";
     String emp_firstname, emp_lastname, attendancetype;
 
     EditText ed_MobNo;

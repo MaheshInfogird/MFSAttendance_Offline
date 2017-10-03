@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity
     
     String response_version, myJson1, Url;
     String Packagename;
-    String url_http, logo,myJson2;
+    String url_http, logo, myJson2;
     String pk;
     String UserName, Password;
     String android_id;
@@ -208,22 +208,6 @@ public class MainActivity extends AppCompatActivity
                 //offline_flag = "";
                 getUserDataNew();
             }
-          //  else
-          //  {
-             //   Log.i("Current_Location","Current_Location");
-
-              /*  AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                alertDialog.setMessage("Please Enable GPS");
-                alertDialog.setCancelable(true);
-                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-                alertDialog.show();*/
-           // }
         }
     }
 
@@ -563,22 +547,6 @@ public class MainActivity extends AppCompatActivity
 
                         getUserDataNew();
                     }
-                 //   else
-                 //   {
-                        /*
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                        alertDialog.setMessage("Please Enable GPS");
-                        alertDialog.setCancelable(true);
-                        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-
-                        alertDialog.show();*/
-                //    }
-                  //  }
                 }
                 else
                 {

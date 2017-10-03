@@ -97,24 +97,15 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     public static final String MyPREFERENCES_prefix = "MyPrefs_prefix" ;
     public static final String MyPREFERENCES_InOutKey = "MyPrefs_Key" ;
     public static final String MyPREFERENCES_devName = "MyPrefs_devName" ;
-    SharedPreferences pref_prefix;
-    SharedPreferences  shared_pref, pref;
-    SharedPreferences  key_pref, pref_dev;
+    SharedPreferences  shared_pref, pref, key_pref, pref_dev;
     SharedPreferences.Editor key_editor;
 
     String RegisteredBase64;
-    String CaptureBase64;
-    String EmpId;
     String Sign_InOut_id = "0";
-    String Url;
-    String url_http;
-    String logo;
-    String android_id;
-    String PrimaryKey, InOutId, DateTime;
-    String response_att, myJson2;
-    String empattDid, flag, offline_flag = "";;
-
-    String aa;
+    String Url, url_http, logo;
+    String PrimaryKey, InOutId, DateTime, android_id, EmpId, TabID = "";
+    String response_att, myJson2, myJSON;
+    String empattDid, flag, offline_flag = "";
 
     Toolbar toolbar;
     CoordinatorLayout snackbarCoordinatorLayout;
@@ -145,9 +136,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     ArrayList<String> key_array = new ArrayList<String>();
     ArrayList<String> id_array = new ArrayList<String>();
     ArrayList<String> empattDid_arr = new ArrayList<String>();
-
-    String myJSON;
-    String TabID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

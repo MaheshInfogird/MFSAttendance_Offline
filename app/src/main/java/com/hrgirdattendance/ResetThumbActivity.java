@@ -90,9 +90,8 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
     String RegisteredBase64_1 = null, RegisteredBase64_2 = null, RegisteredBase64_3 = null, RegisteredBase64_4 = null;
     String emp_id, cid, MobileNo;
     String str_RegisteredThumbs;
-    String logout_id = "0";
     String Url, url_http;
-    String android_id;
+    String android_id, logout_id = "0";
 
     EditText ed_MobNo;
     TextView txt_empName, txt_empId;

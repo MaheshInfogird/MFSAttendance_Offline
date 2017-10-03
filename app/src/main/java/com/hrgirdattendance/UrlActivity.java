@@ -39,11 +39,9 @@ public class UrlActivity extends AppCompatActivity {
     public static final String MyPREFERENCES = "MyPrefs_url" ;
     public static final String MyPREFERENCES1 = "MyPrefs" ;
     public static final String MyPREFERENCES_InOutKey = "MyPrefs_Key" ;
-    SharedPreferences key_pref;
-    SharedPreferences.Editor key_editor;
     int PRIVATE_MODE = 0;
-    SharedPreferences pref, shared_pref;
-    SharedPreferences.Editor editor, editor1;
+    SharedPreferences pref, shared_pref, key_pref;
+    SharedPreferences.Editor editor, editor1, key_editor;
     
     ProgressDialog progressDialog;
     CheckInternetConnection internetConnection;
@@ -54,8 +52,7 @@ public class UrlActivity extends AppCompatActivity {
     GPSTracker gps;
 
     String response, myJson,myJsonatt, response_att;
-    String set_url;
-    String get_url;
+    String set_url, get_url;
     String url_http, url_main;
     String Current_Location;
     
@@ -130,22 +127,6 @@ public class UrlActivity extends AppCompatActivity {
                     longitude = gps.getLongitude();
                     Current_Location = gps.getlocation_Address();
                 }
-                /*else
-                {
-                    Log.i("Current_Location","Current_Location");
-
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(UrlActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                    alertDialog.setMessage("Please Enable GPS");
-                    alertDialog.setCancelable(true);
-                    alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    alertDialog.show();
-                }*/
             }
         }
 
@@ -196,6 +177,7 @@ public class UrlActivity extends AppCompatActivity {
             }
         });
     }
+
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -217,20 +199,6 @@ public class UrlActivity extends AppCompatActivity {
                         longitude = gps.getLongitude();
                         Current_Location=gps.getlocation_Address();
                     }
-                    /*else
-                    {
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(UrlActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                        alertDialog.setMessage("Please Enable GPS");
-                        alertDialog.setCancelable(true);
-                        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-
-                        alertDialog.show();
-                    }*/
                 }
                 else
                 {
@@ -316,7 +284,8 @@ public class UrlActivity extends AppCompatActivity {
 
                     Log.e("ConnectTimeoutException", e.toString());
                 }
-                catch (Exception e){
+                catch (Exception e)
+                {
                     runOnUiThread(new Runnable()
                     {
                         @Override
