@@ -81,7 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         //  onCreate(db);
     }
 
-    public void addContact(UserDetails_Model contact)
+    public void addEmpData(UserDetails_Model contact)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -102,7 +102,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         db.close();
     }
 
-    public void UpdateContact(UserDetails_Model contact, String uid)
+    public void UpdateEmpData(UserDetails_Model contact, String uid)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -207,7 +207,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         return contactList;
     }
 
-    public List<UserDetails_Model> getAllContacts()
+    public List<UserDetails_Model> getAllEmpData()
     {
         List<UserDetails_Model> contactList = new ArrayList<UserDetails_Model>();
         String selectQuery = "SELECT  * FROM " + TABLE_User_Details;
@@ -284,7 +284,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
                 new String[] { String.valueOf(contact.getUid()) });
     }
 
-    public void UpdateContactAttType(UserDetails_Model contact, String uid)
+    public void UpdateEmpAttType(UserDetails_Model contact, String uid)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -300,7 +300,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         db.close();
     }
 
-    public void deleteContact(String uId)
+    public void deleteEmpRecord(String uId)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         //db.execSQL("delete from "+ TABLE_User_Details +"where" + KEY_PH_NO +"="+mob);
@@ -309,7 +309,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         db.close();
     }
 
-    public void delete_record()
+    public void deleteAllEmpRecord()
     {
         SQLiteDatabase db = this.getWritableDatabase();
         //db.execSQL("delete from "+ TABLE_User_Details);
@@ -345,7 +345,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         //DELETE FROM sessions WHERE timestamp >= '2010-12-06' AND timestamp < '2010-12-07'
     }
 
-    public void delete_3daysE_record()
+    public void deletePrev3DaysRecord()
     {
         List<SigninOut_Model> contactList = new ArrayList<SigninOut_Model>();
         String selectQuery = "SELECT  * FROM " + TABLE_SignINOut;

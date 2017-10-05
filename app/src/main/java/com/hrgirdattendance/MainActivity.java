@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity
             {
                 if (receiver.isConnected)
                 {
-                    Log.i("send_data","send_data");
+                    Log.i("Connected","Connected");
                     if (send_data)
                     {
                         Log.i("flag_send_data","flag_send_data");
@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 else
                 {
+                    Log.i("Not Connected","Not Connected");
                     Toast.makeText(MainActivity.this, "You are Offline", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -417,11 +418,11 @@ public class MainActivity extends AppCompatActivity
                     });
                     alertDialog.show();
 
-                    /*db.delete_record();
+                    /*db.deleteAllEmpRecord();
                     pk = "0";
                     getUserData();*/
 
-                    /*List<UserDetails_Model> contacts = db.getAllContacts();
+                    /*List<UserDetails_Model> contacts = db.getAllEmpData();
                     Log.i("MFS_Log contacts", "" + contacts);
 
                     if (contacts.isEmpty())
@@ -505,7 +506,7 @@ public class MainActivity extends AppCompatActivity
                     //db.delete_prev_att_record(date_data, date);
                 }
 
-                db.delete_3daysE_record();
+                db.deletePrev3DaysRecord();
                 Log.i("MFS data", "data deleted");
 
                 for (SigninOut_Model cn : contacts)
@@ -520,16 +521,15 @@ public class MainActivity extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.i("requestCode",""+requestCode );//1
+        Log.i("requestCode",""+requestCode);//1
 
         switch (requestCode)
         {
             case 1:
             {
-                Log.i("grantResults",""+grantResults.length );
+                Log.i("grantResults",""+grantResults.length);
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)
                 {
-                    Log.i("grantResults_in",""+grantResults.length );
                     gps = new GPSTracker(getApplicationContext(), MainActivity.this);
 
                     if (gps.canGetLocation())
@@ -544,14 +544,10 @@ public class MainActivity extends AppCompatActivity
                         flag = "1";
                         empattDid = "";
                         //offline_flag = "";
-
                         getUserDataNew();
                     }
                 }
-                else
-                {
-                    Log.i("grantResults_else",""+grantResults.length );
-                }
+
                 return;
             }
         }
@@ -681,7 +677,7 @@ public class MainActivity extends AppCompatActivity
                         editor_dev.commit();
 
                         db.delete_attendance_record();
-                        db.delete_record();
+                        db.deleteAllEmpRecord();
                         Intent intent = new Intent(MainActivity.this, UrlActivity.class);
                         startActivity(intent);
                         finish();
@@ -706,7 +702,7 @@ public class MainActivity extends AppCompatActivity
                     editor_dev.commit();
 
                     db.delete_attendance_record();
-                    db.delete_record();
+                    db.deleteAllEmpRecord();
                     Intent intent = new Intent(MainActivity.this, UrlActivity.class);
                     startActivity(intent);
                     finish();
@@ -954,12 +950,12 @@ public class MainActivity extends AppCompatActivity
                                 editor_prefix.clear();
                                 editor_prefix.commit();
 
-                                //db.delete_record();
+                                //db.deleteAllEmpRecord();
                                 upload_Data();
                             }
                             else if (outid.equals("4"))
                             {
-                                //db.delete_record();
+                                //db.deleteAllEmpRecord();
                                 pk = "0";
                                 flag = "1";
                                 //offline_flag = "";
@@ -1131,7 +1127,7 @@ public class MainActivity extends AppCompatActivity
                                 //getUserData();
                                 getUserDataNew();
 
-                                /*List<UserDetails_Model> contacts = db.getAllContacts();
+                                /*List<UserDetails_Model> contacts = db.getAllEmpData();
                                 if (contacts.isEmpty())
                                 {
                                     pk = "0";
@@ -1221,7 +1217,7 @@ public class MainActivity extends AppCompatActivity
 
             if (responsecode.equals("1"))
             {
-                db.delete_3daysE_record();
+                db.deletePrev3DaysRecord();
                 //delete_prevAttRecord();
 
                 runOnUiThread(new Runnable()
@@ -1522,11 +1518,11 @@ public class MainActivity extends AppCompatActivity
                                 }
 
 
-                                db.addContact(new UserDetails_Model(null,get_uId,get_cid,get_attType,get_firstName,get_lastName,get_mobile, t1,t2,t3,t4,""));
+                                db.addEmpData(new UserDetails_Model(null,get_uId,get_cid,get_attType,get_firstName,get_lastName,get_mobile, t1,t2,t3,t4,""));
                             }
 
                             Log.i("Reading: ", "Reading all contacts..");
-                            List<UserDetails_Model> contacts = db.getAllContacts();
+                            List<UserDetails_Model> contacts = db.getAllEmpData();
 
                             for (UserDetails_Model cn : contacts) {
                                 String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no();
@@ -1679,7 +1675,7 @@ public class MainActivity extends AppCompatActivity
                         if (myJson2.equals("[]"))
                         {
                             Toast.makeText(MainActivity.this, "No New Records Found", Toast.LENGTH_LONG).show();
-                            List<UserDetails_Model> contacts = db.getAllContacts();
+                            List<UserDetails_Model> contacts = db.getAllEmpData();
                             for (UserDetails_Model cn : contacts)
                             {
                                 String log = "PrimaryKey: "+cn.getPrimaryKey()+ ",uId: "+cn.getUid() +
@@ -1770,10 +1766,13 @@ public class MainActivity extends AppCompatActivity
                                             }
                                         }
 
-                                        //Log.i("Insert: ", "Inserting ..");
-                                        if (!db.checkEmpId(get_uId))
+                                        if (db.checkEmpId(get_uId))
                                         {
-                                            db.addContact(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4,get_applyshift));
+                                            db.UpdateEmpAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType, get_applyshift), get_uId);
+                                        }
+                                        else
+                                        {
+                                            db.addEmpData(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4,get_applyshift));
                                         }
                                     }
                                     else if (get_status.equals("2"))
@@ -1833,7 +1832,7 @@ public class MainActivity extends AppCompatActivity
                                         //Log.i("Insert: ", "Inserting ..");
                                         if (db.checkEmpId(get_uId))
                                         {
-                                            db.UpdateContactAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType, get_applyshift), get_uId);
+                                            db.UpdateEmpAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType, get_applyshift), get_uId);
                                         }
                                     }
                                     else if (get_status.equals("3"))
@@ -1846,7 +1845,7 @@ public class MainActivity extends AppCompatActivity
 
                                         if (db.checkEmpId(get_uId))
                                         {
-                                            db.deleteContact(get_uId);
+                                            db.deleteEmpRecord(get_uId);
                                         }
                                     }
                                 }
@@ -1854,7 +1853,7 @@ public class MainActivity extends AppCompatActivity
                                 Toast.makeText(MainActivity.this, "Data updated successfully", Toast.LENGTH_LONG).show();
 
                                 //Log.i("Reading: ", "Reading all contacts..");
-                                List<UserDetails_Model> contacts = db.getAllContacts();
+                                List<UserDetails_Model> contacts = db.getAllEmpData();
 
                                 for (UserDetails_Model cn : contacts)
                                 {
@@ -2255,7 +2254,7 @@ public class MainActivity extends AppCompatActivity
 
             if (responsecode.equals("1"))
             {
-                db.delete_3daysE_record();
+                db.deletePrev3DaysRecord();
                 //delete_prevAttRecord();
                 progressDialog.dismiss();
                 if (outid.equals("1"))
@@ -2270,7 +2269,7 @@ public class MainActivity extends AppCompatActivity
                     editor_dev.commit();
 
                     db.delete_attendance_record();
-                    db.delete_record();
+                    db.deleteAllEmpRecord();
                     Intent intent = new Intent(MainActivity.this, UrlActivity.class);
                     startActivity(intent);
                     finish();
@@ -2310,7 +2309,7 @@ public class MainActivity extends AppCompatActivity
                     editor_dev.commit();
 
                     db.delete_attendance_record();
-                    db.delete_record();
+                    db.deleteAllEmpRecord();
                     Intent intent = new Intent(MainActivity.this, UrlActivity.class);
                     startActivity(intent);
                     finish();

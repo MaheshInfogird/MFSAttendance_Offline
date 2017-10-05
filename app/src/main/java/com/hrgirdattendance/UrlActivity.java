@@ -190,7 +190,6 @@ public class UrlActivity extends AppCompatActivity {
                 Log.i("grantResults",""+grantResults.length );
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)
                 {
-                    Log.i("grantResults_in",""+grantResults.length );
                     gps = new GPSTracker(getApplicationContext(), UrlActivity.this);
 
                     if (gps.canGetLocation())
@@ -200,10 +199,7 @@ public class UrlActivity extends AppCompatActivity {
                         Current_Location=gps.getlocation_Address();
                     }
                 }
-                else
-                {
-                    Log.i("grantResults_else",""+grantResults.length );
-                }
+
                 return;
             }
         }
@@ -214,7 +210,8 @@ public class UrlActivity extends AppCompatActivity {
         class GetUrlData extends AsyncTask<String, Void, String>
         {
             @Override
-            protected void onPreExecute() {
+            protected void onPreExecute()
+            {
                 progressDialog = ProgressDialog.show(UrlActivity.this, "Please wait", "Checking url...", true);
                 progressDialog.show();
             }
@@ -333,10 +330,7 @@ public class UrlActivity extends AppCompatActivity {
                         try
                         {
                             JSONArray jsonArray = new JSONArray(myJson);
-                            //Log.i("jsonArray", "" + jsonArray);
-
                             JSONObject object = jsonArray.getJSONObject(0);
-
                             String responseCode = object.getString("responsecode");
 
                             if (responseCode.equals("1"))
@@ -373,15 +367,17 @@ public class UrlActivity extends AppCompatActivity {
                             }
 
                         }
-                        catch (JSONException e) {
+                        catch (JSONException e)
+                        {
                             progressDialog.dismiss();
                             Log.e("JsonException", e.toString());
                         }
                     }
                 }
-                else {
+                else
+                {
                     progressDialog.dismiss();
-                    Toast.makeText(UrlActivity.this, "Sorry...Bad internet connection", Toast.LENGTH_LONG).show();
+                    Toast.makeText(UrlActivity.this, "Bad internet connection", Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -444,7 +440,8 @@ public class UrlActivity extends AppCompatActivity {
                 {
                     Log.e("ConnectTimeoutException", e.toString());
                 }
-                catch (Exception e){
+                catch (Exception e)
+                {
                     Log.e("Exception", e.toString());
                 }
 
@@ -470,31 +467,25 @@ public class UrlActivity extends AppCompatActivity {
                         try
                         {
                             JSONArray jsonArray = new JSONArray(myJson);
-                            //Log.i("jsonArray", "" + jsonArray);
-
                             JSONObject object = jsonArray.getJSONObject(0);
 
                             String get_logo = object.getString("logo");
-
                             String logo_url = "https://"+get_url+"/files/"+get_url+"/images/logo/";
-
                             String logo_final = logo_url + get_logo;
 
                             shared_pref = getSharedPreferences(MyPREFERENCES, PRIVATE_MODE);
                             editor1 = shared_pref.edit();
                             editor1.putString("logo", logo_final);
                             editor1.commit();
-
-                            /*Intent intent = new Intent(UrlActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();*/
                         }
-                        catch (JSONException e) {
+                        catch (JSONException e)
+                        {
                             Log.e("JsonException", e.toString());
                         }
                     }
                 }
-                else {
+                else
+                {
                     //progressDialog.dismiss();
                     Toast.makeText(UrlActivity.this, "Sorry...Bad internet connection", Toast.LENGTH_LONG).show();
                 }
@@ -521,8 +512,6 @@ public class UrlActivity extends AppCompatActivity {
                 try
                 {
                     String leave_url = ""+url_http+""+get_url+"/owner/hrmapi/getattendancerecord";
-
-                    //String query3 = String.format("apptype=%s", URLEncoder.encode("4", "UTF-8"));
                     URL url = new URL(leave_url);
                     Log.i("url", ""+ url);
 

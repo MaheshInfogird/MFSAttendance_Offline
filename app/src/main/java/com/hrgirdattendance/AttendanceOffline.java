@@ -422,7 +422,7 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
                         //db.delete_prev_att_record(date_data, date);
                     }
 
-                    db.delete_3daysE_record();
+                    db.deletePrev3DaysRecord();
                     Log.i("MFS data", "data deleted");
 
                     for (SigninOut_Model cn : contacts)
@@ -999,7 +999,7 @@ public class AttendanceOffline extends AppCompatActivity implements MFS100Event 
                     // Reading all contacts
                     Log.i("Reading: ", "Reading all contacts..");
                     Log.i("MFS_Log ", "Reading");
-                    List<UserDetails_Model> contacts = db.getAllContacts();
+                    List<UserDetails_Model> contacts = db.getAllEmpData();
 
                     Log.i("MFS_Log contacts", ""+contacts);
 

@@ -197,7 +197,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
         if (internetConnection.hasConnection(AttendanceActivity.this))
         {
-            //deviceData();
             flag = "1";
             empattDid = "";
             //offline_flag = "";
@@ -370,7 +369,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     Log.i("MFS_Log date_data", date_data);
                 }
 
-                db.delete_3daysE_record();
+                db.deletePrev3DaysRecord();
                 Log.i("MFS data", "data deleted");
 
                 for (SigninOut_Model cn : contacts)
@@ -383,6 +382,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     }
 
     public void deviceData()
+
     {
         android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         //GetDeviceName(android_id);
@@ -964,7 +964,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             att_type="",ufname="", ulname="", u_mobile_nu="",
                             shift_type="", shift_time="";
 
-                    List<UserDetails_Model> contacts = db.getAllContacts();
+                    List<UserDetails_Model> contacts = db.getAllEmpData();
                     Log.i("MFS_Log contacts", ""+contacts);
 
                     result_match = 0;
@@ -1897,9 +1897,13 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                             }
                                         }
 
-                                        if (!db.checkEmpId(get_uId))
+                                        if (db.checkEmpId(get_uId))
                                         {
-                                            db.addContact(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4,get_applyshift));
+                                            db.UpdateEmpAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType, get_applyshift), get_uId);
+                                        }
+                                        else
+                                        {
+                                            db.addEmpData(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4,get_applyshift));
                                         }
                                     }
                                     else if (get_status.equals("2"))
@@ -1956,7 +1960,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                                         if (db.checkEmpId(get_uId))
                                         {
-                                            db.UpdateContactAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType, get_applyshift), get_uId);
+                                            db.UpdateEmpAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType, get_applyshift), get_uId);
                                         }
                                     }
                                     else if (get_status.equals("3"))
@@ -1967,13 +1971,13 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                                         if (db.checkEmpId(get_uId))
                                         {
-                                            db.deleteContact(get_uId);
+                                            db.deleteEmpRecord(get_uId);
                                         }
                                     }
                                 }
 
                                 Toast.makeText(AttendanceActivity.this, "Data updated successfully", Toast.LENGTH_LONG).show();
-                                List<UserDetails_Model> contacts = db.getAllContacts();
+                                List<UserDetails_Model> contacts = db.getAllEmpData();
 
                                 for (UserDetails_Model cn : contacts)
                                 {
@@ -2180,7 +2184,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
             if (responsecode.equals("1"))
             {
-                db.delete_3daysE_record();
+                db.deletePrev3DaysRecord();
 
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();

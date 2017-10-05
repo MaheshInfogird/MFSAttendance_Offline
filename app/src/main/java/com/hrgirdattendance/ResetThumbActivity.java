@@ -1198,8 +1198,8 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 }
                 else
                 {
-//                    db.addContact(new UserDetails_Model(null,get_uId,get_cid,get_attType,get_firstName,get_lastName,get_mobile,t1,t2,t3,t4));
-                    db.UpdateContact(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), MobileNo);
+//                    db.addEmpData(new UserDetails_Model(null,get_uId,get_cid,get_attType,get_firstName,get_lastName,get_mobile,t1,t2,t3,t4));
+                    db.UpdateEmpData(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), MobileNo);
                     Toast.makeText(ResetThumbActivity.this, "Thumbs Registered Successfully", Toast.LENGTH_LONG).show();
                     textToSpeech.speak("Thumbs Registered Successfully!", TextToSpeech.QUEUE_FLUSH, null);
 
@@ -1529,7 +1529,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 {
                     if (db.checkEmpId(emp_id))
                     {
-                        db.UpdateContact(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
+                        db.UpdateEmpData(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
                         textToSpeech.speak("Thumbs Updated Successfully!", TextToSpeech.QUEUE_FLUSH, null);
 
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);

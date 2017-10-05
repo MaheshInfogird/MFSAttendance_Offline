@@ -175,19 +175,23 @@ public class LogInActivity extends AppCompatActivity
                         ed_password.setError("Please enter password");
                         txtChange();
                     } 
-                    else if (UserName.equals("")) {
+                    else if (UserName.equals(""))
+                    {
                         ed_userName.setError("Please enter email/mobile");
                         txtChange();
                     }
-                    else if (Password.equals("")) {
+                    else if (Password.equals(""))
+                    {
                         ed_password.setError("Please enter password");
                         txtChange();
                     } 
-                    else {
+                    else
+                    {
                         signIn();
                     }
                 }
-                else {
+                else
+                {
                     Toast.makeText(LogInActivity.this, "Please check your internet connection", Toast.LENGTH_LONG).show();
                 }
             }
@@ -208,7 +212,6 @@ public class LogInActivity extends AppCompatActivity
                 Log.i("grantResults",""+grantResults.length );
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)
                 {
-                    Log.i("grantResults_in",""+grantResults.length );
                     gps = new GPSTracker(getApplicationContext(), LogInActivity.this);
 
                     if (gps.canGetLocation())
@@ -221,10 +224,6 @@ public class LogInActivity extends AppCompatActivity
                             Current_Location = "";
                         }
                     }
-                }
-                else
-                {
-                    Log.i("grantResults_else",""+grantResults.length );
                 }
                 return;
             }
@@ -286,10 +285,13 @@ public class LogInActivity extends AppCompatActivity
             @Override
             protected void onPreExecute()
             {
-                progressDialog = new ProgressDialog(LogInActivity.this, ProgressDialog.THEME_HOLO_LIGHT);
+               /* progressDialog = new ProgressDialog(LogInActivity.this, ProgressDialog.THEME_HOLO_LIGHT);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.setTitle("Please wait");
                 progressDialog.setMessage("Signing In...");
+                progressDialog.show();*/
+
+                progressDialog = ProgressDialog.show(LogInActivity.this, "Please wait", "Signing In...", true);
                 progressDialog.show();
             }
 
@@ -335,9 +337,11 @@ public class LogInActivity extends AppCompatActivity
                 }
                 catch (SocketTimeoutException e)
                 {
-                    runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable()
+                    {
                         @Override
-                        public void run() {
+                        public void run()
+                        {
                             progressDialog.dismiss();
                             Toast.makeText(LogInActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
@@ -346,9 +350,11 @@ public class LogInActivity extends AppCompatActivity
                 }
                 catch (ConnectTimeoutException e)
                 {
-                    runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable()
+                    {
                         @Override
-                        public void run() {
+                        public void run()
+                        {
                             progressDialog.dismiss();
                             Toast.makeText(LogInActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
@@ -357,9 +363,11 @@ public class LogInActivity extends AppCompatActivity
                 }
                 catch (Exception e)
                 {
-                    runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable()
+                    {
                         @Override
-                        public void run() {
+                        public void run()
+                        {
                             progressDialog.dismiss();
                             Toast.makeText(LogInActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
@@ -385,10 +393,7 @@ public class LogInActivity extends AppCompatActivity
                     try
                     {
                         JSONArray json = new JSONArray(result);
-                        //Log.i("json", "" + json);
-
                         JSONObject object = json.getJSONObject(0);
-
                         String responsecode = object.getString("responseCode");
 
                         if (responsecode.equals("1"))
@@ -411,12 +416,14 @@ public class LogInActivity extends AppCompatActivity
                             editor.putString("uId", uId);
                             editor.commit();
 
-                            if (Login_id.equals("1")) {
+                            if (Login_id.equals("1"))
+                            {
                                 Intent intent = new Intent(LogInActivity.this, RegistrationActivity.class);
                                 startActivity(intent);
                                 finish();
                             }
-                            else {
+                            else
+                            {
                                 Intent intent = new Intent(LogInActivity.this, ResetThumbActivity.class);
                                 startActivity(intent);
                                 finish();
