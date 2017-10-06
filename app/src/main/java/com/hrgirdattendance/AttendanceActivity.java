@@ -208,7 +208,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             @Override
             protected void onNetworkChange()
             {
-                if (receiver.isConnected)
+                if (NetworkChange.isConnected)
                 {
                     first_hit = true;
                     sync_data();
@@ -1661,18 +1661,13 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         super.onResume();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(receiver, filter);
-        /*if (internetConnection.hasConnection(AttendanceActivity.this))
-        {*/
-            new Thread(new Runnable() {
+
+        new Thread(new Runnable() {
                 @Override
                 public void run() {
                     InitScanner();
                 }
             }).start();
-        /*}
-        else {
-            //internetConnection.showNetDisabledAlertToUser(AttendanceActivity.this);
-        }*/
     }
 
     @Override
@@ -1962,6 +1957,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                         {
                                             db.UpdateEmpAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType, get_applyshift), get_uId);
                                         }
+                                        else
+                                        {
+                                            Toast.makeText(AttendanceActivity.this, "data not available for update", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                     else if (get_status.equals("3"))
                                     {
@@ -1972,6 +1971,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                         if (db.checkEmpId(get_uId))
                                         {
                                             db.deleteEmpRecord(get_uId);
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(AttendanceActivity.this, "data not available for delete", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 }
@@ -2000,13 +2003,15 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                     progressDialog.dismiss();
                                 }
                                 Log.e("JsonException123", e.toString());
+                                Toast.makeText(AttendanceActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
                 }
                 else
                 {
-                    if (progressDialog != null && progressDialog.isShowing()) {
+                    if (progressDialog != null && progressDialog.isShowing())
+                    {
                         progressDialog.dismiss();
                     }
                     Toast.makeText(AttendanceActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();

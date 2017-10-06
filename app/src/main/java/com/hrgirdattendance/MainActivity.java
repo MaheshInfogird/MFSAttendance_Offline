@@ -167,15 +167,15 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onNetworkChange()
             {
-                if (receiver.isConnected)
+                if (NetworkChange.isConnected)
                 {
                     Log.i("Connected","Connected");
-                    if (send_data)
+                    /*if (send_data)
                     {
                         Log.i("flag_send_data","flag_send_data");
                         outid = "3";
                         upload_Data();
-                    }
+                    }*/
                 }
                 else
                 {
@@ -226,23 +226,28 @@ public class MainActivity extends AppCompatActivity
 
         Picasso.with(MainActivity.this).load(logo).into(main_logo);
 
-        app_destroy.setOnClickListener(new View.OnClickListener() {
+        app_destroy.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(final View v) {
+            public void onClick(final View v)
+            {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                 alertDialog.setMessage("Do you want to close app?");
                 alertDialog.setCancelable(false);
-                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
                         outid = "2";
                         popup_window(v);
-                        //android.os.Process.killProcess(android.os.Process.myPid());
                     }
                 });
-                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
                         dialog.dismiss();
                     }
                 });
@@ -251,9 +256,11 @@ public class MainActivity extends AppCompatActivity
         });
         //getCheckVersion();
 
-        main_logo.setOnClickListener(new View.OnClickListener() {
+        main_logo.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(final View v) {
+            public void onClick(final View v)
+            {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                 alertDialog.setMessage("Do you want to Change Url?");
                 alertDialog.setCancelable(false);
@@ -262,7 +269,6 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                         outid = "1";
                         popup_window(v);
-                        //android.os.Process.killProcess(android.os.Process.myPid());
                     }
                 });
                 alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -298,9 +304,11 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        btn_registration.setOnClickListener(new View.OnClickListener() {
+        btn_registration.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 btn_attendance.setBackgroundResource(R.drawable.admin_button);
                 btn_resetThumb.setBackgroundResource(R.drawable.admin_button);
                 btn_registration.setBackgroundResource(R.drawable.attendance_button);
@@ -403,11 +411,8 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             flag = "1";
-                            //getUserData();
-                            //getUserDataNew();
                             outid = "4";
                             popup_window(v);
-                            //android.os.Process.killProcess(android.os.Process.myPid());
                         }
                     });
                     alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -417,40 +422,6 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
                     alertDialog.show();
-
-                    /*db.deleteAllEmpRecord();
-                    pk = "0";
-                    getUserData();*/
-
-                    /*List<UserDetails_Model> contacts = db.getAllEmpData();
-                    Log.i("MFS_Log contacts", "" + contacts);
-
-                    if (contacts.isEmpty())
-                    {
-                        Log.i("MFS_Log if", "if");
-                        pk = "0";
-                        getUserData();
-                    }
-                    else
-                    {
-                        Log.i("MFS_Log else", "else");
-                        for (UserDetails_Model cn : contacts)
-                        {
-                            String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no();
-                            Log.i("Name: ", log);
-                            String uid = cn.getUid();
-                            uid_array.add(uid);
-                        }
-
-                        pk = uid_array.toString();
-                        pk = pk.substring(1, pk.length() - 1);
-
-                    *//*UserDetails_Model user_uid = db.check_userData();
-                    Log.i("user_uid", ""+user_uid.getUid());
-                    pk = user_uid.getUid();
-                    Log.i("pk ==  ", pk);*//*
-                        getUserData();
-                    }*/
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check your internet connection", Toast.LENGTH_LONG).show();
@@ -586,13 +557,11 @@ public class MainActivity extends AppCompatActivity
                         Log.i("MFS_Log in_out", in_out_data);
 
                         Log.i("Prev_Key1", ""+Prev_Key);
-                        //if (kkeay > Prev_Key)
-                        //{
+
                         date_array.add(date_data);
                         inout_array.add(in_out_data);
                         id_array.add(id_data);
                         key_array.add(primarykey_data);
-                        //}
                     }
 
                     if (date_array.isEmpty())
@@ -632,8 +601,8 @@ public class MainActivity extends AppCompatActivity
                         InOutId = InOutId.replace(", ", ",");
 
                         String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitm?";
-                        //String url = "" + url_http + "" + Url + "/owner/hrmapi/newofflinemakeattendancehitm?";
                         Log.i("url", url);
+
                         HashMap<String, String> map = new HashMap<String, String>();
                         map.put("primarykey", PrimaryKey);
                         map.put("empId", EmpId);
@@ -641,26 +610,6 @@ public class MainActivity extends AppCompatActivity
                         map.put("signId", InOutId);
 
                         postData(url, map);
-
-                        /*progressDialog = ProgressDialog.show(MainActivity.this, "Please Wait", "Uploading Data... ", true);
-
-                        new Thread(new Runnable() {
-                            public void run() {
-                                //sendSignInOutData();
-                                String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitm?";
-                                Log.i("url", url);
-                                HashMap<String, String> map = new HashMap<String, String>();
-                                map.put("primarykey", PrimaryKey);
-                                map.put("empId", EmpId);
-                                map.put("datetime", DateTime);
-                                map.put("signId", InOutId);
-
-                                postData(url, map);
-                                //performPostCall(url, map);
-                                //GetJSONData();
-
-                            }
-                        }).start();*/
                     }
                 }
                 else
@@ -707,7 +656,6 @@ public class MainActivity extends AppCompatActivity
                     startActivity(intent);
                     finish();
                 }
-                //Toast.makeText(MainActivity.this, "No Records Found", Toast.LENGTH_SHORT).show();
             }
         }
         else {
@@ -932,8 +880,6 @@ public class MainActivity extends AppCompatActivity
                     try
                     {
                         JSONArray json = new JSONArray(result);
-                        //Log.i("json", "" + json);
-
                         JSONObject object = json.getJSONObject(0);
 
                         String responsecode = object.getString("responseCode");
@@ -942,24 +888,19 @@ public class MainActivity extends AppCompatActivity
                         {
                             progressDialog.dismiss();
 
-                            //session.createUserLoginSession(UserName, Password);
-
                             if (outid.equals("1"))
                             {
                                 editor_prefix = pref_prefix.edit();
                                 editor_prefix.clear();
                                 editor_prefix.commit();
 
-                                //db.deleteAllEmpRecord();
                                 upload_Data();
                             }
                             else if (outid.equals("4"))
                             {
-                                //db.deleteAllEmpRecord();
                                 pk = "0";
                                 flag = "1";
                                 //offline_flag = "";
-                                //getUserData();
                                 getUserDataNew();
                             }
                             else {
@@ -1423,15 +1364,12 @@ public class MainActivity extends AppCompatActivity
                     progressDialog.dismiss();
                     if (get_prefix == null)
                     {
-                        // Log.i("getPrefixData", "getPrefixData");
-                        //Toast.makeText(MainActivity.this, "Data updated successfully", Toast.LENGTH_LONG).show();
                         getPrefixData();
                         outid = "3";
                         upload_Data();
                         send_data = true;
                     }
                     else {
-                        //Toast.makeText(MainActivity.this, "Data updated successfully", Toast.LENGTH_LONG).show();
                         if (!get_data)
                         {
                             outid = "3";
@@ -1513,27 +1451,17 @@ public class MainActivity extends AppCompatActivity
                                         t3 = "";
                                         t4 = "";
                                     }
-
-                                    //  thumbs.add(get_thumb);
                                 }
-
 
                                 db.addEmpData(new UserDetails_Model(null,get_uId,get_cid,get_attType,get_firstName,get_lastName,get_mobile, t1,t2,t3,t4,""));
                             }
 
-                            Log.i("Reading: ", "Reading all contacts..");
                             List<UserDetails_Model> contacts = db.getAllEmpData();
 
                             for (UserDetails_Model cn : contacts) {
                                 String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no();
-                                // Writing Contacts to log
                                 Log.i("Name: ", log);
                             }
-
-                            /*Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();*/
-
                         }
                         catch (JSONException e) {
                             if (progressDialog != null && progressDialog.isShowing()) {
@@ -1547,7 +1475,6 @@ public class MainActivity extends AppCompatActivity
                     if (progressDialog != null && progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
-                    //Toast.makeText(MainActivity.this, "Sorry...Bad internet connection", Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -1615,7 +1542,9 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void run()
                         {
-                            progressDialog.dismiss();
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
                             Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -1629,7 +1558,9 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void run()
                         {
-                            progressDialog.dismiss();
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
                             Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -1643,7 +1574,9 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void run()
                         {
-                            progressDialog.dismiss();
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
                             Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -1657,6 +1590,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onPostExecute(String result)
             {
+                Log.i("result", result);
                 if (result != null)
                 {
                     myJson2 = result;
@@ -1674,8 +1608,12 @@ public class MainActivity extends AppCompatActivity
                     {
                         if (myJson2.equals("[]"))
                         {
+                            outid = "3";
+                            upload_Data();
+
                             Toast.makeText(MainActivity.this, "No New Records Found", Toast.LENGTH_LONG).show();
                             List<UserDetails_Model> contacts = db.getAllEmpData();
+
                             for (UserDetails_Model cn : contacts)
                             {
                                 String log = "PrimaryKey: "+cn.getPrimaryKey()+ ",uId: "+cn.getUid() +
@@ -1698,67 +1636,49 @@ public class MainActivity extends AppCompatActivity
                                 for(int i=0; i <jsonArray.length(); i++)
                                 {
                                     JSONObject object = jsonArray.getJSONObject(i);
-                                    //Log.i("object123", "" + object);
 
                                     String get_status = object.getString("status");
-                                    //Log.i("get_status",get_status);
-
                                     String empattDid = object.getString("empattDid");
-                                    //Log.i("empattDid",empattDid);
 
                                     empattDid_arr.add(empattDid);
 
                                     if (get_status.equals("1"))
                                     {
                                         String get_uId = object.getString("uId");
-                                        //Log.i("get_uId",get_uId);
                                         String get_firstName = object.getString("firstName");
-                                        //Log.i("get_firstName",get_firstName);
                                         String get_lastName = object.getString("lastName");
-                                        //Log.i("get_lastName",get_lastName);
                                         String get_cid = object.getString("cid");
-                                        //Log.i("get_cid",get_cid);
                                         String get_mobile = object.getString("mobile");
-                                        //Log.i("get_mobile",get_mobile);
-
                                         String get_attType = object.getString("attendancetype");
-                                        //Log.i("get_attType",get_attType);
                                         String get_applyshift = object.getString("applyshift");
-                                        Log.i("get_applyshift", get_applyshift);
 
                                         JSONArray thumbexpr = object.getJSONArray("Thumexp");
-                                        //Log.i("thumbexpr1143",thumbexpr+"");
 
                                         String t1="",t2="",t3="",t4="";
 
                                         for(int j = 0; j < thumbexpr.length(); j++)
                                         {
                                             JSONObject object_thumb = thumbexpr.getJSONObject(j);
-                                            //Log.i("object_thumb", "" + object_thumb);
                                             String get_thumb = object_thumb.getString(j+1+"");
-                                            //Log.i("get_thumb",get_thumb);
 
                                             if(j+1 == 1)
                                             {
                                                 t1 = get_thumb;
-                                                //Log.i("t1",t1);
                                             }
                                             else if(j+1 == 2)
                                             {
                                                 t2 = get_thumb;
-                                                //Log.i("t2",t2);
                                             }
                                             else if(j+1 == 3)
                                             {
                                                 t3 = get_thumb;
-                                                //Log.i("t3",t3);
                                             }
                                             else if(j+1 == 4)
                                             {
                                                 t4 = get_thumb;
-                                                //Log.i("t4",t4);
                                             }
-                                            else{
+                                            else
+                                            {
                                                 t1 = "";
                                                 t2 = "";
                                                 t3 = "";
@@ -1778,50 +1698,37 @@ public class MainActivity extends AppCompatActivity
                                     else if (get_status.equals("2"))
                                     {
                                         String get_uId = object.getString("uId");
-                                        //Log.i("get_uId",get_uId);
-
                                         String get_mobile = object.getString("mobile");
-                                        //Log.i("get_mobile",get_mobile);
-
                                         String get_attType = object.getString("attendancetype");
-                                        //Log.i("get_attType",get_attType);
-
                                         String get_applyshift = object.getString("applyshift");
-                                        Log.i("get_applyshift", get_applyshift);
 
                                         JSONArray thumbexpr = object.getJSONArray("Thumexp");
-                                        //Log.i("thumbexpr1143",thumbexpr+"");
 
                                         String t1="",t2="",t3="",t4="";
 
                                         for(int j = 0; j < thumbexpr.length(); j++)
                                         {
                                             JSONObject object_thumb = thumbexpr.getJSONObject(j);
-                                            //Log.i("object_thumb", "" + object_thumb);
                                             String get_thumb = object_thumb.getString(j+1+"");
-                                            //Log.i("get_thumb",get_thumb);
 
                                             if(j+1 == 1)
                                             {
                                                 t1 = get_thumb;
-                                                //Log.i("t1",t1);
                                             }
                                             else if(j+1 == 2)
                                             {
                                                 t2 = get_thumb;
-                                                //Log.i("t2",t2);
                                             }
                                             else if(j+1 == 3)
                                             {
                                                 t3 = get_thumb;
-                                                //Log.i("t3",t3);
                                             }
                                             else if(j+1 == 4)
                                             {
                                                 t4 = get_thumb;
-                                                //Log.i("t4",t4);
                                             }
-                                            else{
+                                            else
+                                            {
                                                 t1 = "";
                                                 t2 = "";
                                                 t3 = "";
@@ -1829,30 +1736,33 @@ public class MainActivity extends AppCompatActivity
                                             }
                                         }
 
-                                        //Log.i("Insert: ", "Inserting ..");
                                         if (db.checkEmpId(get_uId))
                                         {
                                             db.UpdateEmpAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType, get_applyshift), get_uId);
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(MainActivity.this, "data not available for update", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                     else if (get_status.equals("3"))
                                     {
                                         String get_uId = object.getString("uId");
-                                        //Log.i("get_uId",get_uId);
-
                                         String get_mobile = object.getString("mobile");
-                                        //Log.i("get_mobile",get_mobile);
 
                                         if (db.checkEmpId(get_uId))
                                         {
                                             db.deleteEmpRecord(get_uId);
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(MainActivity.this, "data not available for delete", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 }
 
                                 Toast.makeText(MainActivity.this, "Data updated successfully", Toast.LENGTH_LONG).show();
 
-                                //Log.i("Reading: ", "Reading all contacts..");
                                 List<UserDetails_Model> contacts = db.getAllEmpData();
 
                                 for (UserDetails_Model cn : contacts)
@@ -1899,14 +1809,10 @@ public class MainActivity extends AppCompatActivity
         class GetPrefixData extends AsyncTask<String, Void, String>
         {
             @Override
-            protected void onPreExecute() {
-            }
-
-            @Override
             protected String doInBackground(String... params)
             {
                 try
-                { // http://hrsaas.safegird.com/owner/hrmapi/getprefix
+                {
                     String prefix_url = ""+url_http+""+Url+"/owner/hrmapi/getprefix?";
 
                     URL url = new URL(prefix_url);
@@ -1970,8 +1876,6 @@ public class MainActivity extends AppCompatActivity
                         try
                         {
                             JSONArray jsonArray = new JSONArray(myJson);
-                            //Log.i("jsonArray", "" + jsonArray);
-
                             JSONObject object = jsonArray.getJSONObject(0);
 
                             responseCode = object.getString("responseCode");
@@ -1979,7 +1883,6 @@ public class MainActivity extends AppCompatActivity
 
                             if (responseCode.equals("1"))
                             {
-                                //progressDialog.dismiss();
                                 editor_prefix = pref_prefix.edit();
 
                                 get_prefix = object.getString("prefix");
@@ -1991,7 +1894,6 @@ public class MainActivity extends AppCompatActivity
                             }
                             else
                             {
-                                //progressDialog.dismiss();
                                 editor_prefix.putString("responseCode", responseCode);
                                 editor_prefix.commit();
                             }
@@ -2001,44 +1903,18 @@ public class MainActivity extends AppCompatActivity
 
                         }
                         catch (JSONException e) {
-                            //progressDialog.dismiss();
                             Log.e("JsonException", e.toString());
                         }
                     }
                 }
                 else {
-                    //progressDialog.dismiss();
-                    //Toast.makeText(MainActivity.this, "Sorry...Bad internet connection", Toast.LENGTH_LONG).show();
+                    Log.i("Bad internet connection", "Bad internet connection");
                 }
             }
         }
 
         GetPrefixData getPrefixData = new GetPrefixData();
         getPrefixData.execute();
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        Intent startMain = new Intent(Intent.ACTION_MAIN);
-        startMain.addCategory(Intent.CATEGORY_HOME);
-        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(startMain);
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(receiver, filter);
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        unregisterReceiver(receiver);
     }
 
     public void postData(final String requestURL, final HashMap<String, String> postDataParams)
@@ -2104,7 +1980,9 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void run()
                         {
-                            progressDialog.dismiss();
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
                             Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -2118,7 +1996,9 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void run()
                         {
-                            progressDialog.dismiss();
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
                             Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -2132,7 +2012,7 @@ public class MainActivity extends AppCompatActivity
                             if (progressDialog != null && progressDialog.isShowing()) {
                                 progressDialog.dismiss();
                             }
-                            Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Slow internet connection / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
                     e.printStackTrace();
@@ -2151,7 +2031,9 @@ public class MainActivity extends AppCompatActivity
                 }
                 else
                 {
-                    progressDialog.dismiss();
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
                     Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_LONG).show();
                 }
             }
@@ -2159,59 +2041,6 @@ public class MainActivity extends AppCompatActivity
 
         SendPostRequest request = new SendPostRequest();
         request.execute();
-    }
-
-    public String  performPostCall(String requestURL, HashMap<String, String> postDataParams)
-    {
-        URL url;
-        try {
-            url = new URL(requestURL);
-
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(15000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod("POST");
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-
-            OutputStream os = conn.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-            writer.write(getPostDataString(postDataParams));
-
-            writer.flush();
-            writer.close();
-            os.close();
-
-            int responseCode = conn.getResponseCode();
-
-            if (responseCode == HttpsURLConnection.HTTP_OK)
-            {
-                String line;
-                BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                while ((line=br.readLine()) != null)
-                {
-                    response+=line;
-                }
-            }
-            else
-            {
-                response="";
-            }
-        }
-        catch (Exception e) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (progressDialog != null && progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
-                    Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
-                }
-            });
-            e.printStackTrace();
-        }
-
-        return response;
     }
 
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException
@@ -2241,7 +2070,7 @@ public class MainActivity extends AppCompatActivity
             Log.i("json", "" + json);
 //[{"empId":"115","datetime":"2017-07-21 12:21:58","responsecode":1,"signId":"2",
 // "primarykey":"5","msg":"Offline Attendance Successfully Done "}]
-            //[{"responsecode":0,"msg":"You are already signin","primarykey":"27"}]
+
             JSONObject jsonObject = json.getJSONObject(0);
             Log.i("jsonObject", "" + jsonObject);
 
@@ -2270,6 +2099,7 @@ public class MainActivity extends AppCompatActivity
 
                     db.delete_attendance_record();
                     db.deleteAllEmpRecord();
+
                     Intent intent = new Intent(MainActivity.this, UrlActivity.class);
                     startActivity(intent);
                     finish();
@@ -2310,6 +2140,7 @@ public class MainActivity extends AppCompatActivity
 
                     db.delete_attendance_record();
                     db.deleteAllEmpRecord();
+
                     Intent intent = new Intent(MainActivity.this, UrlActivity.class);
                     startActivity(intent);
                     finish();
@@ -2328,7 +2159,7 @@ public class MainActivity extends AppCompatActivity
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
-            Toast.makeText(MainActivity.this, "JSON Exception", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "JSON Exception "+e.toString(), Toast.LENGTH_SHORT).show();
             Log.e("Fail 1", e.toString());
         }
     }
@@ -2339,16 +2170,6 @@ public class MainActivity extends AppCompatActivity
         {
             private URL url;
             private String response = "";
-
-            @Override
-            protected void onPreExecute()
-            {
-                /*progressDialog1 = new ProgressDialog(AttendanceActivity.this, ProgressDialog.THEME_HOLO_LIGHT);
-                progressDialog1.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog1.setTitle("Please wait");
-                progressDialog1.setMessage("Receiving Device ID...");
-                progressDialog1.show();*/
-            }
 
             @Override
             protected String doInBackground(String... params)
@@ -2390,7 +2211,6 @@ public class MainActivity extends AppCompatActivity
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //progressDialog1.dismiss();
                             Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -2401,7 +2221,6 @@ public class MainActivity extends AppCompatActivity
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //progressDialog1.dismiss();
                             Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -2412,7 +2231,6 @@ public class MainActivity extends AppCompatActivity
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //progressDialog1.dismiss();
                             Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -2428,7 +2246,6 @@ public class MainActivity extends AppCompatActivity
                 Log.i("response", result);
                 if (result.equals("[]"))
                 {
-                    //progressDialog1.dismiss();
                     Toast.makeText(MainActivity.this, "Sorry... Slow internet connection", Toast.LENGTH_LONG).show();
                 }
                 else
@@ -2436,16 +2253,12 @@ public class MainActivity extends AppCompatActivity
                     try
                     {
                         JSONArray json = new JSONArray(result);
-                        //Log.i("json", "" + json);
-
                         JSONObject object = json.getJSONObject(0);
 
                         String responsecode = object.getString("responseCode");
 
                         if (responsecode.equals("1"))
                         {
-                            // progressDialog1.dismiss();
-
                             TabID = object.getString("responseMessage");
                             Log.i("TabID",TabID);
 
@@ -2455,8 +2268,6 @@ public class MainActivity extends AppCompatActivity
                         }
                         else
                         {
-                            //progressDialog1.dismiss();
-
                             String msg = object.getString("responseMessage");
                             String message = msg.substring(2, msg.length()-2);
 
@@ -2476,7 +2287,6 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                     catch (JSONException e){
-                        //progressDialog1.dismiss();
                         Log.i("Exception", e.toString());
                     }
                 }
@@ -2484,5 +2294,29 @@ public class MainActivity extends AppCompatActivity
         }
         SendDeviceID sendid = new SendDeviceID();
         sendid.execute();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        unregisterReceiver(receiver);
     }
 }

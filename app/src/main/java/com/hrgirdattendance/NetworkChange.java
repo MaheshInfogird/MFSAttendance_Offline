@@ -43,6 +43,7 @@ public abstract class NetworkChange extends BroadcastReceiver
                 }
             }
         }
+
         isConnected = false;
         onNetworkChange();
         Log.i("no internet connection", "no internet connection");
