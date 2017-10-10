@@ -347,43 +347,39 @@ public class DatabaseHandler extends SQLiteOpenHelper
 
     public void deletePrev3DaysRecord()
     {
-        List<SigninOut_Model> contactList = new ArrayList<SigninOut_Model>();
-        String selectQuery = "SELECT  * FROM " + TABLE_SignINOut;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -2);
-        System.out.println("Date = "+ cal.getTime());
-
         Date newDate = cal.getTime();
 
         String timeStamp = sdf.format(newDate);
         Log.i("timeStamp", timeStamp);
 
+        String selectQuery = "SELECT  * FROM " + TABLE_SignINOut;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
         if (cursor.moveToFirst())
         {
-            do {
+            do
+            {
                 String dt = cursor.getString(2);
                 Log.i("dt", dt);
-                Date date_var = new Date(),before3days = new Date();
+                Date date_var = new Date(), before3days = new Date();
 
                 try
                 {
                     date_var = sdf.parse(dt);
-                    Log.i("date_var", timeStamp);
                     before3days = sdf.parse(timeStamp);
                     Log.i("before3days", timeStamp);
-                    String newDateString = sdf.format(date_var);
                     String newDateStringn = sdf.format(date_var);
 
                     if(date_var.equals(before3days) || date_var.before(before3days))
                     {
                         SQLiteDatabase dbn = this.getWritableDatabase();
                         dbn.execSQL("delete from "+ TABLE_SignINOut +" where "+KEY_Date_Time+" = '"+newDateStringn+"'");
-                        Log.i("delete_query", "delete from "+ TABLE_SignINOut +" where "+KEY_Date_Time+" = '"+newDateStringn+"'");
+                        //Log.i("delete_query", "delete from "+ TABLE_SignINOut +" where "+KEY_Date_Time+" = '"+newDateStringn+"'");
                     }
                 }
                 catch (ParseException e) {

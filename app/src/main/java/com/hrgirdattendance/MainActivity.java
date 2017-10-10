@@ -54,8 +54,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -459,36 +462,6 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void delete_prevAttRecord()
-    {
-        SigninOut_Model temp_sm_signinout =  db.checkdata();
-
-        if(temp_sm_signinout != null)
-        {
-            List<SigninOut_Model> contacts = db.getSigninoutData(0);
-            Log.i("MFS_Log contacts", "" + contacts);
-
-            if (!contacts.isEmpty())
-            {
-                for (SigninOut_Model cn : contacts)
-                {
-                    String date_data = "primary_key "+cn.getPrimaryKey()+", User_Id"+cn.getUserId()+", Date"+cn.getDate_Time();
-                    Log.i("date_data_before", date_data);
-                    //db.delete_prev_att_record(date_data, date);
-                }
-
-                db.deletePrev3DaysRecord();
-                Log.i("MFS data", "data deleted");
-
-                for (SigninOut_Model cn : contacts)
-                {
-                    String date_data = "primary_key "+cn.getPrimaryKey()+", User_Id"+cn.getUserId()+", Date"+cn.getDate_Time();
-                    Log.i("date_data_after", date_data);
-                }
-            }
-        }
-    }
-
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -568,7 +541,7 @@ public class MainActivity extends AppCompatActivity
                     {
                         if (outid.equals("1"))
                         {
-                            Toast.makeText(MainActivity.this, "No Attendance Records Found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
                             session.logout_url();
                             key_editor = key_pref.edit();
                             key_editor.clear();
@@ -580,7 +553,7 @@ public class MainActivity extends AppCompatActivity
                         }
                         else if (outid.equals("3"))
                         {
-                            Toast.makeText(MainActivity.this, "No Attendance Records Found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
                         }
                     }
                     else
@@ -633,7 +606,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     else if (outid.equals("3"))
                     {
-                        Toast.makeText(MainActivity.this, "No Attendance Records Found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -1487,7 +1460,9 @@ public class MainActivity extends AppCompatActivity
     {
         class GetUserData extends AsyncTask<String, Void, String>
         {
-            String response1;
+            private String response1;
+            private HttpURLConnection conn = null;
+            private InputStreamReader is = null;
 
             @Override
             protected void onPreExecute()
@@ -1511,19 +1486,20 @@ public class MainActivity extends AppCompatActivity
                     URL url = new URL(leave_url+query3);
                     Log.i("url123", ""+ url);
 
-                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-                    connection.setReadTimeout(10000);
-                    connection.setConnectTimeout(10000);
-                    connection.setRequestMethod("GET");
-                    connection.setUseCaches(false);
-                    connection.setAllowUserInteraction(false);
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    int responseCode = connection.getResponseCode();
+                    conn = (HttpURLConnection)url.openConnection();
+                    conn.setReadTimeout(10000);
+                    conn.setConnectTimeout(10000);
+                    conn.setRequestMethod("GET");
+                    conn.setUseCaches(false);
+                    conn.setAllowUserInteraction(false);
+                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    int responseCode = conn.getResponseCode();
 
                     if (responseCode == HttpURLConnection.HTTP_OK)
                     {
-                        String line;
-                        BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                        String line = "";
+                        is = new InputStreamReader(conn.getInputStream());
+                        BufferedReader br = new BufferedReader(is);
                         while ((line = br.readLine()) != null)
                         {
                             response1 = "";
@@ -1583,6 +1559,19 @@ public class MainActivity extends AppCompatActivity
 
                     Log.e("Exception", e.toString());
                 }
+                finally
+                {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        }
+                        catch (IOException e) {
+                        }
+                    }
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
+                }
 
                 return response1;
             }
@@ -1611,7 +1600,7 @@ public class MainActivity extends AppCompatActivity
                             outid = "3";
                             upload_Data();
 
-                            Toast.makeText(MainActivity.this, "No New Records Found", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "No new Emp records found", Toast.LENGTH_SHORT).show();
                             List<UserDetails_Model> contacts = db.getAllEmpData();
 
                             for (UserDetails_Model cn : contacts)
@@ -1921,6 +1910,9 @@ public class MainActivity extends AppCompatActivity
     {
         class SendPostRequest extends AsyncTask<String, Void, String>
         {
+            private String response = "";
+            private HttpURLConnection conn = null;
+            private InputStreamReader is = null;
 
             protected void onPreExecute()
             {
@@ -1930,17 +1922,17 @@ public class MainActivity extends AppCompatActivity
 
             protected String doInBackground(String... arg0)
             {
-
-                try {
+                try
+                {
                     Log.i("requestURL", ""+requestURL);
                     Log.i("postDataParams", ""+postDataParams);
 
                     URL url = new URL(requestURL);
                     Log.i("url_post", ""+url);
 
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(15000);
-                    conn.setConnectTimeout(15000);
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setReadTimeout(20000);
+                    conn.setConnectTimeout(20000);
                     conn.setRequestMethod("POST");
                     conn.setUseCaches(false);
                     conn.setAllowUserInteraction(false);
@@ -1960,8 +1952,9 @@ public class MainActivity extends AppCompatActivity
 
                     if (responseCode == HttpURLConnection.HTTP_OK)
                     {
-                        String line;
-                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        String line = "";
+                        is = new InputStreamReader(conn.getInputStream());
+                        BufferedReader br = new BufferedReader(is);
                         while ((line = br.readLine()) != null)
                         {
                             response_att = "";
@@ -2017,6 +2010,19 @@ public class MainActivity extends AppCompatActivity
                     });
                     e.printStackTrace();
                 }
+                finally
+                {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        }
+                        catch (IOException e) {
+                        }
+                    }
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
+                }
 
                 return response_att;
             }
@@ -2024,7 +2030,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onPostExecute(String result)
             {
-                Log.i("result", result);
+                //Log.i("result", result);
                 if (result != null)
                 {
                     GetJSONData(result);
@@ -2070,7 +2076,6 @@ public class MainActivity extends AppCompatActivity
             Log.i("json", "" + json);
 //[{"empId":"115","datetime":"2017-07-21 12:21:58","responsecode":1,"signId":"2",
 // "primarykey":"5","msg":"Offline Attendance Successfully Done "}]
-
             JSONObject jsonObject = json.getJSONObject(0);
             Log.i("jsonObject", "" + jsonObject);
 
@@ -2168,8 +2173,10 @@ public class MainActivity extends AppCompatActivity
     {
         class SendDeviceID extends AsyncTask<String, Void, String>
         {
-            private URL url;
+            //private URL url;
             private String response = "";
+            private HttpURLConnection conn = null;
+            private InputStreamReader is = null;
 
             @Override
             protected String doInBackground(String... params)
@@ -2181,22 +2188,21 @@ public class MainActivity extends AppCompatActivity
                     String query = String.format("android_devide_id=%s",
                             URLEncoder.encode(device_id, "UTF-8"));
 
-                    url = new URL(Transurl + query);
+                    URL url = new URL(Transurl + query);
                     Log.i("url", "" + url);
 
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn = (HttpURLConnection) url.openConnection();
                     conn.setReadTimeout(10000);
                     conn.setConnectTimeout(10000);
                     conn.setRequestMethod("GET");
-                    conn.setDoInput(true);
                     conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    conn.setDoOutput(true);
                     int responseCode = conn.getResponseCode();
 
                     if (responseCode == HttpsURLConnection.HTTP_OK)
                     {
-                        String line;
-                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        String line = "";
+                        is = new InputStreamReader(conn.getInputStream());
+                        BufferedReader br = new BufferedReader(is);
                         while ((line = br.readLine()) != null)
                         {
                             response += line;
@@ -2235,6 +2241,19 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
                     Log.e("Exception", e.toString());
+                }
+                finally
+                {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        }
+                        catch (IOException e) {
+                        }
+                    }
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
                 }
 
                 return response;

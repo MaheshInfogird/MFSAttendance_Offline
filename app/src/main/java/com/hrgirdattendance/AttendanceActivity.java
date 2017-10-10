@@ -56,6 +56,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -382,13 +383,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     }
 
     public void deviceData()
-
     {
         android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         //GetDeviceName(android_id);
-
         // txt_att_deviceid.setText(android_id);
-        // priya changes
 
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
@@ -877,7 +875,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                 if (date_array.isEmpty())
                 {
-                    Toast.makeText(AttendanceActivity.this, "No Records Found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AttendanceActivity.this, "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
@@ -920,11 +918,20 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
             }
             else {
-                Toast.makeText(AttendanceActivity.this, "No Records Found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AttendanceActivity.this, "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
             }
         }
         else {
-            Toast.makeText(AttendanceActivity.this, "No Records Found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AttendanceActivity.this, "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void sync_data_check_internet()
+    {
+        if (internetConnection.hasConnection(getApplicationContext()))
+        {
+            first_hit = false;
+            sync_data();
         }
     }
 
@@ -1129,15 +1136,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
         GetUserData getUrlData = new GetUserData();
         getUrlData.execute();
-    }
-
-    public void sync_data_check_internet()
-    {
-        if (internetConnection.hasConnection(getApplicationContext()))
-        {
-            first_hit = false;
-            sync_data();
-        }
     }
 
     public void make_offline_attendance(String uid, String fname, String lname, String mobileno,String inout)
@@ -1639,60 +1637,13 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         }
     }
 
-    protected void onStop()
-    {
-        UnInitScanner();
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        if (mfs100 != null)
-        {
-            mfs100.Dispose();
-        }
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(receiver, filter);
-
-        new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    InitScanner();
-                }
-            }).start();
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        unregisterReceiver(receiver);
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        //UnInitScanner();
-        mfs100.StopCapture();
-        Intent intent = new Intent(AttendanceActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
-
-    }
-
     public void getUserData()
     {
         class GetUserData extends AsyncTask<String, Void, String>
         {
-            String response1;
+            private String response1;
+            private HttpURLConnection conn = null;
+            private InputStreamReader is = null;
 
             @Override
             protected void onPreExecute() {
@@ -1711,29 +1662,24 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             URLEncoder.encode(flag, "UTF-8"),
                             URLEncoder.encode(empattDid, "UTF-8"));
 
-                    /*String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s",
-                            URLEncoder.encode(android_id, "UTF-8"),
-                            URLEncoder.encode(flag, "UTF-8"),
-                            URLEncoder.encode(empattDid, "UTF-8"));
-                            //URLEncoder.encode(offline_flag, "UTF-8"));*/
-
                     query3 = query3.replace("%2C+",",");
                     URL url = new URL(leave_url+query3);
                     Log.i("url123", ""+ url);
 
-                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-                    connection.setReadTimeout(10000);
-                    connection.setConnectTimeout(10000);
-                    connection.setRequestMethod("GET");
-                    connection.setUseCaches(false);
-                    connection.setAllowUserInteraction(false);
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    int responseCode = connection.getResponseCode();
+                    conn = (HttpURLConnection)url.openConnection();
+                    conn.setReadTimeout(10000);
+                    conn.setConnectTimeout(10000);
+                    conn.setRequestMethod("GET");
+                    conn.setUseCaches(false);
+                    conn.setAllowUserInteraction(false);
+                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    int responseCode = conn.getResponseCode();
 
                     if (responseCode == HttpURLConnection.HTTP_OK)
                     {
-                        String line;
-                        BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                        String line = "";
+                        is = new InputStreamReader(conn.getInputStream());
+                        BufferedReader br = new BufferedReader(is);
                         while ((line = br.readLine()) != null)
                         {
                             response1 = "";
@@ -1787,6 +1733,20 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                     Log.e("Exception", e.toString());
                 }
+                finally
+                {
+                    if (is != null)
+                    {
+                        try {
+                            is.close();
+                        }
+                        catch (IOException e) {
+                        }
+                    }
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
+                }
 
                 return response1;
             }
@@ -1826,63 +1786,43 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                 for(int i=0; i <jsonArray.length(); i++)
                                 {
                                     JSONObject object = jsonArray.getJSONObject(i);
-                                    //Log.i("object123", "" + object);
                                     String get_status = object.getString("status");
-                                    //Log.i("get_status",get_status);
                                     String empattDid = object.getString("empattDid");
-                                    //Log.i("empattDid",empattDid);
-
                                     empattDid_arr.add(empattDid);
 
                                     if (get_status.equals("1"))
                                     {
                                         String get_uId = object.getString("uId");
-                                        //Log.i("get_uId",get_uId);
                                         String get_firstName = object.getString("firstName");
-                                        //Log.i("get_firstName",get_firstName);
                                         String get_lastName = object.getString("lastName");
-                                        //Log.i("get_lastName",get_lastName);
                                         String get_cid = object.getString("cid");
-                                        //Log.i("get_cid",get_cid);
                                         String get_mobile = object.getString("mobile");
-                                        //Log.i("get_mobile",get_mobile);
                                         String get_attType = object.getString("attendancetype");
-                                        //Log.i("get_attType",get_attType);
-
                                         String get_applyshift = object.getString("applyshift");
-                                        //Log.i("get_applyshift", get_applyshift);
-
                                         JSONArray thumbexpr = object.getJSONArray("Thumexp");
-                                        //Log.i("thumbexpr1143",thumbexpr+"");
 
                                         String t1="",t2="",t3="",t4="";
 
                                         for(int j = 0; j < thumbexpr.length(); j++)
                                         {
                                             JSONObject object_thumb = thumbexpr.getJSONObject(j);
-                                            //Log.i("object_thumb", "" + object_thumb);
                                             String get_thumb = object_thumb.getString(j+1+"");
-                                            //Log.i("get_thumb",get_thumb);
 
                                             if(j+1 == 1)
                                             {
                                                 t1 = get_thumb;
-                                                //Log.i("t1",t1);
                                             }
                                             else if(j+1 == 2)
                                             {
                                                 t2 = get_thumb;
-                                                //Log.i("t2",t2);
                                             }
                                             else if(j+1 == 3)
                                             {
                                                 t3 = get_thumb;
-                                                //Log.i("t3",t3);
                                             }
                                             else if(j+1 == 4)
                                             {
                                                 t4 = get_thumb;
-                                                //Log.i("t4",t4);
                                             }
                                             else{
                                                 t1 = "";
@@ -1904,46 +1844,33 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                     else if (get_status.equals("2"))
                                     {
                                         String get_uId = object.getString("uId");
-                                        //Log.i("get_uId",get_uId);
                                         String get_mobile = object.getString("mobile");
-                                        //Log.i("get_mobile",get_mobile);
                                         String get_attType = object.getString("attendancetype");
-                                        //Log.i("get_attType",get_attType);
-
                                         String get_applyshift = object.getString("applyshift");
-                                        Log.i("get_applyshift", get_applyshift);
-
                                         JSONArray thumbexpr = object.getJSONArray("Thumexp");
-                                        //Log.i("thumbexpr1143",thumbexpr+"");
 
                                         String t1="",t2="",t3="",t4="";
 
                                         for(int j = 0; j < thumbexpr.length(); j++)
                                         {
                                             JSONObject object_thumb = thumbexpr.getJSONObject(j);
-                                            //Log.i("object_thumb", "" + object_thumb);
                                             String get_thumb = object_thumb.getString(j+1+"");
-                                            //Log.i("get_thumb",get_thumb);
 
                                             if(j+1 == 1)
                                             {
                                                 t1 = get_thumb;
-                                                //Log.i("t1",t1);
                                             }
                                             else if(j+1 == 2)
                                             {
                                                 t2 = get_thumb;
-                                                //Log.i("t2",t2);
                                             }
                                             else if(j+1 == 3)
                                             {
                                                 t3 = get_thumb;
-                                                //Log.i("t3",t3);
                                             }
                                             else if(j+1 == 4)
                                             {
                                                 t4 = get_thumb;
-                                                //Log.i("t4",t4);
                                             }
                                             else{
                                                 t1 = "";
@@ -2027,6 +1954,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     {
         class SendPostRequest extends AsyncTask<String, Void, String>
         {
+            private HttpURLConnection conn = null;
+            private InputStreamReader is = null;
+
             protected void onPreExecute()
             {
                 if (first_hit)
@@ -2046,7 +1976,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     URL url = new URL(requestURL);
                     Log.i("url_post", ""+url);
 
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn = (HttpURLConnection) url.openConnection();
                     conn.setReadTimeout(15000);
                     conn.setConnectTimeout(15000);
                     conn.setRequestMethod("POST");
@@ -2068,8 +1998,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                     if (responseCode == HttpURLConnection.HTTP_OK)
                     {
-                        String line;
-                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        String line = "";
+                        is = new InputStreamReader(conn.getInputStream());
+                        BufferedReader br = new BufferedReader(is);
                         while ((line = br.readLine()) != null)
                         {
                             response_att = "";
@@ -2124,6 +2055,19 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         }
                     });
                     e.printStackTrace();
+                }
+                finally
+                {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        }
+                        catch (IOException e) {
+                        }
+                    }
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
                 }
 
                 return response_att;
@@ -2198,6 +2142,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 key_editor.clear();
                 key_editor.putInt("key", prev_key);
                 key_editor.commit();
+
+                Toast.makeText(AttendanceActivity.this, "Attendance data uploaded successfully", Toast.LENGTH_SHORT).show();
             }
             else
             {
@@ -2370,6 +2316,55 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         }
         SendDeviceID sendid = new SendDeviceID();
         sendid.execute();
+    }
+
+    protected void onStop()
+    {
+        UnInitScanner();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        if (mfs100 != null)
+        {
+            mfs100.Dispose();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver, filter);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                InitScanner();
+            }
+        }).start();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        //UnInitScanner();
+        mfs100.StopCapture();
+        Intent intent = new Intent(AttendanceActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+
     }
 
 }
