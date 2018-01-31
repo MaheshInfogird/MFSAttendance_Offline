@@ -22,7 +22,7 @@
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity
-            android:name="com.hrgirdattendance.LogInActivity"
+            android:name="com.hrgirdattendance.LogInActivity_New"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity

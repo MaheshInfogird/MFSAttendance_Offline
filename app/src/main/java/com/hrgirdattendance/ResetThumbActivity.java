@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -42,11 +43,13 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -803,65 +806,36 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
             if (RegisteredBase64_1 == null)
             {
                 Enroll_Template = new byte[fingerData.ISOTemplate().length];
-                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
-                        fingerData.ISOTemplate().length);
-
-                RegisteredBase64_1 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
+                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0, fingerData.ISOTemplate().length);
+                //Log.i("Enroll_Template1", Arrays.toString(Enroll_Template));
+                RegisteredBase64_1 = Base64.encodeToString(Enroll_Template, Base64.DEFAULT);
                 Log.i("RegisteredBase64_1", RegisteredBase64_1);
             }
             else  if (RegisteredBase64_2 == null)
             {
                 Enroll_Template = new byte[fingerData.ISOTemplate().length];
-                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
-                        fingerData.ISOTemplate().length);
-
-                RegisteredBase64_2 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
+                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0, fingerData.ISOTemplate().length);
+                //Log.i("Enroll_Template2", Arrays.toString(Enroll_Template));
+                RegisteredBase64_2 = Base64.encodeToString(Enroll_Template, Base64.DEFAULT);
                 Log.i("RegisteredBase64_2", RegisteredBase64_2);
             }
             else  if (RegisteredBase64_3 == null)
             {
                 Enroll_Template = new byte[fingerData.ISOTemplate().length];
-                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
-                        fingerData.ISOTemplate().length);
-
-                RegisteredBase64_3 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
+                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0, fingerData.ISOTemplate().length);
+                //Log.i("Enroll_Template3", Arrays.toString(Enroll_Template));
+                RegisteredBase64_3 = Base64.encodeToString(Enroll_Template, Base64.DEFAULT);
                 Log.i("RegisteredBase64_3", RegisteredBase64_3);
             }
             else
             {
                 Enroll_Template = new byte[fingerData.ISOTemplate().length];
-                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
-                        fingerData.ISOTemplate().length);
-
-                RegisteredBase64_4 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
+                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0, fingerData.ISOTemplate().length);
+                //Log.i("Enroll_Template4", Arrays.toString(Enroll_Template));
+                RegisteredBase64_4 = Base64.encodeToString(Enroll_Template, Base64.DEFAULT);
                 Log.i("RegisteredBase64_4", RegisteredBase64_4);
             }
-
-            /*if (RegisteredBase64_1 != null && RegisteredBase64_2 != null)
-            {
-                MobileNo = ed_MobNo.getText().toString();
-                //str_RegisteredThumbs = RegisteredBase64_1 + ", " + RegisteredBase64_2 + ", " + RegisteredBase64_3 + ", " + RegisteredBase64_4;
-                str_RegisteredThumbs = RegisteredBase64_1 + ", " + RegisteredBase64_2;
-                //progress_layout.setVisibility(View.VISIBLE);
-                resetThumbRegistration();
-                RegisteredThumbs = new ArrayList<String>();
-                RegisteredThumbs.clear();
-                RegisteredThumbs.add(RegisteredBase64_1);
-                RegisteredThumbs.add(RegisteredBase64_2);
-                //RegisteredThumbs.add(RegisteredBase64_3);
-                //RegisteredThumbs.add(RegisteredBase64_4);
-                Log.i("str_RegisteredThumbs", "" + str_RegisteredThumbs);
-
-            }*/
         }
-
-       /* WriteFile("Raw.raw", fingerData.RawData());
-        WriteFile("Bitmap.bmp", fingerData.FingerImage());
-        WriteFile("ISOTemplate.iso", fingerData.ISOTemplate());
-        WriteFile("ANSITemplate.ansi", fingerData.ANSITemplate());
-        WriteFile("ISOImage.iso", fingerData.ISOImage());
-        WriteFile("WSQ.wsq", fingerData.WSQImage());*/
-
     }
 
     @Override
@@ -1437,7 +1411,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
             {
                 try
                 {
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/resetthum/?";
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/resetthumoffline/?";
 
                     String query = String.format("empId=%s&thumexp=%s&deviceid=%s",
                             URLEncoder.encode(emp_id, "UTF-8"),
@@ -1527,9 +1501,9 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 }
                 else
                 {
-                    if (db.checkEmpId(emp_id))
-                    {
-                        db.UpdateEmpData(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
+                    /*if (db.checkEmpId(emp_id))
+                    {*/
+                        //db.UpdateEmpData(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
                         textToSpeech.speak("Thumbs Updated Successfully!", TextToSpeech.QUEUE_FLUSH, null);
 
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
@@ -1555,7 +1529,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                             }
                         });
                         alertDialog.show();
-                    }
+                    /*}
                     else
                     {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
@@ -1581,7 +1555,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                             }
                         });
                         alertDialog.show();
-                    }
+                    }*/
                 }
             }
         }

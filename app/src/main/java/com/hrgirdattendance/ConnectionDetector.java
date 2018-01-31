@@ -24,14 +24,15 @@ public class ConnectionDetector
 
     public String changeProtocol()
     {
-        return "https://";//live
-//        return "http://";
+        //return "https://";//live
+        return "http://";
     }
 
     public String changeUrl()
     {
-        return "infogird.hrgird.com";//live
-//        return "hrsaas.safegird.com";
+        //return "infogird.hrgird.com";//live
+        //return "hrsaas.safegird.com";
+        return "hrsaasv2.safegird.com";
     }
     
     public String getAPIKey()

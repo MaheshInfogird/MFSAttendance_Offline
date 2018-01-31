@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -848,7 +849,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
                         fingerData.ISOTemplate().length);
 
-                RegisteredBase64_1 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
+                RegisteredBase64_1 = Base64.encodeToString(Enroll_Template, Base64.NO_WRAP);
                 Log.i("RegisteredBase64_1", RegisteredBase64_1);
             }
             else if (RegisteredBase64_2 == null)
@@ -857,7 +858,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
                         fingerData.ISOTemplate().length);
 
-                RegisteredBase64_2 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
+                RegisteredBase64_2 = Base64.encodeToString(Enroll_Template, Base64.NO_WRAP);
                 Log.i("RegisteredBase64_2", RegisteredBase64_2);
             }
             else  if (RegisteredBase64_3 == null)
@@ -866,7 +867,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
                         fingerData.ISOTemplate().length);
 
-                RegisteredBase64_3 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
+                RegisteredBase64_3 = Base64.encodeToString(Enroll_Template, Base64.NO_WRAP);
                 Log.i("RegisteredBase64_3", RegisteredBase64_3);
             }
             else
@@ -875,7 +876,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
                         fingerData.ISOTemplate().length);
 
-                RegisteredBase64_4 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
+                RegisteredBase64_4 = Base64.encodeToString(Enroll_Template, Base64.NO_WRAP);
                 Log.i("RegisteredBase64_4", RegisteredBase64_4);
             }
 
@@ -1459,7 +1460,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 {
                     Log.i("doInBackground","doInBackground");
                     //String Transurl = ""+url_http+""+Url+"/owner/hrmapi/thumregistration/?";
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/thumregistrationnew/?";
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/thumregistrationnewoffline/?";
                     Log.i("Transurl", "" + Transurl);
 
                     String query = String.format("empId=%s&thumexp=%s&device_value=%s",

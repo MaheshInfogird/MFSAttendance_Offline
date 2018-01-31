@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     else
                     {
-                        Intent intent = new Intent(MainActivity.this, LogInActivity.class);
+                        Intent intent = new Intent(MainActivity.this, LogInActivity_New.class);
                         intent.putExtra("login_id", "1");
                         startActivity(intent);
                         finish();
@@ -375,7 +375,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     else
                     {
-                        Intent intent = new Intent(MainActivity.this, LogInActivity.class);
+                        Intent intent = new Intent(MainActivity.this, LogInActivity_New.class);
                         intent.putExtra("login_id", "2");
                         startActivity(intent);
                         finish();
@@ -573,7 +573,8 @@ public class MainActivity extends AppCompatActivity
                         DateTime = DateTime.replace(", ", ",");
                         InOutId = InOutId.replace(", ", ",");
 
-                        String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitm?";
+                        //String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitm?";
+                        String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitmnew?";
                         Log.i("url", url);
 
                         HashMap<String, String> map = new HashMap<String, String>();
@@ -581,6 +582,7 @@ public class MainActivity extends AppCompatActivity
                         map.put("empId", EmpId);
                         map.put("datetime", DateTime);
                         map.put("signId", InOutId);
+                        map.put("deviceid", android_id);
 
                         postData(url, map);
                     }
@@ -943,9 +945,7 @@ public class MainActivity extends AppCompatActivity
                     connection.setRequestMethod("GET");
                     connection.setUseCaches(false);
                     connection.setAllowUserInteraction(false);
-                    connection.setDoInput(true);
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setDoOutput(true);
                     int responseCode = connection.getResponseCode();
 
                     if (responseCode == HttpURLConnection.HTTP_OK)
@@ -980,7 +980,6 @@ public class MainActivity extends AppCompatActivity
 
                     if (myJson1.equals("[]"))
                     {
-                        //progressDialog.dismiss();
                         Toast.makeText(MainActivity.this, "Sorry... Data not available", Toast.LENGTH_LONG).show();
                     }
                     else
@@ -988,7 +987,6 @@ public class MainActivity extends AppCompatActivity
                         try
                         {
                             JSONArray jsonArray = new JSONArray(myJson1);
-                            //Log.i("jsonArray", "" + jsonArray);
 
                             JSONObject object = jsonArray.getJSONObject(0);
                             
@@ -998,7 +996,6 @@ public class MainActivity extends AppCompatActivity
 
                             if (version_code != get_version)
                             {
-                                //progressDialog.dismiss();
                                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                                 alertDialog.setTitle("New Update");
                                 alertDialog.setMessage("Please update your app");
@@ -1027,44 +1024,10 @@ public class MainActivity extends AppCompatActivity
                                 alertDialog.show();
                             }
                             else {
-                                /*getUserData();
-                                getPrefixData();*/
-
                                 flag = "1";
-                                //getUserData();
-                                //getUserDataNew();
-
+                                empattDid = "";
                                 uid_array.clear();
-
-                                flag = "1";
-                                //offline_flag = "";
-                                //getUserData();
                                 getUserDataNew();
-
-                                /*List<UserDetails_Model> contacts = db.getAllEmpData();
-                                if (contacts.isEmpty())
-                                {
-                                    pk = "0";
-                                    flag = "1";
-                                    //getUserData();
-                                    getUserDataNew();
-                                }
-                                else
-                                {
-                                    for (UserDetails_Model cn : contacts)
-                                    {
-                                        String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no();
-                                        Log.i("Name: ", log);
-                                        String uid = cn.getUid();
-                                        uid_array.add(uid);
-                                    }
-
-                                    pk = uid_array.toString();
-                                    pk = pk.substring(1, pk.length() - 1);
-                                    flag = "1";
-                                    //getUserData();
-                                    getUserDataNew();
-                                }*/
                             }
                         }
                         catch (JSONException e) {
@@ -1579,7 +1542,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onPostExecute(String result)
             {
-                Log.i("result", result);
+                //Log.i("result", result);
                 if (result != null)
                 {
                     myJson2 = result;
@@ -1600,7 +1563,8 @@ public class MainActivity extends AppCompatActivity
                             outid = "3";
                             upload_Data();
 
-                            Toast.makeText(MainActivity.this, "No new Emp records found", Toast.LENGTH_SHORT).show();
+                            Log.i("No new Emp records","No new Emp records");
+                            //Toast.makeText(MainActivity.this, "No new Emp records found", Toast.LENGTH_SHORT).show();
                             List<UserDetails_Model> contacts = db.getAllEmpData();
 
                             for (UserDetails_Model cn : contacts)
@@ -1622,7 +1586,7 @@ public class MainActivity extends AppCompatActivity
 
                                 empattDid_arr.clear();
 
-                                for(int i=0; i <jsonArray.length(); i++)
+                                for(int i = 0; i < jsonArray.length(); i++)
                                 {
                                     JSONObject object = jsonArray.getJSONObject(i);
 
@@ -1731,7 +1695,7 @@ public class MainActivity extends AppCompatActivity
                                         }
                                         else
                                         {
-                                            Toast.makeText(MainActivity.this, "data not available for update", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainActivity.this, "Emp data not found for update", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                     else if (get_status.equals("3"))
@@ -1745,12 +1709,12 @@ public class MainActivity extends AppCompatActivity
                                         }
                                         else
                                         {
-                                            Toast.makeText(MainActivity.this, "data not available for delete", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainActivity.this, "Emp data not found for delete", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 }
 
-                                Toast.makeText(MainActivity.this, "Data updated successfully", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(MainActivity.this, "Data updated successfully", Toast.LENGTH_LONG).show();
 
                                 List<UserDetails_Model> contacts = db.getAllEmpData();
 
@@ -1931,8 +1895,8 @@ public class MainActivity extends AppCompatActivity
                     Log.i("url_post", ""+url);
 
                     conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(20000);
-                    conn.setConnectTimeout(20000);
+                    conn.setReadTimeout(60000);
+                    conn.setConnectTimeout(60000);
                     conn.setRequestMethod("POST");
                     conn.setUseCaches(false);
                     conn.setAllowUserInteraction(false);
@@ -2089,74 +2053,26 @@ public class MainActivity extends AppCompatActivity
             if (responsecode.equals("1"))
             {
                 db.deletePrev3DaysRecord();
-                //delete_prevAttRecord();
-                progressDialog.dismiss();
-                if (outid.equals("1"))
-                {
-                    session.logout_url();
-                    key_editor = key_pref.edit();
-                    key_editor.clear();
-                    key_editor.commit();
 
-                    editor_dev = pref_dev.edit();
-                    editor_dev.clear();
-                    editor_dev.commit();
-
-                    db.delete_attendance_record();
-                    db.deleteAllEmpRecord();
-
-                    Intent intent = new Intent(MainActivity.this, UrlActivity.class);
-                    startActivity(intent);
-                    finish();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
                 }
-                else
-                {
-                    key_editor = key_pref.edit();
-                    key_editor.clear();
-                    key_editor.putInt("key", prev_key);
-                    key_editor.commit();
+                key_editor = key_pref.edit();
+                key_editor.clear();
+                key_editor.putInt("key", prev_key);
+                key_editor.commit();
 
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                    alertDialog.setMessage(message);
-                    alertDialog.setCancelable(true);
-                    alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    alertDialog.show();
-                }
+                Toast.makeText(getApplicationContext(), "Attendance data uploaded successfully", Toast.LENGTH_SHORT).show();
             }
             else
             {
-                progressDialog.dismiss();
-                if (outid.equals("1"))
-                {
-                    session.logout_url();
-                    key_editor = key_pref.edit();
-                    key_editor.clear();
-                    key_editor.commit();
-
-                    editor_dev = pref_dev.edit();
-                    editor_dev.clear();
-                    editor_dev.commit();
-
-                    db.delete_attendance_record();
-                    db.deleteAllEmpRecord();
-
-                    Intent intent = new Intent(MainActivity.this, UrlActivity.class);
-                    startActivity(intent);
-                    finish();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
                 }
-                else
-                {
-                    key_editor = key_pref.edit();
-                    key_editor.clear();
-                    key_editor.putInt("key", prev_key);
-                    key_editor.commit();
-                }
+                key_editor = key_pref.edit();
+                key_editor.clear();
+                key_editor.putInt("key", prev_key);
+                key_editor.commit();
             }
         }
         catch (JSONException e)
@@ -2164,7 +2080,7 @@ public class MainActivity extends AppCompatActivity
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
-            Toast.makeText(MainActivity.this, "JSON Exception "+e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Slow Internet Connection", Toast.LENGTH_SHORT).show();
             Log.e("Fail 1", e.toString());
         }
     }

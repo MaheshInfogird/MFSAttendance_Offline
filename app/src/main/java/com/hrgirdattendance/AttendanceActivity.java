@@ -69,6 +69,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -403,7 +404,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         switch (v.getId())
         {
             case R.id.btnForLoop:
-                Toast.makeText(AttendanceActivity.this, "Loop for init->uninit->init... 500 times", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Loop for init->uninit->init... 500 times", Toast.LENGTH_LONG).show();
                 i = 0;
                 handler2 = new Handler();
                 runnable = new Runnable()
@@ -875,7 +876,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                 if (date_array.isEmpty())
                 {
-                    Toast.makeText(AttendanceActivity.this, "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
@@ -895,14 +896,15 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     InOutId = InOutId.replace(", ", ",");
                     Log.i("MFS_Log pst_data", "primary_key- "+PrimaryKey+", id- "+EmpId+", date- "+DateTime+", in_out- "+InOutId);
 
-                    String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitm?";
-                    //String url = "" + url_http + "" + Url + "/owner/hrmapi/newofflinemakeattendancehitm?";
+                    //String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitm?";
+                    String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitmnew?";
                     Log.i("url", url);
                     HashMap<String, String> map = new HashMap<String, String>();
                     map.put("primarykey", PrimaryKey);
                     map.put("empId", EmpId);
                     map.put("datetime", DateTime);
                     map.put("signId", InOutId);
+                    map.put("deviceid", android_id);
 
                     postData(url, map);
 
@@ -918,11 +920,11 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
             }
             else {
-                Toast.makeText(AttendanceActivity.this, "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
             }
         }
         else {
-            Toast.makeText(AttendanceActivity.this, "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Attendance data already uploaded", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -978,7 +980,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                     for (UserDetails_Model cn : contacts)
                     {
-                        if (result_match < 1400)
+                        if (result_match < 800)
                         {
                             String log = "Id: " + cn.getUid() + ", Name: " + cn.getFirstname() +
                                     ", Phone: " + cn.getMobile_no()+ ", Shift: " + cn.getShift();
@@ -1005,29 +1007,32 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                             for (int i = 0; i < thumbs.length; i++)
                             {
-                                if (result_match < 1400)
+                                if (result_match < 800)
                                 {
                                     RegisteredBase64 = thumbs[i];
+                                    Log.i("RegisteredBase64", RegisteredBase64);
                                     Enroll_Template = Base64.decode(RegisteredBase64, Base64.DEFAULT);
 
                                     Verify_Template = new byte[fingerData.ISOTemplate().length];
                                     System.arraycopy(fingerData.ISOTemplate(), 0, Verify_Template, 0, fingerData.ISOTemplate().length);
-
-                                    //CaptureBase64 = android.util.Base64.encodeToString(Verify_Template, android.util.Base64.NO_WRAP);
-                                    //Log.i("CaptureBase64", CaptureBase64);
+                                    //Log.i("Enroll_Template", Arrays.toString(Enroll_Template));
+                                    //Log.i("Verify_Template", Arrays.toString(Verify_Template));
+                                    String CaptureBase64 = android.util.Base64.encodeToString(Verify_Template, android.util.Base64.NO_WRAP);
+                                    Log.i("CaptureBase64", CaptureBase64);
 
                                     result_match = mfs100.MatchISO(Enroll_Template, Verify_Template);
                                     Log.i("MFS_Log result_match", "" + result_match);
 
-                                    if (result_match >= 1400)
+                                    if (result_match >= 800)
                                     {
                                         if (att_type.equals("1"))
                                         {
-                                            if (shift_type.equals("1") || shift_type.equals("3"))
-                                            {
+                                            /*if (shift_type.equals("1") || shift_type.equals("3"))
+                                            {*/
                                                 //progressDialog.dismiss();
-                                                make_offline_attendance_new(uid, ufname, ulname, u_mobile_nu, Sign_InOut_id, shift_type);
-                                            }
+                                                //make_offline_attendance_new(uid, ufname, ulname, u_mobile_nu, Sign_InOut_id, shift_type);
+                                                make_offline_attendance_new(uid, ufname, Sign_InOut_id);
+                                            /*}
                                             else
                                             {
                                                 btn_signIn.setEnabled(true);
@@ -1054,7 +1059,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                                         img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
                                                     }
                                                 }, 3000);
-                                            }
+                                            }*/
 
                                             break;
                                         }
@@ -1098,7 +1103,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         }
                     }
 
-                    if (result_match < 1400)
+                    if (result_match < 800)
                     {
                         //progressDialog.dismiss();
 
@@ -1224,7 +1229,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         }, 3000);
     }
 
-    public void make_offline_attendance_new(String uid, String fname, String lname,
+    public void make_offline_attendance_new_250118(String uid, String fname, String lname,
                                 String mobileno,String inout, String shift_type)
     {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1520,6 +1525,92 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         }, 3000);
     }
 
+    public void make_offline_attendance_new(String uid, String fname, String inout)
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setLenient(false);
+        Date today = new Date();
+        String date_time = sdf.format(today);
+        Log.i("txt_Time date_time",date_time);
+        SigninOut_Model sm = new SigninOut_Model();
+
+        sm.setUserId(uid);
+        sm.setDate_Time(date_time);
+        sm.setSignInOutId(Sign_InOut_id);
+        Log.i("getUserId ",sm.getUserId());
+        Log.i("getDate_Time ",sm.getDate_Time());
+        Log.i("getSignInOutId ",sm.getSignInOutId());
+
+        btn_signIn.setEnabled(true);
+        btn_signOut.setEnabled(true);
+
+        /*if (shift_type.equals("1") || shift_type.equals("3"))
+        {*/
+        if (inout.equals("1"))
+        {
+            db.adddata_signinout(sm);
+
+            List<SigninOut_Model> contacts = db.getSigninoutData(0);
+            Log.i("MFS_Log contacts", "" + contacts);
+
+            for (SigninOut_Model cn : contacts)
+            {
+                String log = "PrimaryKey: " + cn.getPrimaryKey()+", Id: " + cn.getUserId() + ", DateTime: " + cn.getDate_Time() + ", SignInOut: " + cn.getSignInOutId();
+                Log.i("MFS_Log", log);
+            }
+
+            txt_quality_per.setText("0%");
+            progress_quality.setProgress(0);
+            img_in_mark.setVisibility(View.GONE);
+            img_out_mark.setVisibility(View.GONE);
+            txt_att_name.setText(fname);
+            txt_result.setText("Sign In Successfully");
+            txt_result.setTextColor(getColor(R.color.TextGreenColor));
+            img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
+            textToSpeech.speak("Welcome "+fname, TextToSpeech.QUEUE_FLUSH, null);
+            Log.i("MFS_Log Employee!!", "Sign In Successfully!!");
+            sync_data_check_internet();
+        }
+        else if (inout.equals("2"))
+        {
+            db.adddata_signinout(sm);
+
+            List<SigninOut_Model> contacts = db.getSigninoutData(0);
+            Log.i("MFS_Log contacts", "" + contacts);
+
+            for (SigninOut_Model cn : contacts)
+            {
+                String log = "PrimaryKey: " + cn.getPrimaryKey()+", Id: " + cn.getUserId() + ", DateTime: " + cn.getDate_Time() + ", SignInOut: " + cn.getSignInOutId();
+                Log.i("MFS_Log", log);
+            }
+
+            txt_quality_per.setText("0%");
+            progress_quality.setProgress(0);
+            img_in_mark.setVisibility(View.GONE);
+            img_out_mark.setVisibility(View.GONE);
+            txt_att_name.setText(fname);
+            txt_result.setText("Sign Out Successfully");
+            txt_result.setTextColor(getColor(R.color.TextGreenColor));
+            img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
+            textToSpeech.speak("Bye Bye "+fname, TextToSpeech.QUEUE_FLUSH, null);
+            Log.i("MFS_Log Employee!!", "Sign Out Successfully!!");
+            sync_data_check_internet();
+        }
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                txt_result.setText("");
+                txt_att_name.setText("");
+                txt_quality_success.setVisibility(View.INVISIBLE);
+                img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
+            }
+        }, 3000);
+    }
+
     public void sendSignInOutData()
     {
         String url = "" + url_http + "" + Url + "/owner/hrmapi/offlinemakeattendancehitm?";
@@ -1574,7 +1665,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     {
                         if (progressDialog != null && progressDialog.isShowing()) {
                             progressDialog.dismiss();
-                            Toast.makeText(AttendanceActivity.this, message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                         key_editor = key_pref.edit();
                         key_editor.putInt("key", prev_key);
@@ -1586,7 +1677,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
-                    Toast.makeText(AttendanceActivity.this, message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 }
 
                 key_editor = key_pref.edit();
@@ -1602,7 +1693,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 public void run() {
                     if (progressDialog != null && progressDialog.isShowing()) {
                         progressDialog.dismiss();
-                        Toast.makeText(AttendanceActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Slow internet connection", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -1615,7 +1706,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 public void run() {
                     if (progressDialog != null && progressDialog.isShowing()) {
                         progressDialog.dismiss();
-                        Toast.makeText(AttendanceActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Slow internet connection", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -1628,7 +1719,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 public void run() {
                     if (progressDialog != null && progressDialog.isShowing()) {
                         progressDialog.dismiss();
-                        Toast.makeText(AttendanceActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Slow internet connection", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -1699,7 +1790,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         public void run()
                         {
                             progressDialog.dismiss();
-                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -1713,7 +1804,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         public void run()
                         {
                             progressDialog.dismiss();
-                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -1727,7 +1818,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         public void run()
                         {
                             progressDialog.dismiss();
-                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -1765,13 +1856,14 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                     if (result.contains("<HTML><HEAD>"))
                     {
-                        Toast.makeText(AttendanceActivity.this, "Login to captive portal", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Login to captive portal", Toast.LENGTH_LONG).show();
                     }
                     else
                     {
                         if (myJson2.equals("[]"))
                         {
-                            Toast.makeText(AttendanceActivity.this, "No New Records Found", Toast.LENGTH_LONG).show();
+                            Log.i("No New Records", "No New Records");
+                            //Toast.makeText(getApplicationContext(), "No New Records Found", Toast.LENGTH_LONG).show();
                         }
                         else
                         {
@@ -1886,7 +1978,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                         }
                                         else
                                         {
-                                            Toast.makeText(AttendanceActivity.this, "data not available for update", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), "Emp data not found for update", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                     else if (get_status.equals("3"))
@@ -1901,12 +1993,12 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                         }
                                         else
                                         {
-                                            Toast.makeText(AttendanceActivity.this, "data not available for delete", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), "Emp data not found for delete", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 }
 
-                                Toast.makeText(AttendanceActivity.this, "Data updated successfully", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), "Data updated successfully", Toast.LENGTH_LONG).show();
                                 List<UserDetails_Model> contacts = db.getAllEmpData();
 
                                 for (UserDetails_Model cn : contacts)
@@ -1930,7 +2022,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                     progressDialog.dismiss();
                                 }
                                 Log.e("JsonException123", e.toString());
-                                Toast.makeText(AttendanceActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -1941,7 +2033,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     {
                         progressDialog.dismiss();
                     }
-                    Toast.makeText(AttendanceActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Slow internet connection", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -1977,8 +2069,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     Log.i("url_post", ""+url);
 
                     conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(15000);
-                    conn.setConnectTimeout(15000);
+                    conn.setReadTimeout(60000);
+                    conn.setConnectTimeout(60000);
                     conn.setRequestMethod("POST");
                     conn.setUseCaches(false);
                     conn.setAllowUserInteraction(false);
@@ -2022,7 +2114,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             if (progressDialog != null && progressDialog.isShowing()) {
                                 progressDialog.dismiss();
                             }
-                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Slow Internet Connection", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -2038,7 +2130,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             if (progressDialog != null && progressDialog.isShowing()) {
                                 progressDialog.dismiss();
                             }
-                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Slow Internet Connection", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -2051,7 +2143,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             if (progressDialog != null && progressDialog.isShowing()) {
                                 progressDialog.dismiss();
                             }
-                            Toast.makeText(AttendanceActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Slow Internet Connection", Toast.LENGTH_SHORT).show();
                         }
                     });
                     e.printStackTrace();
@@ -2076,15 +2168,17 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             @Override
             protected void onPostExecute(String result)
             {
-                Log.i("result", result);
+                //Log.i("result", result);
                 if (result != null)
                 {
                     GetJSONData(result);
                 }
                 else 
                 {
-                    progressDialog.dismiss();
-                    Toast.makeText(AttendanceActivity.this, "Slow internet connection", Toast.LENGTH_LONG).show();
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                    Toast.makeText(getApplicationContext(), "Slow internet connection", Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -2120,7 +2214,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             Log.i("json", "" + json);
 //[{"empId":"115","datetime":"2017-07-21 12:21:58","responsecode":1,"signId":"2",
 // "primarykey":"5","msg":"Offline Attendance Successfully Done "}]
-            //[{"responsecode":0,"msg":"You are already signin","primarykey":"27"}]
             JSONObject jsonObject = json.getJSONObject(0);
             Log.i("jsonObject", "" + jsonObject);
 
@@ -2143,7 +2236,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 key_editor.putInt("key", prev_key);
                 key_editor.commit();
 
-                Toast.makeText(AttendanceActivity.this, "Attendance data uploaded successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Attendance data uploaded successfully", Toast.LENGTH_SHORT).show();
             }
             else
             {
@@ -2161,161 +2254,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
-            Toast.makeText(AttendanceActivity.this, "JSON Exception", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Slow Internet Connection", Toast.LENGTH_SHORT).show();
             Log.e("Fail 1", e.toString());
         }
-    }
-
-    public void GetDeviceName(final String device_id)
-    {
-        class SendDeviceID extends AsyncTask<String, Void, String>
-        {
-            private URL url;
-            private String response = "";
-
-            @Override
-            protected void onPreExecute()
-            {
-                /*progressDialog1 = new ProgressDialog(AttendanceActivity.this, ProgressDialog.THEME_HOLO_LIGHT);
-                progressDialog1.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog1.setTitle("Please wait");
-                progressDialog1.setMessage("Receiving Device ID...");
-                progressDialog1.show();*/
-            }
-
-            @Override
-            protected String doInBackground(String... params)
-            {
-                try
-                {
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/getnameofdeviceid/?";
-
-                    String query = String.format("android_devide_id=%s",
-                            URLEncoder.encode(device_id, "UTF-8"));
-
-                    url = new URL(Transurl + query);
-                    Log.i("url", "" + url);
-
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(10000);
-                    conn.setConnectTimeout(10000);
-                    conn.setRequestMethod("GET");
-                    conn.setDoInput(true);
-                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    conn.setDoOutput(true);
-                    int responseCode = conn.getResponseCode();
-
-                    if (responseCode == HttpsURLConnection.HTTP_OK)
-                    {
-                        String line;
-                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        while ((line = br.readLine()) != null)
-                        {
-                            response += line;
-                        }
-                    }
-                    else {
-                        response = "";
-                    }
-                }
-                catch (SocketTimeoutException e)
-                {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //progressDialog1.dismiss();
-                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    Log.e("SocketTimeoutException", e.toString());
-                }
-                catch (ConnectTimeoutException e)
-                {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //progressDialog1.dismiss();
-                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    Log.e("ConnectTimeoutException", e.toString());
-                }
-                catch (Exception e)
-                {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //progressDialog1.dismiss();
-                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    Log.e("Exception", e.toString());
-                }
-
-                return response;
-            }
-
-            @Override
-            protected void onPostExecute(String result)
-            {
-                myJSON = result;
-                Log.i("response", result);
-                if (response.equals("[]"))
-                {
-                    //progressDialog1.dismiss();
-                    Toast.makeText(AttendanceActivity.this, "Sorry... Slow internet connection", Toast.LENGTH_LONG).show();
-                }
-                else
-                {
-                    try
-                    {
-                        JSONArray json = new JSONArray(result);
-                        //Log.i("json", "" + json);
-
-                        JSONObject object = json.getJSONObject(0);
-
-                        String responsecode = object.getString("responseCode");
-
-                        if (responsecode.equals("1"))
-                        {
-                           // progressDialog1.dismiss();
-
-                            TabID = object.getString("responseMessage");
-                            Log.i("TabID",TabID);
-                            txt_att_deviceid.setText("Tab"+TabID);
-                            Log.i("Device Name",txt_att_deviceid.getText().toString());
-                        }
-                        else
-                        {
-                            //progressDialog1.dismiss();
-
-                            String msg = object.getString("responseMessage");
-                            String message = msg.substring(2, msg.length()-2);
-
-                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(AttendanceActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                            alertDialog.setTitle(message);
-                            alertDialog.setCancelable(true);
-                            alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    dialog.dismiss();
-                                }
-                            });
-
-                            alertDialog.show();
-                        }
-                    }
-                    catch (JSONException e){
-                        //progressDialog1.dismiss();
-                        Log.i("Exception", e.toString());
-                    }
-                }
-            }
-        }
-        SendDeviceID sendid = new SendDeviceID();
-        sendid.execute();
     }
 
     protected void onStop()
