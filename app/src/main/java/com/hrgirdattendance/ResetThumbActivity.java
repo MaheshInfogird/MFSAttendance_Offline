@@ -1411,7 +1411,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
             {
                 try
                 {
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/resetthumoffline/?";
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/resetthumOffline/?";
 
                     String query = String.format("empId=%s&thumexp=%s&deviceid=%s",
                             URLEncoder.encode(emp_id, "UTF-8"),

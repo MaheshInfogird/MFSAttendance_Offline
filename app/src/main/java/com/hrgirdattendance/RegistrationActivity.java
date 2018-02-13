@@ -1460,7 +1460,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 {
                     Log.i("doInBackground","doInBackground");
                     //String Transurl = ""+url_http+""+Url+"/owner/hrmapi/thumregistration/?";
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/thumregistrationnewoffline/?";
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/thumregistrationnewOffline/?";
                     Log.i("Transurl", "" + Transurl);
 
                     String query = String.format("empId=%s&thumexp=%s&device_value=%s",

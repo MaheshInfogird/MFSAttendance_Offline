@@ -907,16 +907,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     map.put("deviceid", android_id);
 
                     postData(url, map);
-
-                    /*if (first_hit) {
-                        progressDialog = ProgressDialog.show(AttendanceActivity.this, "Please Wait", "Uploading Data... ", true);
-                    }*/
-
-                   /* new Thread(new Runnable() {
-                        public void run() {
-                            //sendSignInOutData();
-                        }
-                    }).start();*/
                 }
             }
             else {
@@ -1015,8 +1005,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                                     Verify_Template = new byte[fingerData.ISOTemplate().length];
                                     System.arraycopy(fingerData.ISOTemplate(), 0, Verify_Template, 0, fingerData.ISOTemplate().length);
-                                    //Log.i("Enroll_Template", Arrays.toString(Enroll_Template));
-                                    //Log.i("Verify_Template", Arrays.toString(Verify_Template));
+
                                     String CaptureBase64 = android.util.Base64.encodeToString(Verify_Template, android.util.Base64.NO_WRAP);
                                     Log.i("CaptureBase64", CaptureBase64);
 
@@ -1027,40 +1016,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                     {
                                         if (att_type.equals("1"))
                                         {
-                                            /*if (shift_type.equals("1") || shift_type.equals("3"))
-                                            {*/
-                                                //progressDialog.dismiss();
-                                                //make_offline_attendance_new(uid, ufname, ulname, u_mobile_nu, Sign_InOut_id, shift_type);
-                                                make_offline_attendance_new(uid, ufname, Sign_InOut_id);
-                                            /*}
-                                            else
-                                            {
-                                                btn_signIn.setEnabled(true);
-                                                btn_signOut.setEnabled(true);
-
-                                                txt_quality_per.setText("0%");
-                                                progress_quality.setProgress(0);
-                                                img_in_mark.setVisibility(View.GONE);
-                                                img_out_mark.setVisibility(View.GONE);
-                                                txt_result.setTextColor(getColor(R.color.RedTextColor));
-                                                txt_result.setText("Roaster EMP attendance not allowed");
-                                                img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
-                                                textToSpeech.speak("Roaster EMP attendance not allowed!!", TextToSpeech.QUEUE_FLUSH, null);
-                                                Log.i("MFS_Log Employee!!", "Roaster EMP attendance not allowed!!");
-
-                                                final Handler handler = new Handler();
-                                                handler.postDelayed(new Runnable()
-                                                {
-                                                    @Override
-                                                    public void run()
-                                                    {
-                                                        txt_result.setText("");
-                                                        txt_quality_success.setVisibility(View.INVISIBLE);
-                                                        img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
-                                                    }
-                                                }, 3000);
-                                            }*/
-
+                                            make_offline_attendance_new(uid, ufname, Sign_InOut_id);
                                             break;
                                         }
                                         else
@@ -1133,7 +1089,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
                 catch (Exception e)
                 {
-                   // progressDialog.dismiss();
+                    // progressDialog.dismiss();
                     Log.i("MFS_Log Exception 3", e + "");
                 }
             }
@@ -1230,7 +1186,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     }
 
     public void make_offline_attendance_new_250118(String uid, String fname, String lname,
-                                String mobileno,String inout, String shift_type)
+                                                   String mobileno,String inout, String shift_type)
     {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sdf.setLenient(false);
@@ -1296,62 +1252,35 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
         /*if (shift_type.equals("1") || shift_type.equals("3"))
         {*/
-            if (inout.equals("1"))
+        if (inout.equals("1"))
+        {
+            if(in_out_date != null)
             {
-                if(in_out_date != null)
+                Log.i("InDateTimen2",InDateTimen+"");
+                Log.i("attDateTimen2",attDateTimen+"");
+
+                Log.i("condition2",InDateTimen.equals(attDateTimen)+"");
+
+                if(InDateTimen.equals(attDateTimen))
                 {
-                    Log.i("InDateTimen2",InDateTimen+"");
-                    Log.i("attDateTimen2",attDateTimen+"");
-
-                    Log.i("condition2",InDateTimen.equals(attDateTimen)+"");
-
-                    if(InDateTimen.equals(attDateTimen))
+                    if (in_out_id.equals("1"))
                     {
-                        if (in_out_id.equals("1"))
-                        {
-                            Log.i("Sign1", "You are already SignIn");
+                        Log.i("Sign1", "You are already SignIn");
 
-                            txt_quality_per.setText("0%");
-                            progress_quality.setProgress(0);
-                            img_in_mark.setVisibility(View.GONE);
-                            img_out_mark.setVisibility(View.GONE);
-                            txt_att_name.setText(fname);
-                            txt_result.setText("You are already Sign In");
-                            txt_result.setTextColor(getColor(R.color.RedTextColor));
-                            img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
-                            textToSpeech.speak("You are already SignIn", TextToSpeech.QUEUE_FLUSH, null);
-                            Log.i("MFS_Log Employee!!", "Sign In Successfully!!");
-                            //sync_data_check_internet();
-                        }
-                        else
-                        {
-                            db.adddata_signinout(sm);
-
-                            List<SigninOut_Model> contacts = db.getSigninoutData(0);
-                            Log.i("MFS_Log contacts", "" + contacts);
-
-                            for (SigninOut_Model cn : contacts)
-                            {
-                                String log = "PrimaryKey: " + cn.getPrimaryKey()+", Id: " + cn.getUserId() + ", DateTime: " + cn.getDate_Time() + ", SignInOut: " + cn.getSignInOutId();
-                                Log.i("MFS_Log", log);
-                            }
-
-                            txt_quality_per.setText("0%");
-                            progress_quality.setProgress(0);
-                            img_in_mark.setVisibility(View.GONE);
-                            img_out_mark.setVisibility(View.GONE);
-                            txt_att_name.setText(fname);
-                            txt_result.setText("Sign In Successfully");
-                            txt_result.setTextColor(getColor(R.color.TextGreenColor));
-                            img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
-                            textToSpeech.speak("Welcome "+fname, TextToSpeech.QUEUE_FLUSH, null);
-                            Log.i("MFS_Log Employee!!", "Sign In Successfully!!");
-                            sync_data_check_internet();
-                        }
+                        txt_quality_per.setText("0%");
+                        progress_quality.setProgress(0);
+                        img_in_mark.setVisibility(View.GONE);
+                        img_out_mark.setVisibility(View.GONE);
+                        txt_att_name.setText(fname);
+                        txt_result.setText("You are already Sign In");
+                        txt_result.setTextColor(getColor(R.color.RedTextColor));
+                        img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
+                        textToSpeech.speak("You are already SignIn", TextToSpeech.QUEUE_FLUSH, null);
+                        Log.i("MFS_Log Employee!!", "Sign In Successfully!!");
+                        //sync_data_check_internet();
                     }
                     else
                     {
-                        Log.i("else2","else");
                         db.adddata_signinout(sm);
 
                         List<SigninOut_Model> contacts = db.getSigninoutData(0);
@@ -1403,95 +1332,106 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     sync_data_check_internet();
                 }
             }
-            else if (inout.equals("2"))
+            else
             {
-                Log.i("else if","else if");
+                Log.i("else2","else");
+                db.adddata_signinout(sm);
 
-                if(in_out_date == null)
+                List<SigninOut_Model> contacts = db.getSigninoutData(0);
+                Log.i("MFS_Log contacts", "" + contacts);
+
+                for (SigninOut_Model cn : contacts)
                 {
-                    if (InDateTimen.equals(attDateTimen))
+                    String log = "PrimaryKey: " + cn.getPrimaryKey()+", Id: " + cn.getUserId() + ", DateTime: " + cn.getDate_Time() + ", SignInOut: " + cn.getSignInOutId();
+                    Log.i("MFS_Log", log);
+                }
+
+                txt_quality_per.setText("0%");
+                progress_quality.setProgress(0);
+                img_in_mark.setVisibility(View.GONE);
+                img_out_mark.setVisibility(View.GONE);
+                txt_att_name.setText(fname);
+                txt_result.setText("Sign In Successfully");
+                txt_result.setTextColor(getColor(R.color.TextGreenColor));
+                img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
+                textToSpeech.speak("Welcome "+fname, TextToSpeech.QUEUE_FLUSH, null);
+                Log.i("MFS_Log Employee!!", "Sign In Successfully!!");
+                sync_data_check_internet();
+            }
+        }
+        else if (inout.equals("2"))
+        {
+            Log.i("else if","else if");
+
+            if(in_out_date == null)
+            {
+                if (InDateTimen.equals(attDateTimen))
+                {
+                    Log.i("Sign 5", "You are Not SignIn");
+
+                    txt_quality_per.setText("0%");
+                    progress_quality.setProgress(0);
+                    img_in_mark.setVisibility(View.GONE);
+                    img_out_mark.setVisibility(View.GONE);
+                    txt_att_name.setText(fname);
+                    txt_result.setText("You are not Sign In");
+                    txt_result.setTextColor(getColor(R.color.RedTextColor));
+                    img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
+                    textToSpeech.speak("You are not SignIn", TextToSpeech.QUEUE_FLUSH, null);
+                    Log.i("MFS_Log Employee!!", "You are not SignIn!!");
+                    //sync_data_check_internet();
+                }
+            }
+
+            if(in_out_date != null)
+            {
+                if(InDateTimen.equals(attDateTimen))
+                {
+                    if (in_out_id.equals("2"))
                     {
-                        Log.i("Sign 5", "You are Not SignIn");
+                        Log.i("Sign6", "You are already SignOut");
 
                         txt_quality_per.setText("0%");
                         progress_quality.setProgress(0);
                         img_in_mark.setVisibility(View.GONE);
                         img_out_mark.setVisibility(View.GONE);
                         txt_att_name.setText(fname);
-                        txt_result.setText("You are not Sign In");
+                        txt_result.setText("You are already Sign Out");
                         txt_result.setTextColor(getColor(R.color.RedTextColor));
                         img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
-                        textToSpeech.speak("You are not SignIn", TextToSpeech.QUEUE_FLUSH, null);
-                        Log.i("MFS_Log Employee!!", "You are not SignIn!!");
-                        //sync_data_check_internet();
-                    }
-                }
-
-                if(in_out_date != null)
-                {
-                    if(InDateTimen.equals(attDateTimen))
-                    {
-                        if (in_out_id.equals("2"))
-                        {
-                            Log.i("Sign6", "You are already SignOut");
-
-                            txt_quality_per.setText("0%");
-                            progress_quality.setProgress(0);
-                            img_in_mark.setVisibility(View.GONE);
-                            img_out_mark.setVisibility(View.GONE);
-                            txt_att_name.setText(fname);
-                            txt_result.setText("You are already Sign Out");
-                            txt_result.setTextColor(getColor(R.color.RedTextColor));
-                            img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
-                            textToSpeech.speak("You are already SignOut", TextToSpeech.QUEUE_FLUSH, null);
-                            Log.i("MFS_Log Employee!!", "You are already SignOut!!");
-                            // you are already signout
-                        }
-                        else
-                        {
-                            db.adddata_signinout(sm);
-
-                            List<SigninOut_Model> contacts = db.getSigninoutData(0);
-                            Log.i("MFS_Log contacts", "" + contacts);
-
-                            for (SigninOut_Model cn : contacts)
-                            {
-                                String log = "PrimaryKey: " + cn.getPrimaryKey()+", Id: " + cn.getUserId() + ", DateTime: " + cn.getDate_Time() + ", SignInOut: " + cn.getSignInOutId();
-                                Log.i("MFS_Log", log);
-                            }
-
-                            txt_quality_per.setText("0%");
-                            progress_quality.setProgress(0);
-                            img_in_mark.setVisibility(View.GONE);
-                            img_out_mark.setVisibility(View.GONE);
-                            txt_att_name.setText(fname);
-                            txt_result.setText("Sign Out Successfully");
-                            txt_result.setTextColor(getColor(R.color.TextGreenColor));
-                            img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
-                            textToSpeech.speak("Bye Bye "+fname, TextToSpeech.QUEUE_FLUSH, null);
-                            Log.i("MFS_Log Employee!!", "Sign Out Successfully!!");
-                            sync_data_check_internet();
-                        }
+                        textToSpeech.speak("You are already SignOut", TextToSpeech.QUEUE_FLUSH, null);
+                        Log.i("MFS_Log Employee!!", "You are already SignOut!!");
+                        // you are already signout
                     }
                     else
                     {
-                        Log.i("Sign6", "You are not SignIn");
+                        db.adddata_signinout(sm);
+
+                        List<SigninOut_Model> contacts = db.getSigninoutData(0);
+                        Log.i("MFS_Log contacts", "" + contacts);
+
+                        for (SigninOut_Model cn : contacts)
+                        {
+                            String log = "PrimaryKey: " + cn.getPrimaryKey()+", Id: " + cn.getUserId() + ", DateTime: " + cn.getDate_Time() + ", SignInOut: " + cn.getSignInOutId();
+                            Log.i("MFS_Log", log);
+                        }
 
                         txt_quality_per.setText("0%");
                         progress_quality.setProgress(0);
                         img_in_mark.setVisibility(View.GONE);
                         img_out_mark.setVisibility(View.GONE);
                         txt_att_name.setText(fname);
-                        txt_result.setText("You are not Sign In");
-                        txt_result.setTextColor(getColor(R.color.RedTextColor));
-                        img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
-                        textToSpeech.speak("You are not SignIn", TextToSpeech.QUEUE_FLUSH, null);
-                        Log.i("MFS_Log Employee!!", "You are Not SignIn!!");
+                        txt_result.setText("Sign Out Successfully");
+                        txt_result.setTextColor(getColor(R.color.TextGreenColor));
+                        img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
+                        textToSpeech.speak("Bye Bye "+fname, TextToSpeech.QUEUE_FLUSH, null);
+                        Log.i("MFS_Log Employee!!", "Sign Out Successfully!!");
+                        sync_data_check_internet();
                     }
                 }
                 else
                 {
-                    Log.i("Sign7", "You are not SignIn");
+                    Log.i("Sign6", "You are not SignIn");
 
                     txt_quality_per.setText("0%");
                     progress_quality.setProgress(0);
@@ -1505,10 +1445,25 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     Log.i("MFS_Log Employee!!", "You are Not SignIn!!");
                 }
             }
+            else
+            {
+                Log.i("Sign7", "You are not SignIn");
+
+                txt_quality_per.setText("0%");
+                progress_quality.setProgress(0);
+                img_in_mark.setVisibility(View.GONE);
+                img_out_mark.setVisibility(View.GONE);
+                txt_att_name.setText(fname);
+                txt_result.setText("You are not Sign In");
+                txt_result.setTextColor(getColor(R.color.RedTextColor));
+                img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
+                textToSpeech.speak("You are not SignIn", TextToSpeech.QUEUE_FLUSH, null);
+                Log.i("MFS_Log Employee!!", "You are Not SignIn!!");
+            }
+        }
         /*}
         else
         {
-
         }*/
 
         final Handler handler = new Handler();
@@ -2168,12 +2123,11 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             @Override
             protected void onPostExecute(String result)
             {
-                //Log.i("result", result);
                 if (result != null)
                 {
                     GetJSONData(result);
                 }
-                else 
+                else
                 {
                     if (progressDialog != null && progressDialog.isShowing()) {
                         progressDialog.dismiss();
@@ -2300,12 +2254,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     @Override
     public void onBackPressed()
     {
-        //UnInitScanner();
         mfs100.StopCapture();
         Intent intent = new Intent(AttendanceActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
 
     }
-
 }
