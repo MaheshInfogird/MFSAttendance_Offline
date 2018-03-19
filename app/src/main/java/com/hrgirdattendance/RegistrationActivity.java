@@ -193,6 +193,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                         mfs100.StopCapture();
                     }
                 });
+
                 alertDialog.setNegativeButton("Logout", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -201,7 +202,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                         editor.clear();
                         editor.commit();
                         session.logoutUser();
-                        UnInitScanner();
+                        //UnInitScanner();
 
                         Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -536,12 +537,12 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
             int ret = mfs100.Init();
             if (ret != 0)
             {
-                SetTextonuiThread(mfs100.GetErrorMsg(ret));
+                //SetTextonuiThread(mfs100.GetErrorMsg(ret));
                 Log.i("info", "fail - "+(mfs100.GetErrorMsg(ret)));
             }
             else
                 {
-                SetTextonuiThread("Init success");
+                //SetTextonuiThread("Init success");
                 String info = "Serial: " + mfs100.GetDeviceInfo().SerialNo()
                         + " Make: " + mfs100.GetDeviceInfo().Make()
                         + " Model: " + mfs100.GetDeviceInfo().Model()
@@ -552,13 +553,13 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
         }
         catch (Exception ex) {
             Toast.makeText(this, "Init failed, unhandled exception", Toast.LENGTH_LONG).show();
-            SetTextonuiThread("Init failed, unhandled exception");
+            //SetTextonuiThread("Init failed, unhandled exception");
         }
     }
 
     private void StartAsyncCapture()
     {
-        SetTextonuiThread("");
+        //SetTextonuiThread("");
 //		SetLogOnUIThread("\nStartTime: " + getCurrentTime());
 
         try
@@ -566,14 +567,14 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
             int ret = mfs100.StartCapture(minQuality, timeout, true);
             if (ret != 0)
             {
-                SetTextonuiThread(mfs100.GetErrorMsg(ret));
+                //SetTextonuiThread(mfs100.GetErrorMsg(ret));
             }
             else {
-                SetTextonuiThread("Place finger on scanner");
+                //SetTextonuiThread("Place finger on scanner");
             }
         }
         catch (Exception ex) {
-            SetTextonuiThread("Error");
+            //SetTextonuiThread("Error");
         }
     }
 
@@ -584,7 +585,6 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
             @Override
             public void run()
             {
-                SetTextonuiThread("");
                 try
                 {
                     FingerData fingerData = new FingerData();
@@ -592,7 +592,8 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                     int ret = mfs100.StartCapture(minQuality, timeout, true);
                     if (ret != 0)
                     {
-                        SetTextonuiThread(mfs100.GetErrorMsg(ret));
+                        //SetTextonuiThread(mfs100.GetErrorMsg(ret));
+                        StartSyncCapture();
                         Log.i("SetTextonuiThread", ""+mfs100.GetErrorMsg(ret));
                     }
                     else
@@ -638,7 +639,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                             });
                         }
 
-                        SetTextonuiThread("Capture Success");
+                        //SetTextonuiThread("Capture Success");
                         Log.i("Capture Success", "Capture Success");
                         String log = "\nQuality: " + fingerData.Quality()
                                 + "\nNFIQ: " + fingerData.Nfiq()
@@ -664,12 +665,12 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                         {
                             if(dataLen == 0)
                             {
-                                SetTextonuiThread("Failed to extract ISO Image");
+                                //SetTextonuiThread("Failed to extract ISO Image");
                                 Log.i("ailed to extract", "Failed to extract");
                             }
                             else
                             {
-                                SetTextonuiThread(mfs100.GetErrorMsg(dataLen));
+                                //SetTextonuiThread(mfs100.GetErrorMsg(dataLen));
                                 Log.i("Capture Fail", ""+mfs100.GetErrorMsg(dataLen));
                             }
                             return;
@@ -687,7 +688,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                         //SetData2(fingerData,ansiTemplate,isoImage,wsqImage);
                     }
                 } catch (Exception ex) {
-                    SetTextonuiThread("Error");
+                    //SetTextonuiThread("Error");
                     Log.i("Error", ""+ex);
                 }
             }
@@ -701,26 +702,19 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
             int ret = mfs100.UnInit();
             if (ret != 0)
             {
-                SetTextonuiThread(mfs100.GetErrorMsg(ret));
+                //SetTextonuiThread(mfs100.GetErrorMsg(ret));
+                Log.e("uninit_err", mfs100.GetErrorMsg(ret));
             }
             else
             {
                 //SetLogOnUIThread("Uninit Success");
-                SetTextonuiThread("Uninit Success");
+                //SetTextonuiThread("Uninit Success");
+                Log.e("uninit", mfs100.GetErrorMsg(ret));
             }
         }
         catch (Exception e) {
             Log.e("UnInitScanner.EX", e.toString());
         }
-    }
-
-    private void SetTextonuiThread(final String str)
-    {
-        /*lblMessage.post(new Runnable() {
-            public void run() {
-                lblMessage.setText(str);
-            }
-        });*/
     }
 
     @Override
@@ -765,7 +759,8 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
             });
         }
 
-        SetTextonuiThread("Quality: " + fingerData.Quality());
+        //SetTextonuiThread("Quality: " + fingerData.Quality());
+        Log.i("Quality", ""+fingerData.Quality());
     }
 
     @Override
@@ -815,7 +810,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 });
             }
 
-            SetTextonuiThread("Capture Success");
+            //SetTextonuiThread("Capture Success");
             String log = "\nQuality: " + fingerData.Quality() + "\nNFIQ: "
                     + fingerData.Nfiq() + "\nWSQ Compress Ratio: "
                     + fingerData.WSQCompressRatio()
@@ -833,7 +828,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
             //getThumbExpression(fingerData);
         }
         else {
-            SetTextonuiThread("Error: " + errorCode + "(" + errorMsg + ")");
+            //SetTextonuiThread("Error: " + errorCode + "(" + errorMsg + ")");
         }
     }
 
@@ -905,7 +900,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
         if (!hasPermission)
         {
             Log.i("Permission denied","Permission denied");
-            SetTextonuiThread("Permission denied");
+            //SetTextonuiThread("Permission denied");
             return;
         }
         if (vid == 1204 || vid == 11279)
@@ -917,11 +912,11 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 if (ret != 0)
                 {
                     Log.i("Permission denied",""+mfs100.GetErrorMsg(ret));
-                    SetTextonuiThread(mfs100.GetErrorMsg(ret));
+                    //SetTextonuiThread(mfs100.GetErrorMsg(ret));
                 }
                 else
                 {
-                    SetTextonuiThread("Loadfirmware success");
+                    //SetTextonuiThread("Loadfirmware success");
                     Log.i("Loadfirmware success","Loadfirmware success");
                 }
             }
@@ -975,7 +970,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 if (ret != 0)
                 {
                     Log.i("strDeviceMode5",""+mfs100.GetErrorMsg(ret));
-                    SetTextonuiThread(mfs100.GetErrorMsg(ret));
+                    //SetTextonuiThread(mfs100.GetErrorMsg(ret));
                 }
             }
         }
@@ -985,7 +980,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
     public void OnDeviceDetached()
     {
         UnInitScanner();
-        SetTextonuiThread("Device removed");
+        //SetTextonuiThread("Device removed");
     }
 
     @Override
@@ -1093,6 +1088,12 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
 
                             scannerAction = CommonMethod.ScannerAction.Capture;
                             StartSyncCapture();
+
+                            if (!scannerAction.equals(CommonMethod.ScannerAction.Capture))
+                            {
+                                scannerAction = CommonMethod.ScannerAction.Capture;
+                                StartSyncCapture();
+                            }
 
                             /*final Handler handler = new Handler();
                             handler.postDelayed(new Runnable()

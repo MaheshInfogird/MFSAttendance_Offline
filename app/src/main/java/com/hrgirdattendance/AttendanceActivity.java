@@ -2190,7 +2190,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 key_editor.putInt("key", prev_key);
                 key_editor.commit();
 
-                Toast.makeText(getApplicationContext(), "Attendance data uploaded successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
             else
             {
@@ -2201,6 +2201,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 key_editor.clear();
                 key_editor.putInt("key", prev_key);
                 key_editor.commit();
+
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         }
         catch (JSONException e)

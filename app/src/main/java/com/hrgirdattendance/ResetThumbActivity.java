@@ -203,7 +203,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                         editor.clear();
                         editor.commit();
                         session.logoutUser();
-                        UnInitScanner();
+                        //UnInitScanner();
 
                         Intent intent = new Intent(ResetThumbActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -1566,9 +1566,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
     protected void onStop()
     {
         //logout_id = "1";
-
         //session.logoutUser();
-
         //UnInitScanner();
 
         super.onStop();

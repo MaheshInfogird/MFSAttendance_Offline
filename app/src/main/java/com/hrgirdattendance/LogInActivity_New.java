@@ -1127,68 +1127,74 @@ public class LogInActivity_New extends AppCompatActivity implements MFS100Event 
                 {
                     Toast.makeText(LogInActivity_New.this, "Bad internet connection", Toast.LENGTH_LONG).show();
                 }
-                else {
-                    try {
+                else
+                    {
+                    try
+                    {
                         JSONArray json = new JSONArray(result);
                         //Log.i("json", "" + json);
+                        result_match = 0;
 
-                        for (int j = 0; j < json.length(); j++) {
-                            JSONObject jsonObj = json.getJSONObject(j);
-
-                            result_match = 0;
-
-                            try
+                        for (int j = 0; j < json.length(); j++)
+                        {
+                            if (result_match <= 800)
                             {
-                                JSONArray array = jsonObj.getJSONArray("Thumexp");
-                                Log.i("array", "" + array);
+                                JSONObject jsonObj = json.getJSONObject(j);
 
-                                for (int i = 0; i < array.length(); i++)
+                                try
                                 {
-                                    JSONObject object = array.getJSONObject(i);
-                                    //Log.i("object", ""+object);
-                                    if (result_match <= 800)
+                                    JSONArray array = jsonObj.getJSONArray("Thumexp");
+                                    Log.i("array", "" + array);
+
+                                    for (int i = 0; i < array.length(); i++)
                                     {
-                                        RegisteredBase64 = object.getString("thumb");
-                                        Log.i("RegisteredBase64", RegisteredBase64);
+                                        JSONObject object = array.getJSONObject(i);
+                                        //Log.i("object", ""+object);
+                                        if (result_match <= 800)
+                                        {
+                                            RegisteredBase64 = object.getString("thumb");
+                                            Log.i("RegisteredBase64", RegisteredBase64);
 
-                                        String EmpId = object.getString("uId");
-                                        Log.i("EmpId", EmpId);
+                                            String EmpId = jsonObj.getString("uId");
+                                            Log.i("EmpId", EmpId);
 
-                                        Enroll_Template = Base64.decode(RegisteredBase64, Base64.DEFAULT);
-                                        Log.i("Enroll_Template", "" + Enroll_Template);
+                                            Enroll_Template = Base64.decode(RegisteredBase64, Base64.DEFAULT);
+                                            Log.i("Enroll_Template", "" + Enroll_Template);
 
-                                        Verify_Template = new byte[fingerData.ISOTemplate().length];
-                                        System.arraycopy(fingerData.ISOTemplate(), 0, Verify_Template, 0,
-                                                fingerData.ISOTemplate().length);
+                                            Verify_Template = new byte[fingerData.ISOTemplate().length];
+                                            System.arraycopy(fingerData.ISOTemplate(), 0, Verify_Template, 0,
+                                                    fingerData.ISOTemplate().length);
 
-                                        result_match = mfs100.MatchISO(Enroll_Template, Verify_Template);
+                                            result_match = mfs100.MatchISO(Enroll_Template, Verify_Template);
 
-                                        Log.i("result_match", "" + result_match);
+                                            Log.i("result_match", "" + result_match);
 
-                                        if (result_match >= 800) {
-                                            Log.i("match_result_match", "" + result_match);
-                                            ThumbSignIn(EmpId);
-                                            /*if (Login_id.equals("1")) {
-                                                Intent intent = new Intent(LogInActivity_New.this, RegistrationActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            } else {
-                                                Intent intent = new Intent(LogInActivity_New.this, ResetThumbActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }*/
-
-                                        } else {
-                                            Log.i("NOT MATCHED!!", "NOT MATCHED!!");
+                                            if (result_match >= 800)
+                                            {
+                                                Log.i("match_result_match", "" + result_match);
+                                                btn_thumb_signIn.setEnabled(true);
+                                                img_in_mark.setVisibility(View.GONE);
+                                                txt_quality_per.setText("0%");
+                                                progress_quality.setProgress(0);
+                                                txt_result.setText("Login Successfully");
+                                                txt_result.setTextColor(getResources().getColor(R.color.GreenColor));
+                                                textToSpeech.speak("Login Successfully", TextToSpeech.QUEUE_FLUSH, null);
+                                                Log.i("Login Successfully", "Login Successfully");
+                                                ThumbSignIn(EmpId);
+                                                break;
+                                            }
+                                            else {
+                                                Log.i("NOT MATCHED!!", "NOT MATCHED!!");
+                                            }
                                         }
                                     }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
                             }
                         }
 
-                        if (result_match < 800)
+                        if (result_match <= 800)
                         {
                             btn_thumb_signIn.setEnabled(true);
                             img_in_mark.setVisibility(View.GONE);
